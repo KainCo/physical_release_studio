@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Dreamcast Cover Print Studio (Mobile Ready v6 - Fixed & DPI Scale)</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --success: #10b981;
+      --bg: #f4f6f9;
+      --card-bg: #ffffff;
+      --text: #1f2937;
+      --border: #d1d5db;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .ui-container {
+      width: 100%;
+      max-width: 800px;
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-size: 1.2rem;
+      margin-bottom: 4px;
+    }
+
+    .sub-title {
+      font-size: 0.8rem;
+      color: #6b7280;
+      margin-bottom: 16px;
+    }
+
+    .upload-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 600px) {
+      .upload-cards { grid-template-columns: 1fr; }
+    }
+
+    .upload-card {
+      background: #f8fafc;
+      border: 2px dashed var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .upload-card.active {
+      border-color: var(--primary);
+      background: #eff6ff;
+    }
+
+    .upload-card label {
+      display: block;
+      font-weight: bold;
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+      cursor: pointer;
+    }
+
+    .upload-card input[type="file"] {
+      width: 100%;
+      font-size: 0.8rem;
+    }
+
+    /* DPI Traffic Light Badge & Scale Container */
+    .dpi-container {
+      display: none;
+      margin-top: 10px;
+      text-align: left;
+    }
+
+    .dpi-badge {
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      text-align: center;
+      line-height: 1.3;
+      margin-bottom: 6px;
+    }
+
+    .dpi-badge.green {
+      background-color: #d1fae5;
+      color: #065f46;
+      border: 1px solid #10b981;
+    }
+
+    .dpi-badge.yellow {
+      background-color: #fef3c7;
+      color: #92400e;
+      border: 1px solid #f59e0b;
+    }
+
+    .dpi-badge.red {
+      background-color: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #ef4444;
+    }
+
+    /* DPI Quality Scale Visual Bar */
+    .dpi-scale-wrapper {
+      position: relative;
+      width: 100%;
+      background: #e2e8f0;
+      height: 12px;
+      border-radius: 6px;
+      overflow: hidden;
+      display: flex;
+      border: 1px solid #cbd5e1;
+    }
+
+    .scale-segment {
+      height: 100%;
+    }
+
+    .scale-red { width: 37.5%; background: #ef4444; }    /* 0 - 150 DPI */
+    .scale-yellow { width: 37.5%; background: #f59e0b; } /* 150 - 300 DPI */
+    .scale-green { width: 25%; background: #10b981; }    /* 300 - 400+ DPI */
+
+    .scale-marker {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: #000;
+      border-radius: 2px;
+      transform: translateX(-50%);
+      box-shadow: 0 0 4px rgba(255,255,255,0.9);
+      transition: left 0.3s ease;
+    }
+
+    .scale-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.65rem;
+      color: #64748b;
+      margin-top: 3px;
+      font-weight: bold;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid var(--border);
+      background: #f3f4f6;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .controls-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+      background: #f8fafc;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+
+    .control-group label {
+      font-size: 0.75rem;
+      font-weight: bold;
+      color: #4b5563;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .btn-small {
+      padding: 6px 8px;
+      font-size: 0.75rem;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: white;
+      cursor: pointer;
+    }
+
+    .btn-print {
+      width: 100%;
+      background: var(--success);
+      color: white;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    .preview-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+      width: 100%;
+      max-width: 800px;
+      background: #e2e8f0;
+      padding: 20px 10px;
+      border-radius: 12px;
+      overflow-x: auto;
+    }
+
+    .frame-container {
+      position: relative;
+      background: white;
+      border: 2px solid #94a3b8;
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    /* Back Cover: 15.1cm x 11.9cm -> 380px x 298px */
+    .frame-back {
+      width: 378px;
+      height: 298px;
+    }
+
+    /* Front Cover: 12.0cm x 12.0cm -> 303px x 303px */
+    .frame-front {
+      width: 300px;
+      height: 300px;
+    }
+
+    .frame-container.active-target {
+      border: 3px solid var(--primary);
+    }
+
+    .cover-img {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform-origin: center center;
+      pointer-events: none;
+    }
+
+    /* Notch-Overlay auf die rechte Seite gespiegelt */
+    .notch-overlay {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 62px; /* 2.5cm */
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .notch-top {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 100%;
+      height: 7.5px; /* 0.3cm */
+      background: #e2e8f0;
+    }
+
+    .notch-bottom {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 100%;
+      height: 7.5px; /* 0.3cm */
+      background: #e2e8f0;
+    }
+
+    .placeholder {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 0.8rem;
+      color: #94a3b8;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    #printScreen {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: white;
+      z-index: 9999;
+      padding: 10px;
+      overflow: auto;
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      color: #374151;
+      cursor: pointer;
+    }
+
+    .checkbox-label input {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    @media print {
+      @page {
+        size: A4 landscape;
+        margin: 0 !important;
+      }
+
+      html, body {
+        width: 100% !important;
+        height: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        background: white !important;
+      }
+
+      .ui-container, .preview-wrapper, canvas {
+        display: none !important;
+      }
+
+      .no-print {
+        display: none !important;
+      }
+
+      #printScreen {
+        display: block !important;
+        position: fixed !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
+        background: white !important;
+      }
+
+      .print-container {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: center !important;
+        align-items: center !important;
+        gap: 1cm !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+      }
+
+      .print-container img {
+        max-height: 95vh !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ui-container">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 8px;">
+      <h1>Dreamcast Cover Print Studio (Mobile)</h1>
+      <a href="https://ko-fi.com" target="_blank" style="display: inline-flex; align-items: center; gap: 6px; background: #ff5e5b; color: white; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; box-shadow: 0 2px 5px rgba(255,94,91,0.3); transition: transform 0.2s;">
+        ☕ <span>Buy me a coffee</span>
+      </a>
+    </div>
+    <div class="sub-title">Back: 15.1 × 11.9 cm | Front: 12.0 × 12.0 cm (incl. 1 mm compensation)</div>
+
+    <div class="upload-cards">
+      <div class="upload-card" id="card-back" onclick="selectTab('back')">
+        <label for="file-back">📷 Back Cover Image</label>
+        <input type="file" id="file-back" accept="image/*" onchange="loadFile(event, 'back')">
+        
+        <div id="dpi-container-back" class="dpi-container">
+          <div id="dpi-badge-back" class="dpi-badge"></div>
+          <div class="dpi-scale-wrapper">
+            <div class="scale-segment scale-red"></div>
+            <div class="scale-segment scale-yellow"></div>
+            <div class="scale-segment scale-green"></div>
+            <div id="dpi-marker-back" class="scale-marker" style="left: 0%;"></div>
+          </div>
+          <div class="scale-labels">
+            <span>0</span>
+            <span>150 (Good)</span>
+            <span>300 (Ideal)</span>
+            <span>400+</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="upload-card" id="card-front" onclick="selectTab('front')">
+        <label for="file-front">📷 Front Cover Image</label>
+        <input type="file" id="file-front" accept="image/*" onchange="loadFile(event, 'front')">
+        
+        <div id="dpi-container-front" class="dpi-container">
+          <div id="dpi-badge-front" class="dpi-badge"></div>
+          <div class="dpi-scale-wrapper">
+            <div class="scale-segment scale-red"></div>
+            <div class="scale-segment scale-yellow"></div>
+            <div class="scale-segment scale-green"></div>
+            <div id="dpi-marker-front" class="scale-marker" style="left: 0%;"></div>
+          </div>
+          <div class="scale-labels">
+            <span>0</span>
+            <span>150 (Good)</span>
+            <span>300 (Ideal)</span>
+            <span>400+</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" id="tab-back" onclick="selectTab('back')">Edit: Back Cover</button>
+      <button class="tab-btn" id="tab-front" onclick="selectTab('front')">Edit: Front Cover</button>
+    </div>
+
+    <div class="controls-grid">
+      <div class="control-group" style="min-width: 200px;">
+        <label>Rotation & Flip</label>
+        <div class="btn-row">
+          <button class="btn-small" onclick="rotate(0)">0°</button>
+          <button class="btn-small" onclick="rotate(-90)">-90°</button>
+          <button class="btn-small" onclick="rotate(90)">+90°</button>
+          <button class="btn-small" onclick="rotate(180)">180°</button>
+          <button class="btn-small" id="btn-flip" onclick="toggleFlip()">↔️ Flip</button>
+        </div>
+      </div>
+
+      <div class="control-group" style="min-width: 170px;">
+        <label for="zoomInput">Zoom (%)</label>
+        <div style="display: flex; gap: 6px; align-items: center; width: 100%;">
+          <input type="range" id="zoomSlider" min="10" max="300" value="100" style="flex: 1; min-width: 60px;" oninput="updateZoom(this.value)">
+          <input type="number" id="zoomInput" min="10" max="300" value="100" style="width: 60px; min-width: 60px; padding: 4px 2px; font-size: 0.85rem; border: 1px solid var(--border); border-radius: 4px; text-align: center;" oninput="updateZoom(this.value)">
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label>Alignment</label>
+        <div class="btn-row">
+          <button class="btn-small" onclick="fitImage()">Fit</button>
+          <button class="btn-small" onclick="resetTransforms()">Reset</button>
+        </div>
+      </div>
+
+      <div class="control-group" style="grid-column: span 2;">
+        <label>Print Options</label>
+        <label class="checkbox-label">
+          <input type="checkbox" id="showGuidelines" checked>
+          Print crop marks / guidelines
+        </label>
+      </div>
+    </div>
+
+    <button class="btn-print" onclick="preparePrint()">🖨️ Print Both / Save as PDF</button>
+  </div>
+
+  <div class="preview-wrapper">
+    <div>
+      <div style="font-size: 0.8rem; font-weight: bold; margin-bottom: 4px; text-align: center;">Back Cover (15,1 × 11,9 cm)</div>
+      <div class="frame-container frame-back active-target" id="frame-back" onclick="selectTab('back')">
+        <div class="placeholder" id="ph-back">Select file above</div>
+        <img id="img-back" class="cover-img" style="display:none;" alt="Back">
+        <div class="notch-overlay">
+          <div class="notch-top"></div>
+          <div class="notch-bottom"></div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div style="font-size: 0.8rem; font-weight: bold; margin-bottom: 4px; text-align: center;">Front Cover (12,0 × 12,0 cm)</div>
+      <div class="frame-container frame-front" id="frame-front" onclick="selectTab('front')">
+        <div class="placeholder" id="ph-front">Select file above</div>
+        <img id="img-front" class="cover-img" style="display:none;" alt="Front">
+      </div>
+    </div>
+  </div>
+
+  <div id="printScreen">
+    <div style="padding: 10px; text-align: center; background: #f3f4f6; margin-bottom: 10px; border-radius: 8px;" class="no-print">
+      <button onclick="window.print()" style="padding: 10px 20px; background: #10b981; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">Print Now / Save PDF</button>
+      <div style="margin-top: 10px; padding: 8px; background: #fff; border-radius: 6px; border: 1px solid #e5e7eb; font-size: 0.8rem; color: #4b5563;">
+        ☕ <b>Did this print template help you?</b> Support the development of more retro studios with a small donation on <a href="https://ko-fi.com" target="_blank" style="color: #ff5e5b; font-weight: bold; text-decoration: none;">Ko-fi</a>!
+      </div>
+      <button onclick="closePrint()" style="padding: 10px 20px; background: #6b7280; color: white; border: none; border-radius: 6px; margin-left: 10px; cursor: pointer;">Close</button>
+    </div>
+    <div class="print-container">
+      <img id="print-img-back" style="width: 15.1cm; height: 11.9cm; object-fit: contain; display: none;">
+      <img id="print-img-front" style="width: 12.0cm; height: 12.0cm; object-fit: contain; display: none;">
+    </div>
+  </div>
+
+  <canvas id="canvas-back" style="display:none;"></canvas>
+  <canvas id="canvas-front" style="display:none;"></canvas>
+
+  <script>
+    let activeTarget = 'back';
+
+    const state = {
+      back: { x: 0, y: 0, scale: 1, rotation: 0, flipX: 1, loaded: false, targetCmW: 15.1, targetCmH: 11.9 },
+      front: { x: 0, y: 0, scale: 1, rotation: 0, flipX: 1, loaded: false, targetCmW: 12.0, targetCmH: 12.0 }
+    };
+
+    function selectTab(target) {
+      activeTarget = target;
+      document.getElementById('tab-back').classList.toggle('active', target === 'back');
+      document.getElementById('tab-front').classList.toggle('active', target === 'front');
+      document.getElementById('card-back').classList.toggle('active', target === 'back');
+      document.getElementById('card-front').classList.toggle('active', target === 'front');
+      document.getElementById('frame-back').classList.toggle('active-target', target === 'back');
+      document.getElementById('frame-front').classList.toggle('active-target', target === 'front');
+      updateControls();
+    }
+
+    function calculateAndDisplayDPI(target) {
+      const img = document.getElementById(`img-${target}`);
+      const container = document.getElementById(`dpi-container-${target}`);
+      const badge = document.getElementById(`dpi-badge-${target}`);
+      const marker = document.getElementById(`dpi-marker-${target}`);
+      
+      if (!img || !img.naturalWidth || !img.naturalHeight) return;
+
+      container.style.display = 'block';
+
+      const inchesW = state[target].targetCmW / 2.54;
+      const inchesH = state[target].targetCmH / 2.54;
+
+      const is90 = Math.abs(state[target].rotation % 180) === 90;
+      const imgW = is90 ? img.naturalHeight : img.naturalWidth;
+      const imgH = is90 ? img.naturalWidth : img.naturalHeight;
+
+      const dpiW = Math.round(imgW / inchesW);
+      const dpiH = Math.round(imgH / inchesH);
+      const dpi = Math.min(dpiW, dpiH);
+
+      badge.className = 'dpi-badge';
+
+      // Calculate position on visual bar:
+      // Red: 0 - 150 DPI (0% to 37.5%)
+      // Yellow: 150 - 300 DPI (37.5% to 75%)
+      // Green: 300 - 400+ DPI (75% to 100%)
+      let markerPos = 0;
+      if (dpi <= 150) {
+        markerPos = (dpi / 150) * 37.5;
+      } else if (dpi < 300) {
+        markerPos = 37.5 + ((dpi - 150) / 150) * 37.5;
+      } else {
+        const extra = Math.min(dpi - 300, 100);
+        markerPos = 75 + (extra / 100) * 25;
+      }
+      marker.style.left = `${Math.min(Math.max(markerPos, 2), 98)}%`;
+
+      if (dpi >= 300) {
+        badge.classList.add('green');
+        badge.innerHTML = `🟢 <b>${dpi} DPI</b> – Excellent (300+ DPI print standard)`;
+      } else if (dpi >= 150) {
+        badge.classList.add('yellow');
+        const percentageToGreen = Math.round((dpi / 300) * 100);
+        badge.innerHTML = `🟡 <b>${dpi} DPI</b> – Good (${percentageToGreen}% of ideal resolution)`;
+      } else {
+        badge.classList.add('red');
+        badge.innerHTML = `🔴 <b>${dpi} DPI</b> – Low quality (< 150 DPI may be blurry)`;
+      }
+    }
+
+    function loadFile(e, target) {
+      const file = e.target.files[0];
+      if (file) {
+        selectTab(target);
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const img = document.getElementById(`img-${target}`);
+          const ph = document.getElementById(`ph-${target}`);
+          img.src = event.target.result;
+          img.style.display = 'block';
+          ph.style.display = 'none';
+          img.onload = () => {
+            state[target].loaded = true;
+            resetTransforms();
+            fitImage();
+            calculateAndDisplayDPI(target);
+          };
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function applyTransforms() {
+      const img = document.getElementById(`img-${activeTarget}`);
+      const s = state[activeTarget];
+      img.style.transform = `translate(calc(-50% + ${s.x}px), calc(-50% + ${s.y}px)) rotate(${s.rotation}deg) scale(${s.scale * s.flipX}, ${s.scale})`;
+      updateControls();
+    }
+
+    function updateControls() {
+      const s = state[activeTarget];
+      const val = Math.round(s.scale * 100);
+      const slider = document.getElementById('zoomSlider');
+      const input = document.getElementById('zoomInput');
+      if (slider) slider.value = val;
+      if (input) input.value = val;
+      const flipBtn = document.getElementById('btn-flip');
+      if (flipBtn) {
+        if (s.flipX === -1) {
+          flipBtn.style.background = '#2563eb';
+          flipBtn.style.color = '#ffffff';
+        } else {
+          flipBtn.style.background = '#ffffff';
+          flipBtn.style.color = '#000000';
+        }
+      }
+    }
+    function toggleFlip() {
+      state[activeTarget].flipX = state[activeTarget].flipX === 1 ? -1 : 1;
+      applyTransforms();
+    }
+
+    function rotate(deg) { 
+      state[activeTarget].rotation = deg; 
+      applyTransforms(); 
+      calculateAndDisplayDPI(activeTarget);
+    }
+
+    function updateZoom(val) { state[activeTarget].scale = val / 100; applyTransforms(); }
+
+    function fitImage() {
+      const img = document.getElementById(`img-${activeTarget}`);
+      if (!img.naturalWidth) return;
+      const frame = document.getElementById(`frame-${activeTarget}`);
+      const is90 = Math.abs(state[activeTarget].rotation % 180) === 90;
+      const w = is90 ? img.naturalHeight : img.naturalWidth;
+      const h = is90 ? img.naturalWidth : img.naturalHeight;
+      state[activeTarget].scale = Math.max(frame.clientWidth / w, frame.clientHeight / h);
+      state[activeTarget].x = 0;
+      state[activeTarget].y = 0;
+      applyTransforms();
+    }
+
+    function resetTransforms() {
+      state[activeTarget].x = 0;
+      state[activeTarget].y = 0;
+      state[activeTarget].scale = 1;
+      state[activeTarget].rotation = 0;
+      state[activeTarget].flipX = 1;
+      applyTransforms();
+      calculateAndDisplayDPI(activeTarget);
+    }
+
+    ['back', 'front'].forEach(key => {
+      const frame = document.getElementById(`frame-${key}`);
+      let startX, startY, isDragging = false;
+
+      const handleStart = (e) => {
+        if (!state[key].loaded) return;
+        selectTab(key);
+        isDragging = true;
+        const touch = e.touches ? e.touches[0] : e;
+        startX = touch.clientX - state[key].x;
+        startY = touch.clientY - state[key].y;
+      };
+
+      const handleMove = (e) => {
+        if (!isDragging) return;
+        const touch = e.touches ? e.touches[0] : e;
+        state[key].x = touch.clientX - startX;
+        state[key].y = touch.clientY - startY;
+        applyTransforms();
+      };
+
+      const handleEnd = () => { isDragging = false; };
+
+      frame.addEventListener('touchstart', handleStart, { passive: true });
+      frame.addEventListener('touchmove', handleMove, { passive: true });
+      frame.addEventListener('touchend', handleEnd);
+      frame.addEventListener('mousedown', handleStart);
+      window.addEventListener('mousemove', handleMove);
+      window.addEventListener('mouseup', handleEnd);
+    });
+
+    function preparePrint() {
+      if (!state.back.loaded && !state.front.loaded) {
+        alert('Please select at least one image!');
+        return;
+      }
+
+      const drawGuidelines = document.getElementById('showGuidelines').checked;
+
+      function renderCanvas(key, targetW, targetH, isBack) {
+        if (!state[key].loaded) return null;
+        const canvas = document.getElementById(`canvas-${key}`);
+        const ctx = canvas.getContext('2d');
+        const img = document.getElementById(`img-${key}`);
+        const s = state[key];
+        const frame = document.getElementById(`frame-${key}`);
+
+        canvas.width = targetW;
+        canvas.height = targetH;
+        ctx.clearRect(0, 0, targetW, targetH);
+
+        const notchW = (2.5 / 15.1) * targetW;
+        const notchH = (0.3 / 11.9) * targetH;
+
+        ctx.save();
+        if (isBack) {
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
+          ctx.lineTo(targetW - notchW, 0);
+          ctx.lineTo(targetW - notchW, notchH);
+          ctx.lineTo(targetW, notchH);
+          ctx.lineTo(targetW, targetH - notchH);
+          ctx.lineTo(targetW - notchW, targetH - notchH);
+          ctx.lineTo(targetW - notchW, targetH);
+          ctx.lineTo(0, targetH);
+          ctx.closePath();
+          ctx.clip();
+        }
+
+        const scaleFactor = targetW / frame.clientWidth;
+        ctx.translate(targetW / 2 + s.x * scaleFactor, targetH / 2 + s.y * scaleFactor);
+        ctx.rotate((s.rotation * Math.PI) / 180);
+        ctx.scale(s.scale * s.flipX * scaleFactor, s.scale * scaleFactor);
+        ctx.drawImage(img, -img.naturalWidth / 2, -img.naturalHeight / 2);
+        ctx.restore();
+
+        if (drawGuidelines) {
+          ctx.save();
+          ctx.strokeStyle = '#94a3b8';
+          ctx.lineWidth = 3;
+
+          if (isBack) {
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(targetW - notchW, 0);
+            ctx.lineTo(targetW - notchW, notchH);
+            ctx.lineTo(targetW, notchH);
+            ctx.lineTo(targetW, targetH - notchH);
+            ctx.lineTo(targetW - notchW, targetH - notchH);
+            ctx.lineTo(targetW - notchW, targetH);
+            ctx.lineTo(0, targetH);
+            ctx.closePath();
+            ctx.stroke();
+          } else {
+            ctx.strokeRect(0, 0, targetW, targetH);
+          }
+          ctx.restore();
+        }
+
+        return canvas.toDataURL('image/png');
+      }
+
+      // Back Cover: 15,2 cm x 11,9 cm @ ~300 DPI = 1795 x 1406 px
+      const backData = renderCanvas('back', 1783, 1406, true);
+      // Front Cover: 12,1 cm x 12,1 cm @ ~300 DPI = 1429 x 1429 px
+      const frontData = renderCanvas('front', 1417, 1417, false);
+
+      const printBack = document.getElementById('print-img-back');
+      const printFront = document.getElementById('print-img-front');
+
+      if (backData) { printBack.src = backData; printBack.style.display = 'block'; }
+      else { printBack.style.display = 'none'; }
+
+      if (frontData) { printFront.src = frontData; printFront.style.display = 'block'; }
+      else { printFront.style.display = 'none'; }
+
+      document.getElementById('printScreen').style.display = 'block';
+    }
+
+    function closePrint() {
+      document.getElementById('printScreen').style.display = 'none';
+    }
+  </script>
+</body>
+</html>

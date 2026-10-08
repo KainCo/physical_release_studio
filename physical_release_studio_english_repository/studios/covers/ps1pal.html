@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>PlayStation 1 PAL Cover Print Studio</title>
+  <style>
+    :root {
+      --primary: #00439c;
+      --primary-hover: #00337a;
+      --success: #10b981;
+      --bg: #f4f6f9;
+      --card-bg: #ffffff;
+      --text: #1f2937;
+      --border: #d1d5db;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .ui-container {
+      width: 100%;
+      max-width: 850px;
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-size: 1.25rem;
+      margin-bottom: 4px;
+      color: #0f172a;
+    }
+
+    .sub-title {
+      font-size: 0.8rem;
+      color: #6b7280;
+      margin-bottom: 16px;
+    }
+
+    /* Toast Notification */
+    .toast-message {
+      display: none;
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #ef4444;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 0.9rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 10000;
+      transition: opacity 0.3s ease;
+    }
+
+    .upload-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 600px) {
+      .upload-cards { grid-template-columns: 1fr; }
+    }
+
+    .upload-card {
+      background: #f8fafc;
+      border: 2px dashed var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+      cursor: pointer;
+      position: relative;
+      transition: border-color 0.2s, background-color 0.2s;
+    }
+
+    .upload-card.active {
+      border-color: var(--primary);
+      background: #eff6ff;
+    }
+
+    .upload-card label {
+      display: block;
+      font-weight: bold;
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+      cursor: pointer;
+    }
+
+    .upload-card input[type="file"] {
+      width: 100%;
+      font-size: 0.8rem;
+    }
+
+    .dpi-container {
+      display: none;
+      margin-top: 10px;
+      text-align: left;
+    }
+
+    .dpi-badge {
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      text-align: center;
+      line-height: 1.3;
+      margin-bottom: 6px;
+    }
+
+    .dpi-badge.green {
+      background-color: #d1fae5;
+      color: #065f46;
+      border: 1px solid #10b981;
+    }
+
+    .dpi-badge.yellow {
+      background-color: #fef3c7;
+      color: #92400e;
+      border: 1px solid #f59e0b;
+    }
+
+    .dpi-badge.red {
+      background-color: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #ef4444;
+    }
+
+    .dpi-scale-wrapper {
+      position: relative;
+      width: 100%;
+      background: #e2e8f0;
+      height: 12px;
+      border-radius: 6px;
+      overflow: hidden;
+      display: flex;
+      border: 1px solid #cbd5e1;
+    }
+
+    .scale-segment {
+      height: 100%;
+    }
+
+    .scale-red { width: 37.5%; background: #ef4444; }
+    .scale-yellow { width: 37.5%; background: #f59e0b; }
+    .scale-green { width: 25%; background: #10b981; }
+
+    .scale-marker {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: #000;
+      border-radius: 2px;
+      transform: translateX(-50%);
+      box-shadow: 0 0 4px rgba(255,255,255,0.9);
+      transition: left 0.3s ease;
+    }
+
+    .scale-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.65rem;
+      color: #64748b;
+      margin-top: 3px;
+      font-weight: bold;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid var(--border);
+      background: #f3f4f6;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .controls-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      background: #f8fafc;
+      padding: 14px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .control-group label {
+      font-size: 0.75rem;
+      font-weight: bold;
+      color: #4b5563;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .btn-small {
+      padding: 6px 8px;
+      font-size: 0.75rem;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: white;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background 0.15s;
+    }
+
+    .btn-small:hover {
+      background: #f1f5f9;
+    }
+
+    .btn-print {
+      width: 100%;
+      background: var(--success);
+      color: white;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 8px;
+      box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
+      transition: background 0.2s;
+    }
+
+    .btn-print:hover {
+      background: #059669;
+    }
+
+    .zoom-input-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      width: 100%;
+    }
+
+    .zoom-text-input {
+      width: 75px;
+      padding: 5px 6px;
+      font-size: 0.85rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .preview-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+      width: 100%;
+      max-width: 850px;
+      background: #e2e8f0;
+      padding: 20px 10px;
+      border-radius: 12px;
+      overflow-x: auto;
+    }
+
+    .frame-container {
+      position: relative;
+      background: white;
+      border: 2px solid #94a3b8;
+      overflow: hidden;
+      touch-action: none;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+    }
+
+    /* Back Cover: 16.3cm x 12.2cm -> Ratio 1.336 -> 400px x 299px */
+    .frame-back {
+      width: 400px;
+      height: 299px;
+    }
+
+    /* Front Cover: 12.5cm x 12.7cm -> Ratio 0.984 -> 300px x 305px */
+    .frame-front {
+      width: 300px;
+      height: 305px;
+    }
+
+    .frame-container.active-target {
+      border: 3px solid var(--primary);
+      box-shadow: 0 0 0 3px rgba(0, 67, 156, 0.2);
+    }
+
+    .cover-img {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform-origin: center center;
+      pointer-events: none;
+    }
+
+    .placeholder {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 0.8rem;
+      color: #94a3b8;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    #printScreen {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: white;
+      z-index: 9999;
+      padding: 10px;
+      overflow: auto;
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      color: #374151;
+      cursor: pointer;
+    }
+
+    .checkbox-label input {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 0 !important;
+      }
+
+      html, body {
+        width: 100% !important;
+        height: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        background: white !important;
+      }
+
+      .ui-container, .preview-wrapper, canvas {
+        display: none !important;
+      }
+
+      .no-print {
+        display: none !important;
+      }
+
+      #printScreen {
+        display: block !important;
+        position: fixed !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
+        background: white !important;
+      }
+
+      .print-container {
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
+        gap: 0.8cm !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+      }
+
+      .print-container img {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+
+      #print-img-back {
+        width: 16.3cm !important;
+        height: 12.2cm !important;
+        max-width: 16.3cm !important;
+        max-height: 12.2cm !important;
+      }
+
+      #print-img-front {
+        width: 12.5cm !important;
+        height: 12.7cm !important;
+        max-width: 12.5cm !important;
+        max-height: 12.7cm !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="toast-message" class="toast-message"></div>
+
+  <div class="ui-container">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 8px;">
+      <h1>PlayStation 1 PAL Cover Print Studio</h1>
+      <a href="https://ko-fi.com" target="_blank" style="display: inline-flex; align-items: center; gap: 6px; background: #ff5e5b; color: white; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; box-shadow: 0 2px 5px rgba(255,94,91,0.3); transition: transform 0.2s;">
+        ☕ <span>Buy me a coffee</span>
+      </a>
+    </div>
+    <div class="sub-title">Back Cover: 16,3 × 12,2 cm | Front Cover: 12,5 × 12,7 cm</div>
+
+    <div class="upload-cards">
+      <div class="upload-card" id="card-back" onclick="selectTab('back')">
+        <label for="file-back">📷 Back Cover Bild</label>
+        <input type="file" id="file-back" accept="image/*" onchange="loadFile(event, 'back')">
+        
+        <div id="dpi-container-back" class="dpi-container">
+          <div id="dpi-badge-back" class="dpi-badge"></div>
+          <div class="dpi-scale-wrapper">
+            <div class="scale-segment scale-red"></div>
+            <div class="scale-segment scale-yellow"></div>
+            <div class="scale-segment scale-green"></div>
+            <div id="dpi-marker-back" class="scale-marker" style="left: 0%;"></div>
+          </div>
+          <div class="scale-labels">
+            <span>0</span>
+            <span>150 (Gut)</span>
+            <span>300 (Ideal)</span>
+            <span>400+</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="upload-card" id="card-front" onclick="selectTab('front')">
+        <label for="file-front">📷 Front Cover Bild</label>
+        <input type="file" id="file-front" accept="image/*" onchange="loadFile(event, 'front')">
+        
+        <div id="dpi-container-front" class="dpi-container">
+          <div id="dpi-badge-front" class="dpi-badge"></div>
+          <div class="dpi-scale-wrapper">
+            <div class="scale-segment scale-red"></div>
+            <div class="scale-segment scale-yellow"></div>
+            <div class="scale-segment scale-green"></div>
+            <div id="dpi-marker-front" class="scale-marker" style="left: 0%;"></div>
+          </div>
+          <div class="scale-labels">
+            <span>0</span>
+            <span>150 (Gut)</span>
+            <span>300 (Ideal)</span>
+            <span>400+</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" id="tab-back" onclick="selectTab('back')">Bearbeiten: Back Cover</button>
+      <button class="tab-btn" id="tab-front" onclick="selectTab('front')">Bearbeiten: Front Cover</button>
+    </div>
+
+    <div class="controls-grid">
+      <div class="control-group" style="min-width: 220px;">
+        <label>Drehung & Spiegelung</label>
+        <div class="btn-row">
+          <button class="btn-small" onclick="rotate(0)">0°</button>
+          <button class="btn-small" onclick="rotate(-90)">-90°</button>
+          <button class="btn-small" onclick="rotate(90)">+90°</button>
+          <button class="btn-small" onclick="rotate(180)">180°</button>
+          <button class="btn-small" id="btn-flip" onclick="toggleFlip()">↔️ Spiegeln</button>
+        </div>
+      </div>
+
+      <div class="control-group" style="min-width: 260px;">
+        <label for="zoomInput">Granularer Zoom (%)</label>
+        <div class="zoom-input-wrapper">
+          <input type="range" id="zoomSlider" min="10" max="300" step="0.1" value="100" style="flex: 1;" oninput="onZoomSliderChange(this.value)">
+          <input type="text" id="zoomInput" value="100" class="zoom-text-input" oninput="onZoomTextChange(this.value)" placeholder="100">
+          <span style="font-weight: bold; font-size: 0.85rem;">%</span>
+        </div>
+        <div class="btn-row" style="margin-top: 6px;">
+          <button class="btn-small" onclick="stepZoom(-1)">-1%</button>
+          <button class="btn-small" onclick="stepZoom(-0.1)">-0.1%</button>
+          <button class="btn-small" onclick="stepZoom(0.1)">+0.1%</button>
+          <button class="btn-small" onclick="stepZoom(1)">+1%</button>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label>Ausrichtung</label>
+        <div class="btn-row">
+          <button class="btn-small" onclick="fitImage()">Einpassen</button>
+          <button class="btn-small" onclick="resetTransforms()">Zurücksetzen</button>
+        </div>
+      </div>
+
+      <div class="control-group" style="grid-column: span 2;">
+        <label>Druckoptionen</label>
+        <label class="checkbox-label">
+          <input type="checkbox" id="showGuidelines" checked>
+          Schnittmarken / Hilfslinien drucken
+        </label>
+      </div>
+    </div>
+
+    <button class="btn-print" onclick="preparePrint()">🖨️ Beide Drucken / als PDF speichern</button>
+  </div>
+
+  <div class="preview-wrapper">
+    <div>
+      <div style="font-size: 0.8rem; font-weight: bold; margin-bottom: 4px; text-align: center;">Back Cover (16,3 × 12,2 cm)</div>
+      <div class="frame-container frame-back active-target" id="frame-back" onclick="selectTab('back')">
+        <div class="placeholder" id="ph-back">Datei oben auswählen</div>
+        <img id="img-back" class="cover-img" style="display:none;" alt="Back">
+      </div>
+    </div>
+
+    <div>
+      <div style="font-size: 0.8rem; font-weight: bold; margin-bottom: 4px; text-align: center;">Front Cover (12,5 × 12,7 cm)</div>
+      <div class="frame-container frame-front" id="frame-front" onclick="selectTab('front')">
+        <div class="placeholder" id="ph-front">Datei oben auswählen</div>
+        <img id="img-front" class="cover-img" style="display:none;" alt="Front">
+      </div>
+    </div>
+  </div>
+
+  <div id="printScreen">
+    <div style="padding: 10px; text-align: center; background: #f3f4f6; margin-bottom: 10px; border-radius: 8px;" class="no-print">
+      <button onclick="window.print()" style="padding: 10px 20px; background: #10b981; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">Jetzt Drucken / PDF speichern</button>
+      <div style="margin-top: 10px; padding: 8px; background: #fff; border-radius: 6px; border: 1px solid #e5e7eb; font-size: 0.8rem; color: #4b5563;">
+        ☕ <b>Hat dir diese Druckvorlage geholfen?</b> Unterstütze die Entwicklung weiterer Retro-Studios auf <a href="https://ko-fi.com" target="_blank" style="color: #ff5e5b; font-weight: bold; text-decoration: none;">Ko-fi</a>!
+      </div>
+      <button onclick="closePrint()" style="padding: 10px 20px; background: #6b7280; color: white; border: none; border-radius: 6px; margin-left: 10px; cursor: pointer;">Schließen</button>
+    </div>
+    <div class="print-container">
+      <img id="print-img-back" alt="Print Back Cover" style="width: 16.3cm; height: 12.2cm; object-fit: contain; display: none;">
+      <img id="print-img-front" alt="Print Front Cover" style="width: 12.5cm; height: 12.7cm; object-fit: contain; display: none;">
+    </div>
+  </div>
+
+  <canvas id="canvas-back" style="display:none;"></canvas>
+  <canvas id="canvas-front" style="display:none;"></canvas>
+
+  <script>
+    let activeTarget = 'back';
+
+    const state = {
+      back: { x: 0, y: 0, scale: 1.0, rotation: 0, flipX: 1, loaded: false, targetCmW: 16.3, targetCmH: 12.2 },
+      front: { x: 0, y: 0, scale: 1.0, rotation: 0, flipX: 1, loaded: false, targetCmW: 12.5, targetCmH: 12.7 }
+    };
+
+    function showAlert(message) {
+      const toast = document.getElementById('toast-message');
+      if (toast) {
+        toast.textContent = message;
+        toast.style.display = 'block';
+        setTimeout(() => {
+          toast.style.display = 'none';
+        }, 3500);
+      }
+    }
+
+    function selectTab(target) {
+      activeTarget = target;
+      document.getElementById('tab-back').classList.toggle('active', target === 'back');
+      document.getElementById('tab-front').classList.toggle('active', target === 'front');
+      document.getElementById('card-back').classList.toggle('active', target === 'back');
+      document.getElementById('card-front').classList.toggle('active', target === 'front');
+      document.getElementById('frame-back').classList.toggle('active-target', target === 'back');
+      document.getElementById('frame-front').classList.toggle('active-target', target === 'front');
+      updateControls();
+    }
+
+    function calculateAndDisplayDPI(target) {
+      const img = document.getElementById(`img-${target}`);
+      const container = document.getElementById(`dpi-container-${target}`);
+      const badge = document.getElementById(`dpi-badge-${target}`);
+      const marker = document.getElementById(`dpi-marker-${target}`);
+      
+      if (!img || !img.naturalWidth || !img.naturalHeight) {
+        return;
+      }
+
+      container.style.display = 'block';
+
+      const inchesW = state[target].targetCmW / 2.54;
+      const inchesH = state[target].targetCmH / 2.54;
+
+      const is90 = Math.abs(state[target].rotation % 180) === 90;
+      const imgW = is90 ? img.naturalHeight : img.naturalWidth;
+      const imgH = is90 ? img.naturalWidth : img.naturalHeight;
+
+      const dpiW = Math.round(imgW / inchesW);
+      const dpiH = Math.round(imgH / inchesH);
+      const dpi = Math.min(dpiW, dpiH);
+
+      badge.className = 'dpi-badge';
+
+      let markerPos = 0;
+      if (dpi <= 150) {
+        markerPos = (dpi / 150) * 37.5;
+      } else if (dpi < 300) {
+        markerPos = 37.5 + ((dpi - 150) / 150) * 37.5;
+      } else {
+        const extra = Math.min(dpi - 300, 100);
+        markerPos = 75 + (extra / 100) * 25;
+      }
+      marker.style.left = `${Math.min(Math.max(markerPos, 2), 98)}%`;
+
+      if (dpi >= 300) {
+        badge.classList.add('green');
+        badge.innerHTML = `🟢 <b>${dpi} DPI</b> – Exzellent (300+ DPI Druckstandard)`;
+      } else if (dpi >= 150) {
+        badge.classList.add('yellow');
+        const percentageToGreen = Math.round((dpi / 300) * 100);
+        badge.innerHTML = `🟡 <b>${dpi} DPI</b> – Gut (${percentageToGreen}% der idealen Auflösung)`;
+      } else {
+        badge.classList.add('red');
+        badge.innerHTML = `🔴 <b>${dpi} DPI</b> – Niedrige Qualität (&lt; 150 DPI kann unscharf werden)`;
+      }
+    }
+
+    function loadFile(e, target) {
+      const file = e.target.files[0];
+      if (file) {
+        selectTab(target);
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const img = document.getElementById(`img-${target}`);
+          const ph = document.getElementById(`ph-${target}`);
+          img.src = event.target.result;
+          img.style.display = 'block';
+          ph.style.display = 'none';
+          img.onload = () => {
+            state[target].loaded = true;
+            resetTransforms();
+            fitImage();
+            calculateAndDisplayDPI(target);
+          };
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function applyTransforms() {
+      const img = document.getElementById(`img-${activeTarget}`);
+      if (!img) return;
+      const s = state[activeTarget];
+      img.style.transform = `translate(calc(-50% + ${s.x}px), calc(-50% + ${s.y}px)) rotate(${s.rotation}deg) scale(${s.scale * s.flipX}, ${s.scale})`;
+      updateControls();
+    }
+
+    function updateControls() {
+      const s = state[activeTarget];
+      const zoomPercentage = parseFloat((s.scale * 100).toFixed(1));
+      
+      const slider = document.getElementById('zoomSlider');
+      const input = document.getElementById('zoomInput');
+      
+      if (slider) {
+        slider.value = zoomPercentage;
+      }
+      
+      if (input && document.activeElement !== input) {
+        input.value = zoomPercentage.toString().replace('.', ',');
+      }
+
+      const flipBtn = document.getElementById('btn-flip');
+      if (flipBtn) {
+        if (s.flipX === -1) {
+          flipBtn.style.background = '#00439c';
+          flipBtn.style.color = '#ffffff';
+        } else {
+          flipBtn.style.background = '#ffffff';
+          flipBtn.style.color = '#000000';
+        }
+      }
+    }
+
+    function onZoomSliderChange(val) {
+      const floatVal = parseFloat(val);
+      if (!isNaN(floatVal)) {
+        state[activeTarget].scale = floatVal / 100;
+        applyTransforms();
+      }
+    }
+
+    function onZoomTextChange(rawVal) {
+      if (!rawVal) return;
+      const normalized = rawVal.replace(',', '.');
+      const floatVal = parseFloat(normalized);
+      if (!isNaN(floatVal) && floatVal > 0) {
+        state[activeTarget].scale = floatVal / 100;
+        applyTransforms();
+      }
+    }
+
+    function stepZoom(deltaPercent) {
+      let currentVal = state[activeTarget].scale * 100;
+      currentVal = Math.max(1, Math.min(500, currentVal + deltaPercent));
+      state[activeTarget].scale = parseFloat((currentVal / 100).toFixed(3));
+      applyTransforms();
+    }
+
+    function toggleFlip() {
+      state[activeTarget].flipX = state[activeTarget].flipX === 1 ? -1 : 1;
+      applyTransforms();
+    }
+
+    function rotate(deg) { 
+      state[activeTarget].rotation = deg; 
+      applyTransforms(); 
+      calculateAndDisplayDPI(activeTarget);
+    }
+
+    function fitImage() {
+      const img = document.getElementById(`img-${activeTarget}`);
+      if (!img || !img.naturalWidth) return;
+      const frame = document.getElementById(`frame-${activeTarget}`);
+      const is90 = Math.abs(state[activeTarget].rotation % 180) === 90;
+      const w = is90 ? img.naturalHeight : img.naturalWidth;
+      const h = is90 ? img.naturalWidth : img.naturalHeight;
+      const calculatedScale = Math.max(frame.clientWidth / w, frame.clientHeight / h);
+      state[activeTarget].scale = parseFloat(calculatedScale.toFixed(3));
+      state[activeTarget].x = 0;
+      state[activeTarget].y = 0;
+      applyTransforms();
+    }
+
+    function resetTransforms() {
+      state[activeTarget].x = 0;
+      state[activeTarget].y = 0;
+      state[activeTarget].scale = 1.0;
+      state[activeTarget].rotation = 0;
+      state[activeTarget].flipX = 1;
+      applyTransforms();
+      calculateAndDisplayDPI(activeTarget);
+    }
+
+    ['back', 'front'].forEach(key => {
+      const frame = document.getElementById(`frame-${key}`);
+      if (!frame) return;
+      let startX = 0;
+      let startY = 0;
+      let isDragging = false;
+
+      const handleStart = (e) => {
+        if (!state[key].loaded) return;
+        selectTab(key);
+        isDragging = true;
+        const touch = e.touches ? e.touches[0] : e;
+        startX = touch.clientX - state[key].x;
+        startY = touch.clientY - state[key].y;
+      };
+
+      const handleMove = (e) => {
+        if (!isDragging) return;
+        const touch = e.touches ? e.touches[0] : e;
+        state[key].x = touch.clientX - startX;
+        state[key].y = touch.clientY - startY;
+        applyTransforms();
+      };
+
+      const handleEnd = () => {
+        isDragging = false;
+      };
+
+      frame.addEventListener('touchstart', handleStart, { passive: true });
+      frame.addEventListener('touchmove', handleMove, { passive: true });
+      frame.addEventListener('touchend', handleEnd);
+      frame.addEventListener('mousedown', handleStart);
+      window.addEventListener('mousemove', handleMove);
+      window.addEventListener('mouseup', handleEnd);
+    });
+
+    function preparePrint() {
+      if (!state.back.loaded && !state.front.loaded) {
+        showAlert('Bitte wähle mindestens ein Bild aus!');
+        return;
+      }
+
+      const drawGuidelines = document.getElementById('showGuidelines').checked;
+
+      function renderCanvas(key, targetW, targetH) {
+        if (!state[key].loaded) return null;
+        const canvas = document.getElementById(`canvas-${key}`);
+        const ctx = canvas.getContext('2d');
+        const img = document.getElementById(`img-${key}`);
+        const s = state[key];
+        const frame = document.getElementById(`frame-${key}`);
+
+        canvas.width = targetW;
+        canvas.height = targetH;
+        ctx.clearRect(0, 0, targetW, targetH);
+
+        const scaleFactor = targetW / frame.clientWidth;
+        ctx.save();
+        ctx.translate(targetW / 2 + s.x * scaleFactor, targetH / 2 + s.y * scaleFactor);
+        ctx.rotate((s.rotation * Math.PI) / 180);
+        ctx.scale(s.scale * s.flipX * scaleFactor, s.scale * scaleFactor);
+        ctx.drawImage(img, -img.naturalWidth / 2, -img.naturalHeight / 2);
+        ctx.restore();
+
+        if (drawGuidelines) {
+          ctx.save();
+          ctx.strokeStyle = '#94a3b8';
+          ctx.lineWidth = 3;
+          ctx.strokeRect(0, 0, targetW, targetH);
+          ctx.restore();
+        }
+
+        return canvas.toDataURL('image/png');
+      }
+
+      // 300 DPI Rendering Dimensions
+      const backData = renderCanvas('back', 1925, 1441);
+      const frontData = renderCanvas('front', 1476, 1500);
+
+      const printBack = document.getElementById('print-img-back');
+      const printFront = document.getElementById('print-img-front');
+
+      if (backData) {
+        printBack.src = backData;
+        printBack.style.display = 'block';
+      } else {
+        printBack.style.display = 'none';
+      }
+
+      if (frontData) {
+        printFront.src = frontData;
+        printFront.style.display = 'block';
+      } else {
+        printFront.style.display = 'none';
+      }
+
+      document.getElementById('printScreen').style.display = 'block';
+    }
+
+    function closePrint() {
+      document.getElementById('printScreen').style.display = 'none';
+    }
+  </script>
+</body>
+</html>
