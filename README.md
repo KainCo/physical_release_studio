@@ -4,8 +4,8 @@
 </p>
 
 <p align="center">
-▶⁠ Physical Release Studio 
-Web-based Retro Game Packaging Suite
+▶⁠ Physical Release Studio <br>
+Web-based Retro Game Packaging Suite </br>
 
   <b>Preserving Video Game History — One Physical Release at a Time.</b><br>
   An open-source, web-based suite of precision print layout tools for custom game covers, manuals, labels, big boxes, and auto-launchers.
