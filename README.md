@@ -1,14 +1,10 @@
-
-
 <p align="center">
   <img src="Code_Generated_Image.png" alt="Physical Release Studio Logo" width="280">
 </p>
 
 <p align="center">
-▶⁠ Physical Release Studio <br>
-Web-based Retro Game Packaging Suite </br>
-<p align="center">
-  
+  <b>▶ Physical Release Studio</b><br>
+  <b>Web-based Retro Game Packaging Suite</b><br><br>
   <b>Preserving Video Game History — One Physical Release at a Time.</b><br>
   An open-source, web-based suite of precision print layout tools for custom game covers, manuals, labels, big boxes, and auto-launchers.
 </p>
@@ -73,19 +69,17 @@ Whether you are restoring original cases from damaged secondhand finds, creating
 
 ---
 
-🖨️ Recommended Print Settings
+## 🖨️ Recommended Print Settings
 
 For optimal physical results:
 
-    * Paper: Premium matte or semi-glossy photo paper (130–150 max.200 g/m² for covers; 250–350 g/m² duplex board for craft boxes).
+- **Paper:** Premium matte or semi-glossy photo paper (130–150 g/m², max. 200 g/m² for covers; 250–350 g/m² duplex board for craft boxes).
+- **Printer Settings:** Set scaling to **100% / Actual Size** (do NOT use "Fit to Printable Area").
+- **Paper Source:** Rear feed / Photo tray recommended to avoid thick paper feeding issues.
 
-    * Printer Settings: Set scaling to 100% / Actual Size (do NOT use "Fit to Printable Area").
-
-    * Paper Source: Rear feed / Photo tray recommended to avoid thick paper feeding issues.
-    
 ---
 
-☕ Support the Project
+## ☕ Support the Project
 
 If you enjoy **Physical Release Studio**, if it saved you time, or helped bring your custom game collection to life, a donation to help cover ongoing maintenance and server costs is greatly appreciated:
 
@@ -100,18 +94,18 @@ If you enjoy **Physical Release Studio**, if it saved you time, or helped bring 
 
 ---
 
-🤝 Contributing
+## 🤝 Contributing
 
 Contributions are very welcome!
 
-    * Open a Pull Request
+- Open a Pull Request
 
 ---
 
-📜 License
+## 📜 License
 
-Distributed under the GNU General Public License v3.0 (GPLv3).
+Distributed under the **GNU General Public License v3.0** (GPLv3).
 
 This guarantees that Physical Release Studio remains free and open-source software forever. Anyone modifying or redistributing this software must also release their modifications under the GPLv3 license with full source code access.
 
-See the LICENSE file for the full license text.
+See the [`LICENSE`](LICENSE) file for the full license text.
