@@ -106,9 +106,13 @@ Contributions are very welcome!
 
 Distributed under the **GNU General Public License v3.0** (GPLv3).
 
-This guarantees that Physical Release Studio remains free and open-source software forever. Anyone modifying or redistributing this software must also release their modifications under the GPLv3 license with full source code access.
+Copyright (c) 2026 **Salvatore Cocozza (KainCo)**.
+
+This guarantees that Physical Release Studio remains free and open-source software forever. Anyone modifying or redistributing this software must retain original copyright notices and release their modifications under the GPLv3 license with full source code access.
 
 See the [`LICENSE`](LICENSE) file for the full license text.
+
+---
 
 ## ⚠️ Disclaimer
 
@@ -122,8 +126,5 @@ Physical Release Studio is an open-source layout utility designed for game prese
 
 <p align="center">
   Made with ❤️ for physical media collectors, homebrew developers, and retro gaming enthusiasts.<br>
-  <a href="https://kainc0.github.io/Impressum/" target="_blank">Impressum / Legal Notice</a>
+  <a href="https://kainc0.github.io/Impressum/" target="_blank"><b>Legal Notice / Impressum</b></a>
 </p>
-
-Copyright (c) 2026 Salvatore Cocozza (KainCo)⁠
-
