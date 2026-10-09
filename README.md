@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="Code_Generated_Image.png" alt="Physical Release Studio Logo" width="280">
+  <img src="Logo.svg" alt="Physical Release Studio Logo" width="280">
 </p>
 
 <p align="center">
