@@ -109,3 +109,18 @@ Distributed under the **GNU General Public License v3.0** (GPLv3).
 This guarantees that Physical Release Studio remains free and open-source software forever. Anyone modifying or redistributing this software must also release their modifications under the GPLv3 license with full source code access.
 
 See the [`LICENSE`](LICENSE) file for the full license text.
+
+## ⚠️ Disclaimer
+
+Physical Release Studio is an open-source layout utility designed for game preservation, custom homebrew releases, and display restoration. 
+
+- This project does **not** host, distribute, or bundle any copyrighted game artwork, logos, or ROMs.
+- Users are solely responsible for ensuring they have the legal right or license to use any third-party image assets uploaded to the studio.
+- All trademarks and brand names belong to their respective owners.
+
+---
+
+<p align="center">
+  Made with ❤️ for physical media collectors, homebrew developers, and retro gaming enthusiasts.<br>
+  <a href="https://kainc0.github.io/Impressum/" target="_blank">Impressum / Legal Notice</a>
+</p>
