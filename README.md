@@ -124,3 +124,6 @@ Physical Release Studio is an open-source layout utility designed for game prese
   Made with ❤️ for physical media collectors, homebrew developers, and retro gaming enthusiasts.<br>
   <a href="https://kainc0.github.io/Impressum/" target="_blank">Impressum / Legal Notice</a>
 </p>
+
+Copyright (c) 2026 Salvatore Cocozza (KainCo)⁠
+
