@@ -72,3 +72,46 @@ Whether you are restoring original cases from damaged secondhand finds, creating
 - **Materials & Affiliate Hub:** Recommended paper types (photopaper GSM specs), cutting tools, adhesive supplies, and replacement case sources.
 
 ---
+
+🖨️ Recommended Print Settings
+
+For optimal physical results:
+
+    * Paper: Premium matte or semi-glossy photo paper (130–150 max.200 g/m² for covers; 250–350 g/m² duplex board for craft boxes).
+
+    * Printer Settings: Set scaling to 100% / Actual Size (do NOT use "Fit to Printable Area").
+
+    * Paper Source: Rear feed / Photo tray recommended to avoid thick paper feeding issues.
+    
+---
+
+☕ Support the Project
+
+If you enjoy **Physical Release Studio**, if it saved you time, or helped bring your custom game collection to life, a donation to help cover ongoing maintenance and server costs is greatly appreciated:
+
+<p align="left">
+  <a href="https://paypal.me/kainco" target="_blank">
+    <img src="https://img.shields.io/badge/PayPal-Donate-00457C?style=for-the-badge&logo=paypal&logoColor=white" alt="PayPal.me">
+  </a>
+  <a href="https://ko-fi.com/kainco" target="_blank">
+    <img src="https://img.shields.io/badge/Ko--fi-Buy%20me%20a%20coffee-ff5e5b?style=for-the-badge&logo=ko-fi&logoColor=white" alt="Ko-fi">
+  </a>
+</p>
+
+---
+
+🤝 Contributing
+
+Contributions are very welcome!
+
+    * Open a Pull Request
+
+---
+
+📜 License
+
+Distributed under the GNU General Public License v3.0 (GPLv3).
+
+This guarantees that Physical Release Studio remains free and open-source software forever. Anyone modifying or redistributing this software must also release their modifications under the GPLv3 license with full source code access.
+
+See the LICENSE file for the full license text.
