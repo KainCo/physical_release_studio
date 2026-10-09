@@ -106,7 +106,7 @@ Contributions are very welcome!
 
 Distributed under the **GNU General Public License v3.0** (GPLv3).
 
-Copyright (c) 2026 &#83;&#97;&#108;&#118;&#97;&#116;&#111;&#114;&#101;&#32;&#67;&#111;&#99;&#111;&#122;&#120;&#97;&#32;(aka KainCo)
+Copyright (c) 2026 &#83;&#97;&#108;&#118;&#97;&#116;&#111;&#114;&#101;&#32;&#67;&#111;&#99;&#111;&#122;&#120;&#120;&#32;(aka KainCo)
 
 This guarantees that Physical Release Studio remains free and open-source software forever. Anyone modifying or redistributing this software must retain original copyright notices and release their modifications under the GPLv3 license with full source code access.
 
