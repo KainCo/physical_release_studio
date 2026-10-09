@@ -1,4 +1,6 @@
-▶⁠ Physical Release Studio - Web-based Retro Game Packaging Suite
+   ▶⁠ Physical Release Studio 
+
+Web-based Retro Game Packaging Suite
 
 <p align="center">
   <img src="Code_Generated_Image.png" alt="Physical Release Studio Logo" width="280">
