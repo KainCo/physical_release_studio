@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 60" width="320" height="60">
+  <defs>
+    <linearGradient id="brandGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563eb" />
+      <stop offset="50%" stop-color="#a855f7" />
+      <stop offset="100%" stop-color="#ec4899" />
+    </linearGradient>
+  </defs>
+
+  <!-- Hintergrund (Optional, dunkel wie im Hub) -->
+  <rect width="100%" height="100%" fill="#090d16" rx="8" />
+
+  <!-- Icon Box mit Farbverlauf-Rahmen -->
+  <g transform="translate(10, 10)">
+    <rect x="0" y="0" width="40" height="40" rx="10" fill="url(#brandGrad)" />
+    <rect x="1.5" y="1.5" width="37" height="37" rx="8.5" fill="#090d16" />
+    <!-- Kompakt-Disc Icon -->
+    <g transform="translate(8, 8) scale(0.065)" fill="#3b82f6">
+      <path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 376c-70.7 0-128-57.3-128-128s57.3-128 128-128 128 57.3 128 128-57.3 128-128 128z"/>
+      <path d="M256 184c-39.8 0-72 32.2-72 72s32.2 72 72 72 72-32.2 72-72-32.2-72-72-72zm0 96c-13.3 0-24-10.7-24-24s10.7-24 24-24 24 10.7 24 24-10.7 24-24 24z"/>
+    </g>
+  </g>
+
+  <!-- Text-Bereich -->
+  <text x="62" y="30" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="800" font-size="18" fill="#ffffff" letter-spacing="0.5">PHYSICAL RELEASE</text>
+  <text x="62" y="46" font-family="'JetBrains Mono', monospace" font-weight="700" font-size="10" fill="#3b82f6" letter-spacing="3">STUDIO HUB</text>
+</svg>
