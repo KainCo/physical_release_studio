@@ -1,8 +1,3 @@
-
-<p align="center">
-  <img src="Code_Generated_Image.png" alt="Physical Release Studio Logo" width="280">
-</p>
-
 <p align="center">
 ▶⁠ Physical Release Studio <br>
 Web-based Retro Game Packaging Suite </br>
@@ -25,10 +20,10 @@ Web-based Retro Game Packaging Suite </br>
 
 <p align="center">
   <a href="https://paypal.me/kainco" target="_blank">
-    <img src="https://img.shields.io/badge/PayPal-Spenden-00457C?style=for-the-badge&logo=paypal&logoColor=white" alt="PayPal.me">
+    <img src="https://img.shields.io/badge/PayPal-Donate-00457C?style=for-the-badge&logo=paypal&logoColor=white" alt="PayPal.me">
   </a>
   <a href="https://ko-fi.com/kainco" target="_blank">
-    <img src="https://img.shields.io/badge/Ko--fi-Kaffee%20spendieren-ff5e5b?style=for-the-badge&logo=ko-fi&logoColor=white" alt="Ko-fi">
+    <img src="https://img.shields.io/badge/Ko--fi-Buy%20me%20a%20coffee-ff5e5b?style=for-the-badge&logo=ko-fi&logoColor=white" alt="Ko-fi">
   </a>
 </p>
 
