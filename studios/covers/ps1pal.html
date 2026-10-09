@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Physical Release Studio — PlayStation 1 PAL Cover Studio</title>
-  
+
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
@@ -473,7 +473,7 @@
 <body>
 
   <header>
-    <a href="../../index.html" class="btn-index">
+    <a href="../index.html" class="btn-index">
       <i class="fa-solid fa-arrow-left"></i>
       <span data-i18n="nav_index">Back to Overview</span>
     </a>
@@ -482,7 +482,7 @@
       <i class="fa-solid fa-compact-disc"></i>
       <div>
         <div style="font-weight: 800; font-size: 1rem;">PHYSICAL RELEASE</div>
-        <div style="font-size: 0.7rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">PlayStation 1 PAL Cover Studio</div>
+        <div style="font-size: 0.7rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">PlayStation 1 PAL Cover Studio <p>&copy; 2026 Kainco. All rights reserved.</p></div>
       </div>
     </a>
 
@@ -491,8 +491,18 @@
         <button id="lang-en" onclick="setLanguage('en')" class="lang-btn active">EN</button>
         <button id="lang-de" onclick="setLanguage('de')" class="lang-btn">DE</button>
       </div>
-      <a href="https://ko-fi.com/kainco" target="_blank" style="background: #ff5e5b; color: white; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none;">☕ Support</a>
-    </div>
+	
+	     <!-- PayPal Button mit dynamischem Text via data-i18n -->
+    <a href="https://paypal.me/kainco" target="_blank" rel="noopener noreferrer" 
+       style="background: #0070ba; color: white; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
+      <i class="fa-brands fa-paypal"></i> <span data-i18n="btn_donation">Spende</span>
+    </a>
+	   <!-- Ko-Fi Button -->
+    <a href="https://ko-fi.com/kainco" target="_blank" rel="noopener noreferrer" 
+       style="background: #ff5e5b; color: white; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
+      <i class="fa-solid fa-mug-hot"></i> Support
+    </a>
+  </div>
   </header>
 
   <div class="ui-container">
@@ -662,6 +672,7 @@
         lbl_alignment: "Alignment & Print",
         btn_fit: "Fit",
         btn_reset: "Reset",
+		btn_donation: "Donation",
         opt_crop_marks: "Print crop marks / guidelines",
         btn_print_both: "🖨️ Print Both / Save as PDF",
         ph_select_back: "Select back cover file above",
@@ -678,6 +689,7 @@
         lbl_alignment: "Ausrichtung & Druck",
         btn_fit: "Einpassen",
         btn_reset: "Zurücksetzen",
+		btn_donation: "Spenden",
         opt_crop_marks: "Schnittmarken drucken",
         btn_print_both: "🖨️ Beide drucken / Als PDF speichern",
         ph_select_back: "Wähle oben eine Datei für die Rückseite",
