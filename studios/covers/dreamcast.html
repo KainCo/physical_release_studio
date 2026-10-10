@@ -305,7 +305,6 @@
       border-color: var(--brand);
     }
 
-    /* Position Nudge Pad Grid */
     .nudge-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -367,7 +366,6 @@
       touch-action: none;
     }
 
-    /* Cover Maße in Pixeln für Preview */
     .frame-back { width: 378px; height: 298px; }
     .frame-front { width: 300px; height: 300px; }
 
@@ -428,12 +426,9 @@
       overflow: auto;
     }
 
-    /* ==========================================================================
-       OPTIMIERTER A4 HOCHKANT DRUCK-BLOCK (PORTRAIT - EXAKTE ECHTE MASSEN)
-       ========================================================================== */
     @media print {
       @page {
-        size: A4 portrait; /* A4 Hochkant: 210mm B x 297mm H */
+        size: A4 portrait;
         margin: 0mm !important;
       }
 
@@ -467,10 +462,10 @@
 
       .print-container {
         display: flex !important;
-        flex-direction: column !important; /* Untereinander platzieren */
+        flex-direction: column !important;
         justify-content: center !important;
         align-items: center !important;
-        gap: 8mm !important; /* 8mm Schnittabstand */
+        gap: 8mm !important;
         width: 210mm !important;
         height: 297mm !important;
         margin: 0 auto !important;
@@ -480,7 +475,6 @@
         break-inside: avoid !important;
       }
 
-      /* Keinerlei Skalierung erzwingen - Exakte Originalmaße renderbar! */
       .print-container img {
         display: block !important;
         max-width: none !important;
@@ -513,13 +507,11 @@
       <button id="lang-de" onclick="setLanguage('de')" class="lang-btn">DE</button>
     </div>
     
-    <!-- PayPal Button mit dynamischem Text via data-i18n -->
     <a href="https://paypal.me/kainco" target="_blank" rel="noopener noreferrer" 
        style="background: #0070ba; color: white; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
       <i class="fa-brands fa-paypal"></i> <span data-i18n="btn_donation">Spende</span>
     </a>
 
-    <!-- Ko-Fi Button -->
     <a href="https://ko-fi.com/kainco" target="_blank" rel="noopener noreferrer" 
        style="background: #ff5e5b; color: white; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
       <i class="fa-solid fa-mug-hot"></i> Support
@@ -608,7 +600,7 @@
         </div>
       </div>
 
-      <!-- Position Nudge Pad (Pfeiltasten) -->
+      <!-- Position Nudge Pad -->
       <div class="control-group">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
           <label style="margin: 0;">Nudge Position</label>
@@ -670,13 +662,24 @@
     </div>
   </div>
 
+  <!-- Druckfenster / Druckvorschau -->
   <div id="printScreen">
-    <div style="padding: 10px; text-align: center; background: #f3f4f6; margin-bottom: 10px; border-radius: 8px;" class="no-print">
+    <div style="padding: 10px; text-align: center; background: #f3f4f6; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap;" class="no-print">
       <button onclick="window.print()" style="padding: 10px 20px; background: #10b981; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">Print Now / Save PDF</button>
-      <button onclick="closePrint()" style="padding: 10px 20px; background: #6b7280; color: white; border: none; border-radius: 6px; margin-left: 10px; cursor: pointer;">Close</button>
+      
+      <!-- HIER NEU IN DER DRUCKANSICHT: PayPal & Ko-Fi Spenden-Buttons -->
+      <a href="https://paypal.me/kainco" target="_blank" rel="noopener noreferrer" 
+         style="background: #0070ba; color: white; padding: 8px 14px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
+        <i class="fa-brands fa-paypal"></i> <span data-i18n="btn_donation">Spende</span>
+      </a>
+      <a href="https://ko-fi.com/kainco" target="_blank" rel="noopener noreferrer" 
+         style="background: #ff5e5b; color: white; padding: 8px 14px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
+        <i class="fa-solid fa-mug-hot"></i> Support
+      </a>
+
+      <button onclick="closePrint()" style="padding: 10px 20px; background: #6b7280; color: white; border: none; border-radius: 6px; cursor: pointer;">Close</button>
     </div>
     <div class="print-container">
-      <!-- Exakte Originalmaße in mm zugewiesen -->
       <img id="print-img-back" style="width: 151mm; height: 119mm; object-fit: contain; display: none;">
       <img id="print-img-front" style="width: 120mm; height: 120mm; object-fit: contain; display: none;">
     </div>
@@ -698,7 +701,7 @@
         lbl_alignment: "Alignment & Print",
         btn_fit: "Fit",
         btn_reset: "Reset",
-		btn_donation: "Donation",
+        btn_donation: "Donation",
         opt_crop_marks: "Print crop marks / guidelines",
         btn_print_both: "🖨️ Print Both / Save as PDF",
         ph_select_back: "Select back cover file above",
@@ -715,7 +718,7 @@
         lbl_alignment: "Ausrichtung & Druck",
         btn_fit: "Einpassen",
         btn_reset: "Zurücksetzen",
-		btn_donation: "Spende",
+        btn_donation: "Spende",
         opt_crop_marks: "Schnittmarken drucken",
         btn_print_both: "🖨️ Beide drucken / Als PDF speichern",
         ph_select_back: "Wähle oben eine Datei für die Rückseite",
@@ -1035,7 +1038,6 @@
         return canvas.toDataURL('image/png');
       }
 
-      // 300 DPI Renderauflösung
       const backData = renderCanvas('back', 1783, 1406, true);
       const frontData = renderCanvas('front', 1417, 1417, false);
 
