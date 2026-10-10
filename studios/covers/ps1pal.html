@@ -492,17 +492,17 @@
         <button id="lang-de" onclick="setLanguage('de')" class="lang-btn">DE</button>
       </div>
 	
-	     <!-- PayPal Button mit dynamischem Text via data-i18n -->
-    <a href="https://paypal.me/kainco" target="_blank" rel="noopener noreferrer" 
-       style="background: #0070ba; color: white; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
-      <i class="fa-brands fa-paypal"></i> <span data-i18n="btn_donation">Spende</span>
-    </a>
-	   <!-- Ko-Fi Button -->
-    <a href="https://ko-fi.com/kainco" target="_blank" rel="noopener noreferrer" 
-       style="background: #ff5e5b; color: white; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
-      <i class="fa-solid fa-mug-hot"></i> Support
-    </a>
-  </div>
+	    <!-- PayPal Button mit dynamischem Text via data-i18n -->
+      <a href="https://paypal.me/kainco" target="_blank" rel="noopener noreferrer" 
+         style="background: #0070ba; color: white; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
+        <i class="fa-brands fa-paypal"></i> <span data-i18n="btn_donation">Spende</span>
+      </a>
+	    <!-- Ko-Fi Button -->
+      <a href="https://ko-fi.com/kainco" target="_blank" rel="noopener noreferrer" 
+         style="background: #ff5e5b; color: white; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
+        <i class="fa-solid fa-mug-hot"></i> Support
+      </a>
+    </div>
   </header>
 
   <div class="ui-container">
@@ -644,10 +644,22 @@
     </div>
   </div>
 
+  <!-- Druckfenster / Druckvorschau -->
   <div id="printScreen">
-    <div style="padding: 10px; text-align: center; background: #f3f4f6; margin-bottom: 10px; border-radius: 8px;" class="no-print">
+    <div style="padding: 10px; text-align: center; background: #f3f4f6; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap;" class="no-print">
       <button onclick="window.print()" style="padding: 10px 20px; background: #10b981; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">Print Now / Save PDF</button>
-      <button onclick="closePrint()" style="padding: 10px 20px; background: #6b7280; color: white; border: none; border-radius: 6px; margin-left: 10px; cursor: pointer;">Close</button>
+      
+      <!-- PayPal & Ko-Fi Spenden-Buttons in der Druckansicht -->
+      <a href="https://paypal.me/kainco" target="_blank" rel="noopener noreferrer" 
+         style="background: #0070ba; color: white; padding: 8px 14px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
+        <i class="fa-brands fa-paypal"></i> <span data-i18n="btn_donation">Spende</span>
+      </a>
+      <a href="https://ko-fi.com/kainco" target="_blank" rel="noopener noreferrer" 
+         style="background: #ff5e5b; color: white; padding: 8px 14px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
+        <i class="fa-solid fa-mug-hot"></i> Support
+      </a>
+
+      <button onclick="closePrint()" style="padding: 10px 20px; background: #6b7280; color: white; border: none; border-radius: 6px; cursor: pointer;">Close</button>
     </div>
     <div class="print-container">
       <!-- Exakte Originalmaße in cm für PS1 PAL -->
@@ -672,7 +684,7 @@
         lbl_alignment: "Alignment & Print",
         btn_fit: "Fit",
         btn_reset: "Reset",
-		btn_donation: "Donation",
+        btn_donation: "Donation",
         opt_crop_marks: "Print crop marks / guidelines",
         btn_print_both: "🖨️ Print Both / Save as PDF",
         ph_select_back: "Select back cover file above",
@@ -689,7 +701,7 @@
         lbl_alignment: "Ausrichtung & Druck",
         btn_fit: "Einpassen",
         btn_reset: "Zurücksetzen",
-		btn_donation: "Spenden",
+        btn_donation: "Spende",
         opt_crop_marks: "Schnittmarken drucken",
         btn_print_both: "🖨️ Beide drucken / Als PDF speichern",
         ph_select_back: "Wähle oben eine Datei für die Rückseite",
