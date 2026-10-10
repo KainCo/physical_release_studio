@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Physical Release Studio — PlayStation 1 PAL Cover Studio</title>
+  <title>Physical Release Studio — Standard Crystal CD Jewel Case Studio</title>
 
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -244,10 +244,12 @@
       padding: 4px;
       border-radius: 10px;
       border: 1px solid var(--border);
+      flex-wrap: wrap;
     }
 
     .tab-btn {
       flex: 1;
+      min-width: 120px;
       padding: 10px;
       border: none;
       background: transparent;
@@ -367,9 +369,10 @@
       touch-action: none;
     }
 
-    /* PS1 PAL Cover Preview Maße (Beibehaltung der Verhältnisse) */
-    .frame-back { width: 400px; height: 299px; }
-    .frame-front { width: 300px; height: 305px; }
+    /* Crystal Case Preview Maße in Pixeln */
+    .frame-back { width: 375px; height: 294px; }
+    .frame-front { width: 300px; height: 300px; }
+    .frame-inside { width: 375px; height: 294px; display: none; }
 
     .frame-container.active-target {
       border-color: var(--brand);
@@ -409,7 +412,7 @@
     }
 
     /* ==========================================================================
-       OPTIMIERTER A4 HOCHKANT DRUCK-BLOCK (PORTRAIT - EXAKTE PS1 PAL MAßE)
+       OPTIMIERTER A4 HOCHKANT DRUCK-BLOCK (PORTRAIT)
        ========================================================================== */
     @media print {
       @page {
@@ -450,7 +453,7 @@
         flex-direction: column !important;
         justify-content: center !important;
         align-items: center !important;
-        gap: 8mm !important;
+        gap: 6mm !important;
         width: 210mm !important;
         height: 297mm !important;
         margin: 0 auto !important;
@@ -482,7 +485,7 @@
       <i class="fa-solid fa-compact-disc"></i>
       <div>
         <div style="font-weight: 800; font-size: 1rem;">PHYSICAL RELEASE</div>
-        <div style="font-size: 0.7rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">PlayStation 1 PAL Cover Studio <p>&copy; 2026 KainCo. All rights reserved.</p></div>
+        <div style="font-size: 0.7rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">Crystal CD Case Studio <p>&copy; 2026 KainCo. All rights reserved.</p></div>
       </div>
     </a>
 
@@ -492,12 +495,12 @@
         <button id="lang-de" onclick="setLanguage('de')" class="lang-btn">DE</button>
       </div>
 	
-	    <!-- PayPal Button mit dynamischem Text via data-i18n -->
+      <!-- PayPal Button -->
       <a href="https://paypal.me/kainco" target="_blank" rel="noopener noreferrer" 
          style="background: #0070ba; color: white; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
         <i class="fa-brands fa-paypal"></i> <span data-i18n="btn_donation">Spende</span>
       </a>
-	    <!-- Ko-Fi Button -->
+      <!-- Ko-Fi Button -->
       <a href="https://ko-fi.com/kainco" target="_blank" rel="noopener noreferrer" 
          style="background: #ff5e5b; color: white; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
         <i class="fa-solid fa-mug-hot"></i> Support
@@ -506,12 +509,13 @@
   </header>
 
   <div class="ui-container">
-    <div class="header-title">PlayStation 1 PAL Cover Studio</div>
-    <div class="sub-title">Back Cover: 16.3 × 12.2 cm | Front Cover: 12.5 × 12.7 cm</div>
+    <div class="header-title">Crystal CD Case Cover Studio</div>
+    <div class="sub-title">Back Cover: 15.0 × 11.75 cm | Front Cover: 12.0 × 12.0 cm</div>
 
-    <div class="upload-cards">
+    <div class="upload-cards" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));">
+      <!-- Back Cover Upload -->
       <div class="upload-card active" id="card-back" onclick="selectTab('back')">
-        <label for="file-back" data-i18n="ps1_back_label">📷 Back Cover Image</label>
+        <label for="file-back" data-i18n="cd_back_label">📷 Back Cover (Außenseite)</label>
         <input type="file" id="file-back" accept="image/*" onchange="loadFile(event, 'back')">
         
         <div id="dpi-container-back" class="dpi-container">
@@ -522,17 +526,12 @@
             <div class="scale-segment scale-green"></div>
             <div id="dpi-marker-back" class="scale-marker" style="left: 0%;"></div>
           </div>
-          <div class="scale-labels">
-            <span>0</span>
-            <span>150 (Good)</span>
-            <span>300 (Ideal)</span>
-            <span>400+</span>
-          </div>
         </div>
       </div>
 
+      <!-- Front Cover Upload -->
       <div class="upload-card" id="card-front" onclick="selectTab('front')">
-        <label for="file-front" data-i18n="ps1_front_label">📷 Front Cover Image</label>
+        <label for="file-front" data-i18n="cd_front_label">📷 Front Cover Image</label>
         <input type="file" id="file-front" accept="image/*" onchange="loadFile(event, 'front')">
         
         <div id="dpi-container-front" class="dpi-container">
@@ -543,19 +542,31 @@
             <div class="scale-segment scale-green"></div>
             <div id="dpi-marker-front" class="scale-marker" style="left: 0%;"></div>
           </div>
-          <div class="scale-labels">
-            <span>0</span>
-            <span>150 (Good)</span>
-            <span>300 (Ideal)</span>
-            <span>400+</span>
+        </div>
+      </div>
+
+      <!-- Inside Back Cover Upload (Zusatzoption) -->
+      <div class="upload-card" id="card-inside" onclick="selectTab('inside')" style="display: none;" id-wrapper="inside-card-wrapper">
+        <label for="file-inside" data-i18n="cd_inside_label">📷 Back Cover (Innenseite / Duplex)</label>
+        <input type="file" id="file-inside" accept="image/*" onchange="loadFile(event, 'inside')">
+        
+        <div id="dpi-container-inside" class="dpi-container">
+          <div id="dpi-badge-inside" class="dpi-badge"></div>
+          <div class="dpi-scale-wrapper">
+            <div class="scale-segment scale-red"></div>
+            <div class="scale-segment scale-yellow"></div>
+            <div class="scale-segment scale-green"></div>
+            <div id="dpi-marker-inside" class="scale-marker" style="left: 0%;"></div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- Tabs zum Umschalten -->
     <div class="tabs">
-      <button class="tab-btn active" id="tab-back" onclick="selectTab('back')" data-i18n="tab_edit_back">Edit: Back Cover</button>
-      <button class="tab-btn" id="tab-front" onclick="selectTab('front')" data-i18n="tab_edit_front">Edit: Front Cover</button>
+      <button class="tab-btn active" id="tab-back" onclick="selectTab('back')" data-i18n="tab_edit_back">Edit: Back (Außen)</button>
+      <button class="tab-btn" id="tab-front" onclick="selectTab('front')" data-i18n="tab_edit_front">Edit: Front</button>
+      <button class="tab-btn" id="tab-inside" onclick="selectTab('inside')" style="display: none;" data-i18n="tab_edit_inside">Edit: Back (Innenseite)</button>
     </div>
 
     <div class="controls-grid">
@@ -586,7 +597,7 @@
         </div>
       </div>
 
-      <!-- Position Nudge Pad (Pfeiltasten) -->
+      <!-- Position Nudge Pad -->
       <div class="control-group">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
           <label style="margin: 0;">Nudge Position</label>
@@ -609,17 +620,23 @@
         </div>
       </div>
 
-      <!-- Alignment & Options -->
+      <!-- Alignment, Print & Duplex Checkbox -->
       <div class="control-group">
         <label data-i18n="lbl_alignment">Alignment & Print</label>
         <div class="btn-row" style="margin-bottom: 8px;">
           <button class="btn-small" style="flex: 1;" onclick="fitImage()" data-i18n="btn_fit">Fit</button>
           <button class="btn-small" style="flex: 1;" onclick="resetTransforms()" data-i18n="btn_reset">Reset</button>
         </div>
-        <label style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; cursor: pointer;">
-          <input type="checkbox" id="showGuidelines" checked>
-          <span data-i18n="opt_crop_marks">Print crop marks / guidelines</span>
-        </label>
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <label style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; cursor: pointer;">
+            <input type="checkbox" id="showGuidelines" checked>
+            <span data-i18n="opt_crop_marks">Print crop marks / guidelines</span>
+          </label>
+          <label style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; cursor: pointer; color: #38bdf8;">
+            <input type="checkbox" id="enableInside" onchange="toggleInsideCover(this.checked)">
+            <span data-i18n="opt_inside_cover">Back Cover Innenseite (Duplex / NTSC)</span>
+          </label>
+        </div>
       </div>
     </div>
 
@@ -628,7 +645,7 @@
 
   <div class="preview-wrapper">
     <div style="text-align: center;">
-      <div style="font-size: 0.8rem; font-weight: bold; margin-bottom: 6px;">Back Cover (16,3 × 12,2 cm)</div>
+      <div style="font-size: 0.8rem; font-weight: bold; margin-bottom: 6px;" data-i18n="prev_back">Back Cover (Außenseite)</div>
       <div class="frame-container frame-back active-target" id="frame-back" onclick="selectTab('back')">
         <div class="placeholder" id="ph-back" data-i18n="ph_select_back">Select file above</div>
         <img id="img-back" class="cover-img" style="display:none;" alt="Back">
@@ -636,10 +653,18 @@
     </div>
 
     <div style="text-align: center;">
-      <div style="font-size: 0.8rem; font-weight: bold; margin-bottom: 6px;">Front Cover (12,5 × 12,7 cm)</div>
+      <div style="font-size: 0.8rem; font-weight: bold; margin-bottom: 6px;" data-i18n="prev_front">Front Cover</div>
       <div class="frame-container frame-front" id="frame-front" onclick="selectTab('front')">
         <div class="placeholder" id="ph-front" data-i18n="ph_select_front">Select file above</div>
         <img id="img-front" class="cover-img" style="display:none;" alt="Front">
+      </div>
+    </div>
+
+    <div style="text-align: center; display: none;" id="preview-container-inside">
+      <div style="font-size: 0.8rem; font-weight: bold; margin-bottom: 6px; color: #38bdf8;" data-i18n="prev_inside">Back Cover (Innenseite)</div>
+      <div class="frame-container frame-inside" id="frame-inside" onclick="selectTab('inside')">
+        <div class="placeholder" id="ph-inside" data-i18n="ph_select_inside">Select inside file above</div>
+        <img id="img-inside" class="cover-img" style="display:none;" alt="Inside">
       </div>
     </div>
   </div>
@@ -649,7 +674,6 @@
     <div style="padding: 10px; text-align: center; background: #f3f4f6; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap;" class="no-print">
       <button onclick="window.print()" style="padding: 10px 20px; background: #10b981; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">Print Now / Save PDF</button>
       
-      <!-- PayPal & Ko-Fi Spenden-Buttons in der Druckansicht -->
       <a href="https://paypal.me/kainco" target="_blank" rel="noopener noreferrer" 
          style="background: #0070ba; color: white; padding: 8px 14px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
         <i class="fa-brands fa-paypal"></i> <span data-i18n="btn_donation">Spende</span>
@@ -662,23 +686,26 @@
       <button onclick="closePrint()" style="padding: 10px 20px; background: #6b7280; color: white; border: none; border-radius: 6px; cursor: pointer;">Close</button>
     </div>
     <div class="print-container">
-      <!-- Exakte Originalmaße in cm für PS1 PAL -->
-      <img id="print-img-back" style="width: 16.3cm; height: 12.2cm; object-fit: contain; display: none;">
-      <img id="print-img-front" style="width: 12.5cm; height: 12.7cm; object-fit: contain; display: none;">
+      <img id="print-img-back" style="width: 15.0cm; height: 11.75cm; object-fit: contain; display: none;">
+      <img id="print-img-front" style="width: 12.0cm; height: 12.0cm; object-fit: contain; display: none;">
+      <img id="print-img-inside" style="width: 15.0cm; height: 11.75cm; object-fit: contain; display: none;">
     </div>
   </div>
 
   <canvas id="canvas-back" style="display:none;"></canvas>
   <canvas id="canvas-front" style="display:none;"></canvas>
+  <canvas id="canvas-inside" style="display:none;"></canvas>
 
   <script>
     const i18n = {
       en: {
         nav_index: "Back to Overview",
-        ps1_back_label: "📷 Back Cover Image",
-        ps1_front_label: "📷 Front Cover Image",
-        tab_edit_back: "Edit: Back Cover",
-        tab_edit_front: "Edit: Front Cover",
+        cd_back_label: "📷 Back Cover (Outside)",
+        cd_front_label: "📷 Front Cover Image",
+        cd_inside_label: "📷 Back Cover (Inside / Duplex)",
+        tab_edit_back: "Edit: Back (Outside)",
+        tab_edit_front: "Edit: Front",
+        tab_edit_inside: "Edit: Back (Inside)",
         lbl_rotation: "Rotation & Flip",
         lbl_zoom: "Granular Zoom (%)",
         lbl_alignment: "Alignment & Print",
@@ -686,16 +713,23 @@
         btn_reset: "Reset",
         btn_donation: "Donation",
         opt_crop_marks: "Print crop marks / guidelines",
-        btn_print_both: "🖨️ Print Both / Save as PDF",
-        ph_select_back: "Select back cover file above",
-        ph_select_front: "Select front cover file above"
+        opt_inside_cover: "Back Cover Inside (Duplex / NTSC)",
+        btn_print_both: "🖨️ Print / Save as PDF",
+        ph_select_back: "Select outside file above",
+        ph_select_front: "Select front file above",
+        ph_select_inside: "Select inside file above",
+        prev_back: "Back Cover (Outside)",
+        prev_front: "Front Cover",
+        prev_inside: "Back Cover (Inside)"
       },
       de: {
         nav_index: "Zurück zur Übersicht",
-        ps1_back_label: "📷 Rückseiten-Bild",
-        ps1_front_label: "📷 Front-Bild",
-        tab_edit_back: "Bearbeiten: Rückseite",
-        tab_edit_front: "Bearbeiten: Vorderseite",
+        cd_back_label: "📷 Rückseite (Außenseite)",
+        cd_front_label: "📷 Front-Bild",
+        cd_inside_label: "📷 Rückseite (Innenseite / Duplex)",
+        tab_edit_back: "Bearbeiten: Rück (Außen)",
+        tab_edit_front: "Bearbeiten: Front",
+        tab_edit_inside: "Bearbeiten: Rück (Innen)",
         lbl_rotation: "Drehung & Spiegeln",
         lbl_zoom: "Granularer Zoom (%)",
         lbl_alignment: "Ausrichtung & Druck",
@@ -703,9 +737,14 @@
         btn_reset: "Zurücksetzen",
         btn_donation: "Spende",
         opt_crop_marks: "Schnittmarken drucken",
-        btn_print_both: "🖨️ Beide drucken / Als PDF speichern",
-        ph_select_back: "Wähle oben eine Datei für die Rückseite",
-        ph_select_front: "Wähle oben eine Datei für die Vorderseite"
+        opt_inside_cover: "Backcover Innenseite (Duplex / NTSC)",
+        btn_print_both: "🖨️ Drucken / Als PDF speichern",
+        ph_select_back: "Wähle außen Datei oben",
+        ph_select_front: "Wähle Front Datei oben",
+        ph_select_inside: "Wähle Innenseite Datei oben",
+        prev_back: "Back Cover (Außenseite)",
+        prev_front: "Front Cover",
+        prev_inside: "Back Cover (Innenseite)"
       }
     };
 
@@ -740,18 +779,38 @@
     let currentNudgeStep = 1;
 
     const state = {
-      back: { x: 0, y: 0, scale: 1, baseFitScale: 1, userZoom: 1, rotation: 0, flipX: 1, loaded: false, targetCmW: 16.3, targetCmH: 12.2 },
-      front: { x: 0, y: 0, scale: 1, baseFitScale: 1, userZoom: 1, rotation: 0, flipX: 1, loaded: false, targetCmW: 12.5, targetCmH: 12.7 }
+      back: { x: 0, y: 0, scale: 1, baseFitScale: 1, userZoom: 1, rotation: 0, flipX: 1, loaded: false, targetCmW: 15.0, targetCmH: 11.75 },
+      front: { x: 0, y: 0, scale: 1, baseFitScale: 1, userZoom: 1, rotation: 0, flipX: 1, loaded: false, targetCmW: 12.0, targetCmH: 12.0 },
+      inside: { x: 0, y: 0, scale: 1, baseFitScale: 1, userZoom: 1, rotation: 0, flipX: 1, loaded: false, targetCmW: 15.0, targetCmH: 11.75 }
     };
+
+    function toggleInsideCover(show) {
+      const cardInside = document.getElementById('card-inside');
+      const tabInside = document.getElementById('tab-inside');
+      const prevInside = document.getElementById('preview-container-inside');
+      
+      if (show) {
+        cardInside.style.display = 'block';
+        tabInside.style.display = 'block';
+        prevInside.style.display = 'block';
+      } else {
+        cardInside.style.display = 'none';
+        tabInside.style.display = 'none';
+        prevInside.style.display = 'none';
+        if (activeTarget === 'inside') selectTab('back');
+      }
+    }
 
     function selectTab(target) {
       activeTarget = target;
-      document.getElementById('tab-back').classList.toggle('active', target === 'back');
-      document.getElementById('tab-front').classList.toggle('active', target === 'front');
-      document.getElementById('card-back').classList.toggle('active', target === 'back');
-      document.getElementById('card-front').classList.toggle('active', target === 'front');
-      document.getElementById('frame-back').classList.toggle('active-target', target === 'back');
-      document.getElementById('frame-front').classList.toggle('active-target', target === 'front');
+      ['back', 'front', 'inside'].forEach(t => {
+        const tab = document.getElementById(`tab-${t}`);
+        const card = document.getElementById(`card-${t}`);
+        const frame = document.getElementById(`frame-${t}`);
+        if (tab) tab.classList.toggle('active', t === target);
+        if (card) card.classList.toggle('active', t === target);
+        if (frame) frame.classList.toggle('active-target', t === target);
+      });
       updateControls();
     }
 
@@ -787,18 +846,17 @@
         const extra = Math.min(dpi - 300, 100);
         markerPos = 75 + (extra / 100) * 25;
       }
-      marker.style.left = `${Math.min(Math.max(markerPos, 2), 98)}%`;
+      if (marker) marker.style.left = `${Math.min(Math.max(markerPos, 2), 98)}%`;
 
       if (dpi >= 300) {
         badge.classList.add('green');
-        badge.innerHTML = `🟢 <b>${dpi} DPI</b> – Excellent (300+ DPI standard)`;
+        badge.innerHTML = `🟢 <b>${dpi} DPI</b> – Excellent`;
       } else if (dpi >= 150) {
         badge.classList.add('yellow');
-        const percentageToGreen = Math.round((dpi / 300) * 100);
-        badge.innerHTML = `🟡 <b>${dpi} DPI</b> – Good (${percentageToGreen}% of ideal)`;
+        badge.innerHTML = `🟡 <b>${dpi} DPI</b> – Good`;
       } else {
         badge.classList.add('red');
-        badge.innerHTML = `🔴 <b>${dpi} DPI</b> – Low quality (< 150 DPI)`;
+        badge.innerHTML = `🔴 <b>${dpi} DPI</b> – Low quality`;
       }
     }
 
@@ -812,7 +870,7 @@
           const ph = document.getElementById(`ph-${target}`);
           img.src = event.target.result;
           img.style.display = 'block';
-          ph.style.display = 'none';
+          if (ph) ph.style.display = 'none';
           img.onload = () => {
             state[target].loaded = true;
             fitImage();
@@ -878,12 +936,14 @@
       currentNudgeStep = step;
       [1, 5, 10].forEach(s => {
         const btn = document.getElementById(`step-${s}`);
-        if (s === step) {
-          btn.style.background = 'var(--brand)';
-          btn.style.color = 'white';
-        } else {
-          btn.style.background = 'var(--card-bg)';
-          btn.style.color = 'var(--text-muted)';
+        if (btn) {
+          if (s === step) {
+            btn.style.background = 'var(--brand)';
+            btn.style.color = 'white';
+          } else {
+            btn.style.background = 'var(--card-bg)';
+            btn.style.color = 'var(--text-muted)';
+          }
         }
       });
     }
@@ -919,8 +979,9 @@
       calculateAndDisplayDPI(activeTarget);
     }
 
-    ['back', 'front'].forEach(key => {
+    ['back', 'front', 'inside'].forEach(key => {
       const frame = document.getElementById(`frame-${key}`);
+      if (!frame) return;
       let startX, startY, isDragging = false;
 
       const handleStart = (e) => {
@@ -951,14 +1012,19 @@
     });
 
     function preparePrint() {
-      if (!state.back.loaded && !state.front.loaded) {
+      const hasBack = state.back.loaded;
+      const hasFront = state.front.loaded;
+      const enableInside = document.getElementById('enableInside').checked;
+      const hasInside = enableInside && state.inside.loaded;
+
+      if (!hasBack && !hasFront && !hasInside) {
         alert('Please select at least one image!');
         return;
       }
 
       const drawGuidelines = document.getElementById('showGuidelines').checked;
 
-      function renderCanvas(key, targetW, targetH) {
+      function renderCanvas(key, targetW, targetH, forceFlipX = 1) {
         if (!state[key].loaded) return null;
         const canvas = document.getElementById(`canvas-${key}`);
         const ctx = canvas.getContext('2d');
@@ -974,7 +1040,8 @@
         ctx.save();
         ctx.translate(targetW / 2 + s.x * scaleFactor, targetH / 2 + s.y * scaleFactor);
         ctx.rotate((s.rotation * Math.PI) / 180);
-        ctx.scale(s.scale * s.flipX * scaleFactor, s.scale * scaleFactor);
+        // Innenseite wird standardmäßig gespiegelt (flipX * -1) für den transparenten Blick von außen
+        ctx.scale(s.scale * s.flipX * forceFlipX * scaleFactor, s.scale * scaleFactor);
         ctx.drawImage(img, -img.naturalWidth / 2, -img.naturalHeight / 2);
         ctx.restore();
 
@@ -983,24 +1050,41 @@
           ctx.strokeStyle = '#94a3b8';
           ctx.lineWidth = 3;
           ctx.strokeRect(0, 0, targetW, targetH);
+          
+          if (key === 'back' || key === 'inside') {
+            const spineW = (0.6 / 15.0) * targetW;
+            ctx.setLineDash([8, 8]);
+            ctx.beginPath();
+            ctx.moveTo(spineW, 0);
+            ctx.lineTo(spineW, targetH);
+            ctx.moveTo(targetW - spineW, 0);
+            ctx.lineTo(targetW - spineW, targetH);
+            ctx.stroke();
+          }
           ctx.restore();
         }
 
         return canvas.toDataURL('image/png');
       }
 
-      // 300 DPI Rendering-Auflösungen für PS1 PAL
-      const backData = renderCanvas('back', 1925, 1441);
-      const frontData = renderCanvas('front', 1476, 1500);
+      // 300 DPI Rendering-Auflösungen (15.0cm x 11.75cm & 12.0cm x 12.0cm)
+      const backData = renderCanvas('back', 1772, 1388, 1);
+      const frontData = renderCanvas('front', 1417, 1417, 1);
+      // Innenseite automatisch gespiegelt (-1) für transparente Hüllen
+      const insideData = hasInside ? renderCanvas('inside', 1772, 1388, -1) : null;
 
       const printBack = document.getElementById('print-img-back');
       const printFront = document.getElementById('print-img-front');
+      const printInside = document.getElementById('print-img-inside');
 
       if (backData) { printBack.src = backData; printBack.style.display = 'block'; }
       else { printBack.style.display = 'none'; }
 
       if (frontData) { printFront.src = frontData; printFront.style.display = 'block'; }
       else { printFront.style.display = 'none'; }
+
+      if (insideData) { printInside.src = insideData; printInside.style.display = 'block'; }
+      else { printInside.style.display = 'none'; }
 
       document.getElementById('printScreen').style.display = 'block';
     }
