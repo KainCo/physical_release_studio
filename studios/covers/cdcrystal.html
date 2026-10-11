@@ -145,13 +145,9 @@
 
     .upload-cards {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 16px;
       margin-bottom: 20px;
-    }
-
-    @media (max-width: 650px) {
-      .upload-cards { grid-template-columns: 1fr; }
     }
 
     .upload-card {
@@ -227,15 +223,6 @@
       transition: left 0.3s ease;
     }
 
-    .scale-labels {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.65rem;
-      font-family: 'JetBrains Mono', monospace;
-      color: var(--text-muted);
-      margin-top: 4px;
-    }
-
     .tabs {
       display: flex;
       gap: 8px;
@@ -307,7 +294,6 @@
       border-color: var(--brand);
     }
 
-    /* Position Nudge Pad Grid */
     .nudge-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -369,10 +355,9 @@
       touch-action: none;
     }
 
-    /* Crystal Case Preview Maße in Pixeln */
     .frame-back { width: 375px; height: 294px; }
     .frame-front { width: 300px; height: 300px; }
-    .frame-inside { width: 375px; height: 294px; display: none; }
+    .frame-inside { width: 375px; height: 294px; }
 
     .frame-container.active-target {
       border-color: var(--brand);
@@ -411,9 +396,6 @@
       overflow: auto;
     }
 
-    /* ==========================================================================
-       OPTIMIERTER A4 HOCHKANT DRUCK-BLOCK (PORTRAIT)
-       ========================================================================== */
     @media print {
       @page {
         size: A4 portrait;
@@ -495,12 +477,10 @@
         <button id="lang-de" onclick="setLanguage('de')" class="lang-btn">DE</button>
       </div>
 	
-      <!-- PayPal Button -->
       <a href="https://paypal.me/kainco" target="_blank" rel="noopener noreferrer" 
          style="background: #0070ba; color: white; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
         <i class="fa-brands fa-paypal"></i> <span data-i18n="btn_donation">Spende</span>
       </a>
-      <!-- Ko-Fi Button -->
       <a href="https://ko-fi.com/kainco" target="_blank" rel="noopener noreferrer" 
          style="background: #ff5e5b; color: white; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
         <i class="fa-solid fa-mug-hot"></i> Support
@@ -512,7 +492,7 @@
     <div class="header-title">Crystal CD Case Cover Studio</div>
     <div class="sub-title">Back Cover: 15.0 × 11.75 cm | Front Cover: 12.0 × 12.0 cm</div>
 
-    <div class="upload-cards" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));">
+    <div class="upload-cards">
       <!-- Back Cover Upload -->
       <div class="upload-card active" id="card-back" onclick="selectTab('back')">
         <label for="file-back" data-i18n="cd_back_label">📷 Back Cover (Außenseite)</label>
@@ -545,8 +525,8 @@
         </div>
       </div>
 
-      <!-- Inside Back Cover Upload (Zusatzoption) -->
-      <div class="upload-card" id="card-inside" onclick="selectTab('inside')" style="display: none;" id-wrapper="inside-card-wrapper">
+      <!-- Inside Back Cover Upload (Duplex Option) -->
+      <div class="upload-card" id="card-inside" onclick="selectTab('inside')" style="display: none;">
         <label for="file-inside" data-i18n="cd_inside_label">📷 Back Cover (Innenseite / Duplex)</label>
         <input type="file" id="file-inside" accept="image/*" onchange="loadFile(event, 'inside')">
         
@@ -562,7 +542,7 @@
       </div>
     </div>
 
-    <!-- Tabs zum Umschalten -->
+    <!-- Tabs -->
     <div class="tabs">
       <button class="tab-btn active" id="tab-back" onclick="selectTab('back')" data-i18n="tab_edit_back">Edit: Back (Außen)</button>
       <button class="tab-btn" id="tab-front" onclick="selectTab('front')" data-i18n="tab_edit_front">Edit: Front</button>
@@ -1040,7 +1020,6 @@
         ctx.save();
         ctx.translate(targetW / 2 + s.x * scaleFactor, targetH / 2 + s.y * scaleFactor);
         ctx.rotate((s.rotation * Math.PI) / 180);
-        // Innenseite wird standardmäßig gespiegelt (flipX * -1) für den transparenten Blick von außen
         ctx.scale(s.scale * s.flipX * forceFlipX * scaleFactor, s.scale * scaleFactor);
         ctx.drawImage(img, -img.naturalWidth / 2, -img.naturalHeight / 2);
         ctx.restore();
@@ -1067,10 +1046,8 @@
         return canvas.toDataURL('image/png');
       }
 
-      // 300 DPI Rendering-Auflösungen (15.0cm x 11.75cm & 12.0cm x 12.0cm)
       const backData = renderCanvas('back', 1772, 1388, 1);
       const frontData = renderCanvas('front', 1417, 1417, 1);
-      // Innenseite automatisch gespiegelt (-1) für transparente Hüllen
       const insideData = hasInside ? renderCanvas('inside', 1772, 1388, -1) : null;
 
       const printBack = document.getElementById('print-img-back');
