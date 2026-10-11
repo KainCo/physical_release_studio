@@ -223,15 +223,6 @@
       transition: left 0.3s ease;
     }
 
-    .scale-labels {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.65rem;
-      font-family: 'JetBrains Mono', monospace;
-      color: var(--text-muted);
-      margin-top: 4px;
-    }
-
     .tabs {
       display: flex;
       gap: 8px;
@@ -364,9 +355,8 @@
       touch-action: none;
     }
 
-    /* DVD Cover Proportions (27.6 cm breit x 18.3 cm hoch) */
     .frame-dvd { width: 420px; height: 278px; }
-    .frame-inside { width: 420px; height: 278px; display: none; }
+    .frame-inside { width: 420px; height: 278px; }
 
     .frame-container.active-target {
       border-color: var(--brand);
@@ -405,7 +395,6 @@
       overflow: auto;
     }
 
-    /* Auf A3 oder großes Papier ausgelegt bzw. passend skaliert. Hinweis: DVD-Inlays sind ca. 27.6 cm breit, passen also perfekt auf DIN A3 Querformat oder erfordern passenden Zuschnitt. */
     @media print {
       @page {
         size: A3 landscape;
@@ -516,16 +505,10 @@
             <div class="scale-segment scale-green"></div>
             <div id="dpi-marker-dvd" class="scale-marker" style="left: 0%;"></div>
           </div>
-          <div class="scale-labels">
-            <span>0</span>
-            <span>150 (Good)</span>
-            <span>300 (Ideal)</span>
-            <span>400+</span>
-          </div>
         </div>
       </div>
 
-      <!-- DVD Inlay (Innenseite) -->
+      <!-- DVD Inlay (Innenseite / Duplex) -->
       <div class="upload-card" id="card-inside" onclick="selectTab('inside')" style="display: none;">
         <label for="file-inside" data-i18n="dvd_inside_label">📷 DVD Inlay (Innenseite / Duplex)</label>
         <input type="file" id="file-inside" accept="image/*" onchange="loadFile(event, 'inside')">
@@ -537,12 +520,6 @@
             <div class="scale-segment scale-yellow"></div>
             <div class="scale-segment scale-green"></div>
             <div id="dpi-marker-inside" class="scale-marker" style="left: 0%;"></div>
-          </div>
-          <div class="scale-labels">
-            <span>0</span>
-            <span>150 (Good)</span>
-            <span>300 (Ideal)</span>
-            <span>400+</span>
           </div>
         </div>
       </div>
@@ -662,7 +639,6 @@
       <button onclick="closePrint()" style="padding: 10px 20px; background: #6b7280; color: white; border: none; border-radius: 6px; cursor: pointer;">Close</button>
     </div>
     <div class="print-container">
-      <!-- Exakte Maße in cm für DVD Inlays (27.6cm x 18.3cm) -->
       <img id="print-img-dvd" style="width: 27.6cm; height: 18.3cm; object-fit: contain; display: none;">
       <img id="print-img-inside" style="width: 27.6cm; height: 18.3cm; object-fit: contain; display: none;">
     </div>
@@ -1007,7 +983,6 @@
         ctx.save();
         ctx.translate(targetW / 2 + s.x * scaleFactor, targetH / 2 + s.y * scaleFactor);
         ctx.rotate((s.rotation * Math.PI) / 180);
-        // Innenseite wird standardmäßig gespiegelt (flipX * -1) für transparenten Blick
         ctx.scale(s.scale * s.flipX * forceFlipX * scaleFactor, s.scale * scaleFactor);
         ctx.drawImage(img, -img.naturalWidth / 2, -img.naturalHeight / 2);
         ctx.restore();
@@ -1018,7 +993,6 @@
           ctx.lineWidth = 3;
           ctx.strokeRect(0, 0, targetW, targetH);
           
-          // Trennlinien für den Spine (Rücken) bei DVD (ca. bei 12.7 cm und 14.1 cm von links)
           const spineLeft = (12.7 / 27.6) * targetW;
           const spineRight = (14.1 / 27.6) * targetW;
           ctx.setLineDash([10, 10]);
@@ -1034,7 +1008,6 @@
         return canvas.toDataURL('image/png');
       }
 
-      // 300 DPI Rendering-Auflösung für DVD (27.6 cm x 18.3 cm -> ca. 3255 x 2161 Pixel)
       const dvdData = renderCanvas('dvd', 3255, 2161, 1);
       const insideData = hasInside ? renderCanvas('inside', 3255, 2161, -1) : null;
 
