@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Physical Release Studio — PlayStation 3 Cover Studio</title>
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: #111726;
+      --border: #1f293d;
+      --hover: #1a2336;
+      --brand: #2563eb;
+      --brand-accent: #a855f7;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px;
+    }
+
+    header {
+      width: 100%;
+      max-width: 1024px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 20px;
+      background: rgba(9, 13, 22, 0.9);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: white;
+    }
+
+    .brand-title i {
+      font-size: 1.5rem;
+      color: #3b82f6;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .lang-switcher {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 2px;
+      display: flex;
+    }
+
+    .lang-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 4px 10px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      font-family: 'JetBrains Mono', monospace;
+      cursor: pointer;
+      border-radius: 6px;
+    }
+
+    .lang-btn.active {
+      background: var(--brand);
+      color: white;
+    }
+
+    .btn-index {
+      background: var(--card-bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-index:hover {
+      border-color: var(--brand);
+    }
+
+    .ui-container {
+      width: 100%;
+      max-width: 1024px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      margin-bottom: 24px;
+    }
+
+    .header-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .sub-title {
+      font-size: 0.8rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    .upload-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .upload-card {
+      background: var(--bg);
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    .upload-card.active {
+      border-color: var(--brand);
+    }
+
+    .upload-card label {
+      display: block;
+      font-weight: bold;
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+      cursor: pointer;
+    }
+
+    .upload-card input[type="file"] {
+      width: 100%;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* DPI Quality Scale */
+    .dpi-container {
+      display: none;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    .dpi-badge {
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .dpi-badge.green { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .dpi-badge.yellow { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .dpi-badge.red { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+
+    .dpi-scale-wrapper {
+      position: relative;
+      width: 100%;
+      background: #1f293d;
+      height: 8px;
+      border-radius: 4px;
+      overflow: hidden;
+      display: flex;
+    }
+
+    .scale-segment { height: 100%; }
+    .scale-red { width: 37.5%; background: #ef4444; }
+    .scale-yellow { width: 37.5%; background: #f59e0b; }
+    .scale-green { width: 25%; background: #10b981; }
+
+    .scale-marker {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: #fff;
+      transform: translateX(-50%);
+      transition: left 0.3s ease;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      background: var(--bg);
+      padding: 4px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      flex: 1;
+      min-width: 140px;
+      padding: 10px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      background: var(--brand);
+      color: white;
+    }
+
+    .controls-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      background: var(--bg);
+      padding: 16px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+
+    .control-group label {
+      font-size: 0.75rem;
+      font-weight: bold;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .btn-small {
+      padding: 6px 10px;
+      font-size: 0.75rem;
+      font-family: 'JetBrains Mono', monospace;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .btn-small:hover {
+      border-color: var(--brand);
+    }
+
+    .nudge-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+      width: 110px;
+      margin: 0 auto;
+    }
+
+    .nudge-grid button {
+      padding: 6px;
+      font-size: 0.75rem;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .nudge-grid button:hover {
+      border-color: var(--brand);
+    }
+
+    .btn-print {
+      width: 100%;
+      background: #10b981;
+      color: white;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .btn-print:hover {
+      background: #059669;
+    }
+
+    .preview-wrapper {
+      display: flex;
+      gap: 24px;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      width: 100%;
+      max-width: 1024px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 32px 16px;
+      border-radius: 16px;
+    }
+
+    .frame-container {
+      position: relative;
+      background: var(--bg);
+      border: 2px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    /* PS3 Proportions (27.3 cm wide x 14.9 cm high) */
+    .frame-ps3 { width: 420px; height: 229px; }
+    .frame-inside { width: 420px; height: 229px; }
+
+    .frame-container.active-target {
+      border-color: var(--brand);
+      box-shadow: 0 0 15px rgba(37, 99, 235, 0.4);
+    }
+
+    .cover-img {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform-origin: center center;
+      pointer-events: none;
+    }
+
+    .placeholder {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-align: center;
+      pointer-events: none;
+    }
+
+    #printScreen {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: white;
+      z-index: 9999;
+      padding: 10px;
+      overflow: auto;
+    }
+
+    @media print {
+      @page {
+        size: A3 landscape;
+        margin: 0mm !important;
+      }
+
+      html, body {
+        width: 420mm !important;
+        height: 297mm !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        background: white !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      header, .ui-container, .preview-wrapper, canvas, footer, .no-print {
+        display: none !important;
+      }
+
+      #printScreen {
+        display: block !important;
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 420mm !important;
+        height: 297mm !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        background: white !important;
+      }
+
+      .print-container {
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
+        gap: 10mm !important;
+        width: 420mm !important;
+        height: 297mm !important;
+        margin: 0 auto !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+
+      .print-container img {
+        display: block !important;
+        max-width: none !important;
+        max-height: none !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="../../index.html" class="btn-index">
+      <i class="fa-solid fa-arrow-left"></i>
+      <span data-i18n="nav_index">Back to Overview</span>
+    </a>
+
+    <a href="#" class="brand-title">
+      <i class="fa-solid fa-compact-disc"></i>
+      <div>
+        <div style="font-weight: 800; font-size: 1rem;">PHYSICAL RELEASE</div>
+        <div style="font-size: 0.7rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">PlayStation 3 Cover Studio <p>&copy; 2026 KainCo. All rights reserved.</p></div>
+      </div>
+    </a>
+
+    <div class="header-actions">
+      <div class="lang-switcher">
+        <button id="lang-en" onclick="setLanguage('en')" class="lang-btn active">EN</button>
+        <button id="lang-de" onclick="setLanguage('de')" class="lang-btn">DE</button>
+      </div>
+	
+      <a href="https://paypal.me/kainco" target="_blank" rel="noopener noreferrer" 
+         style="background: #0070ba; color: white; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
+        <i class="fa-brands fa-paypal"></i> <span data-i18n="btn_donation">Spende</span>
+      </a>
+      <a href="https://ko-fi.com/kainco" target="_blank" rel="noopener noreferrer" 
+         style="background: #ff5e5b; color: white; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
+        <i class="fa-solid fa-mug-hot"></i> Support
+      </a>
+    </div>
+  </header>
+
+  <div class="ui-container">
+    <div class="header-title" data-i18n="studio_title">PlayStation 3 Cover Studio</div>
+    <div class="sub-title">Full Inlay: 27.3 × 14.9 cm (Spine: 1.4 cm)</div>
+
+    <div class="upload-cards">
+      <!-- PS3 Inlay (Außenseite) -->
+      <div class="upload-card active" id="card-ps3" onclick="selectTab('ps3')">
+        <label for="file-ps3" data-i18n="ps3_label">📷 PS3 Inlay (Außenseite)</label>
+        <input type="file" id="file-ps3" accept="image/*" onchange="loadFile(event, 'ps3')">
+        
+        <div id="dpi-container-ps3" class="dpi-container">
+          <div id="dpi-badge-ps3" class="dpi-badge"></div>
+          <div class="dpi-scale-wrapper">
+            <div class="scale-segment scale-red"></div>
+            <div class="scale-segment scale-yellow"></div>
+            <div class="scale-segment scale-green"></div>
+            <div id="dpi-marker-ps3" class="scale-marker" style="left: 0%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PS3 Inlay (Innenseite / Duplex) -->
+      <div class="upload-card" id="card-inside" onclick="selectTab('inside')" style="display: none;">
+        <label for="file-inside" data-i18n="ps3_inside_label">📷 PS3 Inlay (Innenseite / Duplex)</label>
+        <input type="file" id="file-inside" accept="image/*" onchange="loadFile(event, 'inside')">
+        
+        <div id="dpi-container-inside" class="dpi-container">
+          <div id="dpi-badge-inside" class="dpi-badge"></div>
+          <div class="dpi-scale-wrapper">
+            <div class="scale-segment scale-red"></div>
+            <div class="scale-segment scale-yellow"></div>
+            <div class="scale-segment scale-green"></div>
+            <div id="dpi-marker-inside" class="scale-marker" style="left: 0%;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" id="tab-ps3" onclick="selectTab('ps3')" data-i18n="tab_edit_ps3">Edit: Inlay (Außen)</button>
+      <button class="tab-btn" id="tab-inside" onclick="selectTab('inside')" style="display: none;" data-i18n="tab_edit_inside">Edit: Inlay (Innen)</button>
+    </div>
+
+    <div class="controls-grid">
+      <!-- Rotation & Flip -->
+      <div class="control-group">
+        <label data-i18n="lbl_rotation">Rotation & Flip</label>
+        <div class="btn-row">
+          <button class="btn-small" onclick="rotate(0)">0°</button>
+          <button class="btn-small" onclick="rotate(-90)">-90°</button>
+          <button class="btn-small" onclick="rotate(90)">+90°</button>
+          <button class="btn-small" onclick="rotate(180)">180°</button>
+          <button class="btn-small" id="btn-flip" onclick="toggleFlip()">↔️ Flip</button>
+        </div>
+      </div>
+
+      <!-- Granular Zoom -->
+      <div class="control-group">
+        <label for="zoomInput" data-i18n="lbl_zoom">Granular Zoom (%)</label>
+        <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 6px;">
+          <input type="range" id="zoomSlider" min="10" max="300" step="0.1" value="100" style="flex: 1;" oninput="updateZoom(this.value)">
+          <input type="number" id="zoomInput" min="10" max="300" step="0.1" value="100" style="width: 60px; padding: 4px; background: var(--bg); border: 1px solid var(--border); color: white; border-radius: 4px; text-align: center; font-family: 'JetBrains Mono';" oninput="updateZoom(this.value)">
+        </div>
+        <div class="btn-row">
+          <button class="btn-small" style="flex: 1;" onclick="stepZoom(-1)">-1%</button>
+          <button class="btn-small" style="flex: 1;" onclick="stepZoom(-0.1)">-0.1%</button>
+          <button class="btn-small" style="flex: 1;" onclick="stepZoom(0.1)">+0.1%</button>
+          <button class="btn-small" style="flex: 1;" onclick="stepZoom(1)">+1%</button>
+        </div>
+      </div>
+
+      <!-- Position Nudge Pad -->
+      <div class="control-group">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <label style="margin: 0;">Nudge Position</label>
+          <div class="btn-row" style="gap: 2px;">
+            <button id="step-1" class="btn-small" style="padding: 2px 6px; background: var(--brand);" onclick="setNudgeStep(1)">1px</button>
+            <button id="step-5" class="btn-small" style="padding: 2px 6px;" onclick="setNudgeStep(5)">5px</button>
+            <button id="step-10" class="btn-small" style="padding: 2px 6px;" onclick="setNudgeStep(10)">10px</button>
+          </div>
+        </div>
+        <div class="nudge-grid">
+          <div></div>
+          <button onclick="nudge(0, -1)"><i class="fa-solid fa-arrow-up"></i></button>
+          <div></div>
+          <button onclick="nudge(-1, 0)"><i class="fa-solid fa-arrow-left"></i></button>
+          <button style="color: var(--brand); font-weight: bold;" onclick="resetPos()">•</button>
+          <button onclick="nudge(1, 0)"><i class="fa-solid fa-arrow-right"></i></button>
+          <div></div>
+          <button onclick="nudge(0, 1)"><i class="fa-solid fa-arrow-down"></i></button>
+          <div></div>
+        </div>
+      </div>
+
+      <!-- Alignment & Options -->
+      <div class="control-group">
+        <label data-i18n="lbl_alignment">Alignment & Print</label>
+        <div class="btn-row" style="margin-bottom: 8px;">
+          <button class="btn-small" style="flex: 1;" onclick="fitImage()" data-i18n="btn_fit">Fit</button>
+          <button class="btn-small" style="flex: 1;" onclick="resetTransforms()" data-i18n="btn_reset">Reset</button>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <label style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; cursor: pointer;">
+            <input type="checkbox" id="showGuidelines" checked>
+            <span data-i18n="opt_crop_marks">Print crop marks / guidelines</span>
+          </label>
+          <label style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; cursor: pointer; color: #38bdf8;">
+            <input type="checkbox" id="enableInside" onchange="toggleInsideCover(this.checked)">
+            <span data-i18n="opt_inside_cover">PS3 Innenseite (Duplex / Transparent)</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-print" onclick="preparePrint()" data-i18n="btn_print_both">🖨️ Print / Save as PDF</button>
+  </div>
+
+  <div class="preview-wrapper">
+    <div style="text-align: center;">
+      <div style="font-size: 0.8rem; font-weight: bold; margin-bottom: 6px;" data-i18n="prev_ps3">PS3 Inlay (Außenseite: 27,3 × 14,9 cm)</div>
+      <div class="frame-container frame-ps3 active-target" id="frame-ps3" onclick="selectTab('ps3')">
+        <div class="placeholder" id="ph-ps3" data-i18n="ph_select_ps3">Select file above</div>
+        <img id="img-ps3" class="cover-img" style="display:none;" alt="PS3 Outside">
+      </div>
+    </div>
+
+    <div style="text-align: center; display: none;" id="preview-container-inside">
+      <div style="font-size: 0.8rem; font-weight: bold; margin-bottom: 6px; color: #38bdf8;" data-i18n="prev_inside">PS3 Inlay (Innenseite)</div>
+      <div class="frame-container frame-inside" id="frame-inside" onclick="selectTab('inside')">
+        <div class="placeholder" id="ph-inside" data-i18n="ph_select_inside">Select inside file above</div>
+        <img id="img-inside" class="cover-img" style="display:none;" alt="PS3 Inside">
+      </div>
+    </div>
+  </div>
+
+  <!-- Druckfenster / Druckvorschau -->
+  <div id="printScreen">
+    <div style="padding: 10px; text-align: center; background: #f3f4f6; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap;" class="no-print">
+      <button onclick="window.print()" style="padding: 10px 20px; background: #10b981; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">Print Now / Save PDF</button>
+      
+      <a href="https://paypal.me/kainco" target="_blank" rel="noopener noreferrer" 
+         style="background: #0070ba; color: white; padding: 8px 14px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
+        <i class="fa-brands fa-paypal"></i> <span data-i18n="btn_donation">Spende</span>
+      </a>
+      <a href="https://ko-fi.com/kainco" target="_blank" rel="noopener noreferrer" 
+         style="background: #ff5e5b; color: white; padding: 8px 14px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
+        <i class="fa-solid fa-mug-hot"></i> Support
+      </a>
+
+      <button onclick="closePrint()" style="padding: 10px 20px; background: #6b7280; color: white; border: none; border-radius: 6px; cursor: pointer;">Close</button>
+    </div>
+    <div class="print-container">
+      <!-- Exakte Maße in cm für PS3 Inlays (27.3cm x 14.9cm) -->
+      <img id="print-img-ps3" style="width: 27.3cm; height: 14.9cm; object-fit: contain; display: none;">
+      <img id="print-img-inside" style="width: 27.3cm; height: 14.9cm; object-fit: contain; display: none;">
+    </div>
+  </div>
+
+  <canvas id="canvas-ps3" style="display:none;"></canvas>
+  <canvas id="canvas-inside" style="display:none;"></canvas>
+
+  <script>
+    const i18n = {
+      en: {
+        nav_index: "Back to Overview",
+        studio_title: "PlayStation 3 Cover Studio",
+        ps3_label: "📷 PS3 Inlay (Outside)",
+        ps3_inside_label: "📷 PS3 Inlay (Inside / Duplex)",
+        tab_edit_ps3: "Edit: Inlay (Outside)",
+        tab_edit_inside: "Edit: Inlay (Inside)",
+        lbl_rotation: "Rotation & Flip",
+        lbl_zoom: "Granular Zoom (%)",
+        lbl_alignment: "Alignment & Print",
+        btn_fit: "Fit",
+        btn_reset: "Reset",
+        btn_donation: "Donation",
+        opt_crop_marks: "Print crop marks / guidelines",
+        opt_inside_cover: "PS3 Inside Cover (Duplex / Transparent)",
+        btn_print_both: "🖨️ Print / Save as PDF",
+        ph_select_ps3: "Select PS3 inlay file above",
+        ph_select_inside: "Select inside file above",
+        prev_ps3: "PS3 Inlay (Outside: 27,3 × 14,9 cm)",
+        prev_inside: "PS3 Inlay (Inside)"
+      },
+      de: {
+        nav_index: "Zurück zur Übersicht",
+        studio_title: "PlayStation 3 Cover Studio",
+        ps3_label: "📷 PS3 Inlay (Außenseite)",
+        ps3_inside_label: "📷 PS3 Inlay (Innenseite / Duplex)",
+        tab_edit_ps3: "Bearbeiten: Inlay (Außen)",
+        tab_edit_inside: "Bearbeiten: Inlay (Innen)",
+        lbl_rotation: "Drehung & Spiegeln",
+        lbl_zoom: "Granularer Zoom (%)",
+        lbl_alignment: "Ausrichtung & Druck",
+        btn_fit: "Einpassen",
+        btn_reset: "Zurücksetzen",
+        btn_donation: "Spende",
+        opt_crop_marks: "Schnittmarken drucken",
+        opt_inside_cover: "PS3 Innenseite (Duplex / Transparent)",
+        btn_print_both: "🖨️ Drucken / Als PDF speichern",
+        ph_select_ps3: "Wähle PS3 Inlay Datei oben",
+        ph_select_inside: "Wähle Innenseite Datei oben",
+        prev_ps3: "PS3 Inlay (Außenseite: 27,3 × 14,9 cm)",
+        prev_inside: "PS3 Inlay (Innenseite)"
+      }
+    };
+
+    let currentLang = localStorage.getItem('prs_lang') || 'en';
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem('prs_lang', lang);
+
+      const btnEn = document.getElementById('lang-en');
+      const btnDe = document.getElementById('lang-de');
+
+      if (lang === 'en') {
+        btnEn.classList.add('active');
+        btnDe.classList.remove('active');
+        document.documentElement.lang = "en";
+      } else {
+        btnDe.classList.add('active');
+        btnEn.classList.remove('active');
+        document.documentElement.lang = "de";
+      }
+
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (i18n[lang][key]) {
+          el.textContent = i18n[lang][key];
+        }
+      });
+    }
+
+    let activeTarget = 'ps3';
+    let currentNudgeStep = 1;
+
+    const state = {
+      ps3: { x: 0, y: 0, scale: 1, baseFitScale: 1, userZoom: 1, rotation: 0, flipX: 1, loaded: false, targetCmW: 27.3, targetCmH: 14.9 },
+      inside: { x: 0, y: 0, scale: 1, baseFitScale: 1, userZoom: 1, rotation: 0, flipX: 1, loaded: false, targetCmW: 27.3, targetCmH: 14.9 }
+    };
+
+    function toggleInsideCover(show) {
+      const cardInside = document.getElementById('card-inside');
+      const tabInside = document.getElementById('tab-inside');
+      const prevInside = document.getElementById('preview-container-inside');
+      
+      if (show) {
+        cardInside.style.display = 'block';
+        tabInside.style.display = 'block';
+        prevInside.style.display = 'block';
+      } else {
+        cardInside.style.display = 'none';
+        tabInside.style.display = 'none';
+        prevInside.style.display = 'none';
+        if (activeTarget === 'inside') selectTab('ps3');
+      }
+    }
+
+    function selectTab(target) {
+      activeTarget = target;
+      ['ps3', 'inside'].forEach(t => {
+        const tab = document.getElementById(`tab-${t}`);
+        const card = document.getElementById(`card-${t}`);
+        const frame = document.getElementById(`frame-${t}`);
+        if (tab) tab.classList.toggle('active', t === target);
+        if (card) card.classList.toggle('active', t === target);
+        if (frame) frame.classList.toggle('active-target', t === target);
+      });
+      updateControls();
+    }
+
+    function calculateAndDisplayDPI(target) {
+      const img = document.getElementById(`img-${target}`);
+      const container = document.getElementById(`dpi-container-${target}`);
+      const badge = document.getElementById(`dpi-badge-${target}`);
+      const marker = document.getElementById(`dpi-marker-${target}`);
+      
+      if (!img || !img.naturalWidth || !img.naturalHeight) return;
+
+      container.style.display = 'block';
+
+      const inchesW = state[target].targetCmW / 2.54;
+      const inchesH = state[target].targetCmH / 2.54;
+
+      const is90 = Math.abs(state[target].rotation % 180) === 90;
+      const imgW = is90 ? img.naturalHeight : img.naturalWidth;
+      const imgH = is90 ? img.naturalWidth : img.naturalHeight;
+
+      const dpiW = Math.round(imgW / inchesW);
+      const dpiH = Math.round(imgH / inchesH);
+      const dpi = Math.min(dpiW, dpiH);
+
+      badge.className = 'dpi-badge';
+
+      let markerPos = 0;
+      if (dpi <= 150) {
+        markerPos = (dpi / 150) * 37.5;
+      } else if (dpi < 300) {
+        markerPos = 37.5 + ((dpi - 150) / 150) * 37.5;
+      } else {
+        const extra = Math.min(dpi - 300, 100);
+        markerPos = 75 + (extra / 100) * 25;
+      }
+      if (marker) marker.style.left = `${Math.min(Math.max(markerPos, 2), 98)}%`;
+
+      if (dpi >= 300) {
+        badge.classList.add('green');
+        badge.innerHTML = `🟢 <b>${dpi} DPI</b> – Excellent`;
+      } else if (dpi >= 150) {
+        badge.classList.add('yellow');
+        badge.innerHTML = `🟡 <b>${dpi} DPI</b> – Good`;
+      } else {
+        badge.classList.add('red');
+        badge.innerHTML = `🔴 <b>${dpi} DPI</b> – Low quality`;
+      }
+    }
+
+    function loadFile(e, target) {
+      const file = e.target.files[0];
+      if (file) {
+        selectTab(target);
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const img = document.getElementById(`img-${target}`);
+          const ph = document.getElementById(`ph-${target}`);
+          img.src = event.target.result;
+          img.style.display = 'block';
+          if (ph) ph.style.display = 'none';
+          img.onload = () => {
+            state[target].loaded = true;
+            fitImage();
+            calculateAndDisplayDPI(target);
+          };
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function calculateFitScale(target) {
+      const img = document.getElementById(`img-${target}`);
+      if (!img || !img.naturalWidth) return 1;
+      const frame = document.getElementById(`frame-${target}`);
+      const is90 = Math.abs(state[target].rotation % 180) === 90;
+      const w = is90 ? img.naturalHeight : img.naturalWidth;
+      const h = is90 ? img.naturalWidth : img.naturalHeight;
+      return Math.max(frame.clientWidth / w, frame.clientHeight / h);
+    }
+
+    function applyTransforms() {
+      const img = document.getElementById(`img-${activeTarget}`);
+      const s = state[activeTarget];
+      s.scale = s.baseFitScale * s.userZoom;
+      img.style.transform = `translate(calc(-50% + ${s.x}px), calc(-50% + ${s.y}px)) rotate(${s.rotation}deg) scale(${s.scale * s.flipX}, ${s.scale})`;
+      updateControls();
+    }
+
+    function updateControls() {
+      const s = state[activeTarget];
+      const val = parseFloat((s.userZoom * 100).toFixed(1));
+      const slider = document.getElementById('zoomSlider');
+      const input = document.getElementById('zoomInput');
+      if (slider) slider.value = val;
+      if (input) input.value = val;
+    }
+
+    function toggleFlip() {
+      state[activeTarget].flipX = state[activeTarget].flipX === 1 ? -1 : 1;
+      applyTransforms();
+    }
+
+    function rotate(deg) { 
+      state[activeTarget].rotation = deg; 
+      state[activeTarget].baseFitScale = calculateFitScale(activeTarget);
+      applyTransforms(); 
+      calculateAndDisplayDPI(activeTarget);
+    }
+
+    function updateZoom(val) { 
+      state[activeTarget].userZoom = parseFloat(val) / 100; 
+      applyTransforms(); 
+    }
+
+    function stepZoom(delta) {
+      let currentPercent = state[activeTarget].userZoom * 100;
+      let newPercent = Math.min(Math.max(currentPercent + delta, 10), 300);
+      state[activeTarget].userZoom = parseFloat((newPercent / 100).toFixed(3));
+      applyTransforms();
+    }
+
+    function setNudgeStep(step) {
+      currentNudgeStep = step;
+      [1, 5, 10].forEach(s => {
+        const btn = document.getElementById(`step-${s}`);
+        if (btn) {
+          if (s === step) {
+            btn.style.background = 'var(--brand)';
+            btn.style.color = 'white';
+          } else {
+            btn.style.background = 'var(--card-bg)';
+            btn.style.color = 'var(--text-muted)';
+          }
+        }
+      });
+    }
+
+    function nudge(dx, dy) {
+      state[activeTarget].x += dx * currentNudgeStep;
+      state[activeTarget].y += dy * currentNudgeStep;
+      applyTransforms();
+    }
+
+    function resetPos() {
+      state[activeTarget].x = 0;
+      state[activeTarget].y = 0;
+      applyTransforms();
+    }
+
+    function fitImage() {
+      state[activeTarget].baseFitScale = calculateFitScale(activeTarget);
+      state[activeTarget].userZoom = 1.0;
+      state[activeTarget].x = 0;
+      state[activeTarget].y = 0;
+      applyTransforms();
+    }
+
+    function resetTransforms() {
+      state[activeTarget].x = 0;
+      state[activeTarget].y = 0;
+      state[activeTarget].userZoom = 1.0;
+      state[activeTarget].rotation = 0;
+      state[activeTarget].flipX = 1;
+      state[activeTarget].baseFitScale = calculateFitScale(activeTarget);
+      applyTransforms();
+      calculateAndDisplayDPI(activeTarget);
+    }
+
+    ['ps3', 'inside'].forEach(key => {
+      const frame = document.getElementById(`frame-${key}`);
+      if (!frame) return;
+      let startX, startY, isDragging = false;
+
+      const handleStart = (e) => {
+        if (!state[key].loaded) return;
+        selectTab(key);
+        isDragging = true;
+        const touch = e.touches ? e.touches[0] : e;
+        startX = touch.clientX - state[key].x;
+        startY = touch.clientY - state[key].y;
+      };
+
+      const handleMove = (e) => {
+        if (!isDragging) return;
+        const touch = e.touches ? e.touches[0] : e;
+        state[key].x = touch.clientX - startX;
+        state[key].y = touch.clientY - startY;
+        applyTransforms();
+      };
+
+      const handleEnd = () => { isDragging = false; };
+
+      frame.addEventListener('touchstart', handleStart, { passive: true });
+      frame.addEventListener('touchmove', handleMove, { passive: true });
+      frame.addEventListener('touchend', handleEnd);
+      frame.addEventListener('mousedown', handleStart);
+      window.addEventListener('mousemove', handleMove);
+      window.addEventListener('mouseup', handleEnd);
+    });
+
+    function preparePrint() {
+      const hasPs3 = state.ps3.loaded;
+      const enableInside = document.getElementById('enableInside').checked;
+      const hasInside = enableInside && state.inside.loaded;
+
+      if (!hasPs3 && !hasInside) {
+        alert('Please select at least one image!');
+        return;
+      }
+
+      const drawGuidelines = document.getElementById('showGuidelines').checked;
+
+      function renderCanvas(key, targetW, targetH, forceFlipX = 1) {
+        if (!state[key].loaded) return null;
+        const canvas = document.getElementById(`canvas-${key}`);
+        const ctx = canvas.getContext('2d');
+        const img = document.getElementById(`img-${key}`);
+        const s = state[key];
+        const frame = document.getElementById(`frame-${key}`);
+
+        canvas.width = targetW;
+        canvas.height = targetH;
+        ctx.clearRect(0, 0, targetW, targetH);
+
+        const scaleFactor = targetW / frame.clientWidth;
+        ctx.save();
+        ctx.translate(targetW / 2 + s.x * scaleFactor, targetH / 2 + s.y * scaleFactor);
+        ctx.rotate((s.rotation * Math.PI) / 180);
+        ctx.scale(s.scale * s.flipX * forceFlipX * scaleFactor, s.scale * scaleFactor);
+        ctx.drawImage(img, -img.naturalWidth / 2, -img.naturalHeight / 2);
+        ctx.restore();
+
+        if (drawGuidelines) {
+          ctx.save();
+          ctx.strokeStyle = '#94a3b8';
+          ctx.lineWidth = 3;
+          ctx.strokeRect(0, 0, targetW, targetH);
+          
+          // Spine-Hilfslinien für PS3 (ca. 12.9 cm und 14.3 cm von links bei 27.3 cm Gesamtbreite)
+          const spineLeft = (12.9 / 27.3) * targetW;
+          const spineRight = (14.3 / 27.3) * targetW;
+          ctx.setLineDash([10, 10]);
+          ctx.beginPath();
+          ctx.moveTo(spineLeft, 0);
+          ctx.lineTo(spineLeft, targetH);
+          ctx.moveTo(spineRight, 0);
+          ctx.lineTo(spineRight, targetH);
+          ctx.stroke();
+          ctx.restore();
+        }
+
+        return canvas.toDataURL('image/png');
+      }
+
+      // 300 DPI Rendering-Auflösung für PS3 Inlays (27.3 cm x 14.9 cm -> ca. 3222 x 1758 Pixel)
+      const ps3Data = renderCanvas('ps3', 3222, 1758, 1);
+      const insideData = hasInside ? renderCanvas('inside', 3222, 1758, -1) : null;
+
+      const printPs3 = document.getElementById('print-img-ps3');
+      const printInside = document.getElementById('print-img-inside');
+
+      if (ps3Data) { printPs3.src = ps3Data; printPs3.style.display = 'block'; }
+      else { printPs3.style.display = 'none'; }
+
+      if (insideData) { printInside.src = insideData; printInside.style.display = 'block'; }
+      else { printInside.style.display = 'none'; }
+
+      document.getElementById('printScreen').style.display = 'block';
+    }
+
+    function closePrint() {
+      document.getElementById('printScreen').style.display = 'none';
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      setLanguage(currentLang);
+    });
+  </script>
+</body>
+</html>
