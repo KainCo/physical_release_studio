@@ -220,7 +220,6 @@
       color: var(--text-muted);
     }
 
-    /* DPI Quality Scale */
     .dpi-container {
       display: none;
       margin-top: 10px;
@@ -717,7 +716,10 @@
         sheet_front: "Front Side (Outside)",
         sheet_back: "Back Side (Inside)",
         alert_no_image: "Please select at least one image for the booklet!",
-        alert_import_success: "Successfully imported and split spreads from PDF booklet!"
+        alert_import_success: "Successfully imported and split spreads from PDF booklet!",
+        dpi_excellent: "Excellent",
+        dpi_good: "Good",
+        dpi_low: "Low quality"
       },
       de: {
         nav_index: "Zurück zur Übersicht",
@@ -756,7 +758,10 @@
         sheet_front: "Vorderseite (Außenseite)",
         sheet_back: "Rückseite (Innenseite)",
         alert_no_image: "Bitte wähle mindestens ein Bild für das Booklet aus!",
-        alert_import_success: "PDF erfolgreich importiert und Doppelseiten aufgeteilt!"
+        alert_import_success: "PDF erfolgreich importiert und Doppelseiten aufgeteilt!",
+        dpi_excellent: "Hervorragend",
+        dpi_good: "Gut",
+        dpi_low: "Niedrige Qualität"
       }
     };
 
@@ -1056,13 +1061,13 @@
 
         if (dpi >= 300) {
           badge.classList.add('green');
-          badge.innerHTML = `🟢 <b>${dpi} DPI</b> – Hervorragend`;
+          badge.innerHTML = `🟢 <b>${dpi} DPI</b> – ${i18n[currentLang].dpi_excellent}`;
         } else if (dpi >= 150) {
           badge.classList.add('yellow');
-          badge.innerHTML = `🟡 <b>${dpi} DPI</b> – Gut`;
+          badge.innerHTML = `🟡 <b>${dpi} DPI</b> – ${i18n[currentLang].dpi_good}`;
         } else {
           badge.classList.add('red');
-          badge.innerHTML = `🔴 <b>${dpi} DPI</b> – Niedrige Qualität`;
+          badge.innerHTML = `🔴 <b>${dpi} DPI</b> – ${i18n[currentLang].dpi_low}`;
         }
       }
     }
