@@ -396,6 +396,37 @@
       overflow: auto;
     }
 
+    /* ---- Print pages (A4). Page 1 = Back (outside) + Front, Page 2 = Back (inside),
+       placed at EXACTLY the same position as the back on page 1 for duplex alignment ---- */
+    .print-pages {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .print-page {
+      position: relative;
+      flex: none;
+      width: 210mm;
+      height: 296mm;
+      background: #fff;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.35);
+      overflow: hidden;
+    }
+
+    .print-page[hidden] { display: none !important; }
+
+    .print-page img {
+      position: absolute;
+      display: block;
+      max-width: none;
+      max-height: none;
+    }
+
+    .pp-back, .pp-inside { left: 30mm; top: 20mm; width: 150mm; height: 117.5mm; }
+    .pp-front { left: 45mm; top: 145.5mm; width: 120mm; height: 120mm; }
+
     @media print {
       @page {
         size: A4 portrait;
@@ -403,11 +434,13 @@
       }
 
       html, body {
+        display: block !important;
         width: 210mm !important;
-        height: 297mm !important;
+        height: auto !important;
+        min-height: 0 !important;
         margin: 0 !important;
         padding: 0 !important;
-        overflow: hidden !important;
+        overflow: visible !important;
         background: white !important;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
@@ -419,38 +452,29 @@
 
       #printScreen {
         display: block !important;
-        position: absolute !important;
-        left: 0 !important;
-        top: 0 !important;
+        position: static !important;
         width: 210mm !important;
-        height: 297mm !important;
+        height: auto !important;
         margin: 0 !important;
         padding: 0 !important;
-        overflow: hidden !important;
+        overflow: visible !important;
         background: white !important;
       }
 
-      .print-container {
-        display: flex !important;
-        flex-direction: column !important;
-        justify-content: center !important;
-        align-items: center !important;
-        gap: 6mm !important;
-        width: 210mm !important;
-        height: 297mm !important;
-        margin: 0 auto !important;
-        padding: 0 !important;
-        box-sizing: border-box !important;
-        page-break-inside: avoid !important;
-        break-inside: avoid !important;
+      .print-pages {
+        display: block !important;
       }
 
-      .print-container img {
-        display: block !important;
-        max-width: none !important;
-        max-height: none !important;
-        page-break-inside: avoid !important;
-        break-inside: avoid !important;
+      .print-page {
+        box-shadow: none !important;
+        margin: 0 !important;
+        break-after: page;
+        page-break-after: always;
+      }
+
+      .print-page.is-last {
+        break-after: auto;
+        page-break-after: auto;
       }
     }
   </style>
@@ -616,6 +640,10 @@
             <input type="checkbox" id="enableInside" onchange="toggleInsideCover(this.checked)">
             <span data-i18n="opt_inside_cover">Back Cover Innenseite (Duplex / NTSC)</span>
           </label>
+          <label id="mirrorInsideWrap" style="display: none; align-items: center; gap: 6px; font-size: 0.75rem; cursor: pointer; color: #38bdf8; padding-left: 20px;">
+            <input type="checkbox" id="mirrorInside">
+            <span data-i18n="opt_mirror_inside">Mirror inside image</span>
+          </label>
         </div>
       </div>
     </div>
@@ -664,11 +692,18 @@
       </a>
 
       <button onclick="closePrint()" style="padding: 10px 20px; background: #6b7280; color: white; border: none; border-radius: 6px; cursor: pointer;">Close</button>
+      <div data-i18n="print_hint" style="flex-basis: 100%; font-size: 0.75rem; color: #4b5563;">Duplex: A4, scale 100%, margins "None", double-sided → flip on long edge.</div>
     </div>
-    <div class="print-container">
-      <img id="print-img-back" style="width: 15.0cm; height: 11.75cm; object-fit: contain; display: none;">
-      <img id="print-img-front" style="width: 12.0cm; height: 12.0cm; object-fit: contain; display: none;">
-      <img id="print-img-inside" style="width: 15.0cm; height: 11.75cm; object-fit: contain; display: none;">
+    <div class="print-pages">
+      <!-- Page 1: Back (outside) + Front -->
+      <div class="print-page" id="page-1" hidden>
+        <img id="print-img-back" class="pp-back" style="display: none;">
+        <img id="print-img-front" class="pp-front" style="display: none;">
+      </div>
+      <!-- Page 2: Back (inside) – same position as back on page 1 -->
+      <div class="print-page" id="page-2" hidden>
+        <img id="print-img-inside" class="pp-inside" style="display: none;">
+      </div>
     </div>
   </div>
 
@@ -694,6 +729,8 @@
         btn_donation: "Donation",
         opt_crop_marks: "Print crop marks / guidelines",
         opt_inside_cover: "Back Cover Inside (Duplex / NTSC)",
+        opt_mirror_inside: "Mirror inside image (if text is mirrored after printing)",
+        print_hint: "Duplex: A4, scale 100%, margins \"None\", double-sided → flip on long edge. Page 1 = Back + Front, Page 2 = Inside.",
         btn_print_both: "🖨️ Print / Save as PDF",
         ph_select_back: "Select outside file above",
         ph_select_front: "Select front file above",
@@ -718,6 +755,8 @@
         btn_donation: "Spende",
         opt_crop_marks: "Schnittmarken drucken",
         opt_inside_cover: "Backcover Innenseite (Duplex / NTSC)",
+        opt_mirror_inside: "Innenseite spiegeln (falls Schrift nach dem Druck spiegelverkehrt ist)",
+        print_hint: "Duplex: A4, Skalierung 100 %, Ränder „Keine“, beidseitig → Spiegeln an der langen Kante. Seite 1 = Back + Front, Seite 2 = Innenseite.",
         btn_print_both: "🖨️ Drucken / Als PDF speichern",
         ph_select_back: "Wähle außen Datei oben",
         ph_select_front: "Wähle Front Datei oben",
@@ -768,15 +807,18 @@
       const cardInside = document.getElementById('card-inside');
       const tabInside = document.getElementById('tab-inside');
       const prevInside = document.getElementById('preview-container-inside');
-      
+      const mirrorWrap = document.getElementById('mirrorInsideWrap');
+
       if (show) {
         cardInside.style.display = 'block';
         tabInside.style.display = 'block';
         prevInside.style.display = 'block';
+        mirrorWrap.style.display = 'flex';
       } else {
         cardInside.style.display = 'none';
         tabInside.style.display = 'none';
         prevInside.style.display = 'none';
+        mirrorWrap.style.display = 'none';
         if (activeTarget === 'inside') selectTab('back');
       }
     }
@@ -1004,7 +1046,8 @@
 
       const drawGuidelines = document.getElementById('showGuidelines').checked;
 
-      function renderCanvas(key, targetW, targetH, forceFlipX = 1) {
+      // mirror = -1 mirrors the whole finished canvas horizontally (position, rotation and flip included)
+      function renderCanvas(key, targetW, targetH, mirror = 1) {
         if (!state[key].loaded) return null;
         const canvas = document.getElementById(`canvas-${key}`);
         const ctx = canvas.getContext('2d');
@@ -1018,9 +1061,9 @@
 
         const scaleFactor = targetW / frame.clientWidth;
         ctx.save();
-        ctx.translate(targetW / 2 + s.x * scaleFactor, targetH / 2 + s.y * scaleFactor);
-        ctx.rotate((s.rotation * Math.PI) / 180);
-        ctx.scale(s.scale * s.flipX * forceFlipX * scaleFactor, s.scale * scaleFactor);
+        ctx.translate(targetW / 2 + mirror * s.x * scaleFactor, targetH / 2 + s.y * scaleFactor);
+        ctx.rotate((mirror * s.rotation * Math.PI) / 180);
+        ctx.scale(s.scale * s.flipX * mirror * scaleFactor, s.scale * scaleFactor);
         ctx.drawImage(img, -img.naturalWidth / 2, -img.naturalHeight / 2);
         ctx.restore();
 
@@ -1048,7 +1091,8 @@
 
       const backData = renderCanvas('back', 1772, 1388, 1);
       const frontData = renderCanvas('front', 1417, 1417, 1);
-      const insideData = hasInside ? renderCanvas('inside', 1772, 1388, -1) : null;
+      const mirrorInside = document.getElementById('mirrorInside').checked ? -1 : 1;
+      const insideData = hasInside ? renderCanvas('inside', 1772, 1388, mirrorInside) : null;
 
       const printBack = document.getElementById('print-img-back');
       const printFront = document.getElementById('print-img-front');
@@ -1062,6 +1106,14 @@
 
       if (insideData) { printInside.src = insideData; printInside.style.display = 'block'; }
       else { printInside.style.display = 'none'; }
+
+      // Page 1 stays (even if empty) whenever an inside page exists, so the duplex pairing is kept
+      const page1 = document.getElementById('page-1');
+      const page2 = document.getElementById('page-2');
+      page1.hidden = !(backData || frontData || insideData);
+      page2.hidden = !insideData;
+      page1.classList.toggle('is-last', page2.hidden);
+      page2.classList.toggle('is-last', !page2.hidden);
 
       document.getElementById('printScreen').style.display = 'block';
     }
