@@ -359,6 +359,27 @@
     .frame-front { width: 300px; height: 300px; }
     .frame-inside { width: 375px; height: 294px; }
 
+    /* Optional split mode: left spine | center | right spine (0.6 + 13.8 + 0.6 cm) */
+    .back-group { display: flex; align-items: stretch; justify-content: center; }
+    .frame-spine { display: none; width: 15px; height: 294px; flex: none; }
+    .spine-ph { writing-mode: vertical-rl; font-size: 0.6rem; letter-spacing: 0.1em; white-space: nowrap; }
+
+    .back-group.split {
+      border: 2px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      width: 379px; /* 375px content + 2 x 2px border */
+      margin: 0 auto;
+    }
+    .back-group.split .frame-spine { display: block; }
+    .back-group.split .frame-container { border: 0; border-radius: 0; }
+    .back-group.split .frame-back { width: 345px; }
+    .back-group.split .frame-container.active-target {
+      box-shadow: none;
+      outline: 2px solid var(--brand);
+      outline-offset: -2px;
+    }
+
     .frame-container.active-target {
       border-color: var(--brand);
       box-shadow: 0 0 15px rgba(37, 99, 235, 0.4);
@@ -519,7 +540,7 @@
     <div class="upload-cards">
       <!-- Back Cover Upload -->
       <div class="upload-card active" id="card-back" onclick="selectTab('back')">
-        <label for="file-back" data-i18n="cd_back_label">📷 Back Cover (Außenseite)</label>
+        <label for="file-back" id="lbl-back" data-i18n="cd_back_label">📷 Back Cover (Außenseite)</label>
         <input type="file" id="file-back" accept="image/*" onchange="loadFile(event, 'back')">
         
         <div id="dpi-container-back" class="dpi-container">
@@ -529,6 +550,37 @@
             <div class="scale-segment scale-yellow"></div>
             <div class="scale-segment scale-green"></div>
             <div id="dpi-marker-back" class="scale-marker" style="left: 0%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Optional: separate spines (left / right) -->
+      <div class="upload-card" id="card-spineL" onclick="selectTab('spineL')" style="display: none;">
+        <label for="file-spineL" data-i18n="cd_spineL_label">📷 Spine left (0.6 × 11.75 cm)</label>
+        <input type="file" id="file-spineL" accept="image/*" onchange="loadFile(event, 'spineL')">
+
+        <div id="dpi-container-spineL" class="dpi-container">
+          <div id="dpi-badge-spineL" class="dpi-badge"></div>
+          <div class="dpi-scale-wrapper">
+            <div class="scale-segment scale-red"></div>
+            <div class="scale-segment scale-yellow"></div>
+            <div class="scale-segment scale-green"></div>
+            <div id="dpi-marker-spineL" class="scale-marker" style="left: 0%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="upload-card" id="card-spineR" onclick="selectTab('spineR')" style="display: none;">
+        <label for="file-spineR" data-i18n="cd_spineR_label">📷 Spine right (0.6 × 11.75 cm)</label>
+        <input type="file" id="file-spineR" accept="image/*" onchange="loadFile(event, 'spineR')">
+
+        <div id="dpi-container-spineR" class="dpi-container">
+          <div id="dpi-badge-spineR" class="dpi-badge"></div>
+          <div class="dpi-scale-wrapper">
+            <div class="scale-segment scale-red"></div>
+            <div class="scale-segment scale-yellow"></div>
+            <div class="scale-segment scale-green"></div>
+            <div id="dpi-marker-spineR" class="scale-marker" style="left: 0%;"></div>
           </div>
         </div>
       </div>
@@ -569,6 +621,8 @@
     <!-- Tabs -->
     <div class="tabs">
       <button class="tab-btn active" id="tab-back" onclick="selectTab('back')" data-i18n="tab_edit_back">Edit: Back (Außen)</button>
+      <button class="tab-btn" id="tab-spineL" onclick="selectTab('spineL')" style="display: none;" data-i18n="tab_edit_spineL">Edit: Spine L</button>
+      <button class="tab-btn" id="tab-spineR" onclick="selectTab('spineR')" style="display: none;" data-i18n="tab_edit_spineR">Edit: Spine R</button>
       <button class="tab-btn" id="tab-front" onclick="selectTab('front')" data-i18n="tab_edit_front">Edit: Front</button>
       <button class="tab-btn" id="tab-inside" onclick="selectTab('inside')" style="display: none;" data-i18n="tab_edit_inside">Edit: Back (Innenseite)</button>
     </div>
@@ -644,6 +698,10 @@
             <input type="checkbox" id="mirrorInside">
             <span data-i18n="opt_mirror_inside">Mirror inside image</span>
           </label>
+          <label style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; cursor: pointer; color: #fbbf24;">
+            <input type="checkbox" id="enableSpines" onchange="toggleSplitSpines(this.checked)">
+            <span data-i18n="opt_split_spines">Upload spines separately (left / right)</span>
+          </label>
         </div>
       </div>
     </div>
@@ -653,10 +711,20 @@
 
   <div class="preview-wrapper">
     <div style="text-align: center;">
-      <div style="font-size: 0.8rem; font-weight: bold; margin-bottom: 6px;" data-i18n="prev_back">Back Cover (Außenseite)</div>
-      <div class="frame-container frame-back active-target" id="frame-back" onclick="selectTab('back')">
-        <div class="placeholder" id="ph-back" data-i18n="ph_select_back">Select file above</div>
-        <img id="img-back" class="cover-img" style="display:none;" alt="Back">
+      <div id="prev-lbl-back" style="font-size: 0.8rem; font-weight: bold; margin-bottom: 6px;" data-i18n="prev_back">Back Cover (Außenseite)</div>
+      <div class="back-group" id="back-group">
+        <div class="frame-container frame-spine" id="frame-spineL" onclick="selectTab('spineL')">
+          <div class="placeholder spine-ph" id="ph-spineL">SPINE L</div>
+          <img id="img-spineL" class="cover-img" style="display:none;" alt="Spine left">
+        </div>
+        <div class="frame-container frame-back active-target" id="frame-back" onclick="selectTab('back')">
+          <div class="placeholder" id="ph-back" data-i18n="ph_select_back">Select file above</div>
+          <img id="img-back" class="cover-img" style="display:none;" alt="Back">
+        </div>
+        <div class="frame-container frame-spine" id="frame-spineR" onclick="selectTab('spineR')">
+          <div class="placeholder spine-ph" id="ph-spineR">SPINE R</div>
+          <img id="img-spineR" class="cover-img" style="display:none;" alt="Spine right">
+        </div>
       </div>
     </div>
 
@@ -730,6 +798,14 @@
         opt_crop_marks: "Print crop marks / guidelines",
         opt_inside_cover: "Back Cover Inside (Duplex / NTSC)",
         opt_mirror_inside: "Mirror inside image (if text is mirrored after printing)",
+        opt_split_spines: "Upload spines separately (left / right)",
+        cd_back_center_label: "📷 Back Cover – Center (without spines, 13.8 × 11.75 cm)",
+        cd_spineL_label: "📷 Spine left (0.6 × 11.75 cm)",
+        cd_spineR_label: "📷 Spine right (0.6 × 11.75 cm)",
+        tab_edit_back_center: "Edit: Back (Center)",
+        tab_edit_spineL: "Edit: Spine L",
+        tab_edit_spineR: "Edit: Spine R",
+        prev_back_split: "Back Cover (Outside) – Center + Spines",
         print_hint: "Duplex: A4, scale 100%, margins \"None\", double-sided → flip on long edge. Page 1 = Back + Front, Page 2 = Inside.",
         btn_print_both: "🖨️ Print / Save as PDF",
         ph_select_back: "Select outside file above",
@@ -756,6 +832,14 @@
         opt_crop_marks: "Schnittmarken drucken",
         opt_inside_cover: "Backcover Innenseite (Duplex / NTSC)",
         opt_mirror_inside: "Innenseite spiegeln (falls Schrift nach dem Druck spiegelverkehrt ist)",
+        opt_split_spines: "Spines separat hochladen (links / rechts)",
+        cd_back_center_label: "📷 Rückseite – Mitte (ohne Spines, 13,8 × 11,75 cm)",
+        cd_spineL_label: "📷 Spine links (0,6 × 11,75 cm)",
+        cd_spineR_label: "📷 Spine rechts (0,6 × 11,75 cm)",
+        tab_edit_back_center: "Bearbeiten: Rück (Mitte)",
+        tab_edit_spineL: "Bearbeiten: Spine L",
+        tab_edit_spineR: "Bearbeiten: Spine R",
+        prev_back_split: "Back Cover (Außenseite) – Mitte + Spines",
         print_hint: "Duplex: A4, Skalierung 100 %, Ränder „Keine“, beidseitig → Spiegeln an der langen Kante. Seite 1 = Back + Front, Seite 2 = Innenseite.",
         btn_print_both: "🖨️ Drucken / Als PDF speichern",
         ph_select_back: "Wähle außen Datei oben",
@@ -800,7 +884,9 @@
     const state = {
       back: { x: 0, y: 0, scale: 1, baseFitScale: 1, userZoom: 1, rotation: 0, flipX: 1, loaded: false, targetCmW: 15.0, targetCmH: 11.75 },
       front: { x: 0, y: 0, scale: 1, baseFitScale: 1, userZoom: 1, rotation: 0, flipX: 1, loaded: false, targetCmW: 12.0, targetCmH: 12.0 },
-      inside: { x: 0, y: 0, scale: 1, baseFitScale: 1, userZoom: 1, rotation: 0, flipX: 1, loaded: false, targetCmW: 15.0, targetCmH: 11.75 }
+      inside: { x: 0, y: 0, scale: 1, baseFitScale: 1, userZoom: 1, rotation: 0, flipX: 1, loaded: false, targetCmW: 15.0, targetCmH: 11.75 },
+      spineL: { x: 0, y: 0, scale: 1, baseFitScale: 1, userZoom: 1, rotation: 0, flipX: 1, loaded: false, targetCmW: 0.6, targetCmH: 11.75 },
+      spineR: { x: 0, y: 0, scale: 1, baseFitScale: 1, userZoom: 1, rotation: 0, flipX: 1, loaded: false, targetCmW: 0.6, targetCmH: 11.75 }
     };
 
     function toggleInsideCover(show) {
@@ -823,9 +909,41 @@
       }
     }
 
+    // Re-fit one target to its (possibly resized) frame without changing the active tab
+    function refit(key) {
+      if (!state[key].loaded) return;
+      const prev = activeTarget;
+      activeTarget = key;
+      fitImage();
+      activeTarget = prev;
+      updateControls();
+    }
+
+    // Split mode: back outside = left spine (0.6 cm) | center (13.8 cm) | right spine (0.6 cm)
+    function toggleSplitSpines(on) {
+      ['spineL', 'spineR'].forEach(k => {
+        document.getElementById(`card-${k}`).style.display = on ? 'block' : 'none';
+        document.getElementById(`tab-${k}`).style.display = on ? 'block' : 'none';
+      });
+      document.getElementById('back-group').classList.toggle('split', on);
+
+      document.getElementById('lbl-back').setAttribute('data-i18n', on ? 'cd_back_center_label' : 'cd_back_label');
+      document.getElementById('tab-back').setAttribute('data-i18n', on ? 'tab_edit_back_center' : 'tab_edit_back');
+      document.getElementById('prev-lbl-back').setAttribute('data-i18n', on ? 'prev_back_split' : 'prev_back');
+      setLanguage(currentLang);
+
+      state.back.targetCmW = on ? 13.8 : 15.0;
+      if (!on && (activeTarget === 'spineL' || activeTarget === 'spineR')) selectTab('back');
+
+      if (state.back.loaded) {
+        refit('back');
+        calculateAndDisplayDPI('back');
+      }
+    }
+
     function selectTab(target) {
       activeTarget = target;
-      ['back', 'front', 'inside'].forEach(t => {
+      ['back', 'front', 'inside', 'spineL', 'spineR'].forEach(t => {
         const tab = document.getElementById(`tab-${t}`);
         const card = document.getElementById(`card-${t}`);
         const frame = document.getElementById(`frame-${t}`);
@@ -1001,7 +1119,7 @@
       calculateAndDisplayDPI(activeTarget);
     }
 
-    ['back', 'front', 'inside'].forEach(key => {
+    ['back', 'front', 'inside', 'spineL', 'spineR'].forEach(key => {
       const frame = document.getElementById(`frame-${key}`);
       if (!frame) return;
       let startX, startY, isDragging = false;
@@ -1034,7 +1152,8 @@
     });
 
     function preparePrint() {
-      const hasBack = state.back.loaded;
+      const split = document.getElementById('enableSpines').checked;
+      const hasBack = state.back.loaded || (split && (state.spineL.loaded || state.spineR.loaded));
       const hasFront = state.front.loaded;
       const enableInside = document.getElementById('enableInside').checked;
       const hasInside = enableInside && state.inside.loaded;
@@ -1048,24 +1167,43 @@
 
       // mirror = -1 mirrors the whole finished canvas horizontally (position, rotation and flip included)
       function renderCanvas(key, targetW, targetH, mirror = 1) {
-        if (!state[key].loaded) return null;
+        // Spine strip width in canvas pixels (0.6 cm of 15 cm)
+        const spinePx = Math.round((0.6 / 15.0) * targetW);
+
+        // Parts to draw: whole image, or (back + split mode) center + left/right spine
+        const parts = (key === 'back' && split)
+          ? [
+              { k: 'back',   x0: spinePx,           w: targetW - 2 * spinePx },
+              { k: 'spineL', x0: 0,                 w: spinePx },
+              { k: 'spineR', x0: targetW - spinePx, w: spinePx }
+            ].filter(p => state[p.k].loaded)
+          : (state[key].loaded ? [{ k: key, x0: 0, w: targetW }] : []);
+
+        if (!parts.length) return null;
+
         const canvas = document.getElementById(`canvas-${key}`);
         const ctx = canvas.getContext('2d');
-        const img = document.getElementById(`img-${key}`);
-        const s = state[key];
-        const frame = document.getElementById(`frame-${key}`);
 
         canvas.width = targetW;
         canvas.height = targetH;
         ctx.clearRect(0, 0, targetW, targetH);
 
-        const scaleFactor = targetW / frame.clientWidth;
-        ctx.save();
-        ctx.translate(targetW / 2 + mirror * s.x * scaleFactor, targetH / 2 + s.y * scaleFactor);
-        ctx.rotate((mirror * s.rotation * Math.PI) / 180);
-        ctx.scale(s.scale * s.flipX * mirror * scaleFactor, s.scale * scaleFactor);
-        ctx.drawImage(img, -img.naturalWidth / 2, -img.naturalHeight / 2);
-        ctx.restore();
+        parts.forEach(p => {
+          const img = document.getElementById(`img-${p.k}`);
+          const s = state[p.k];
+          const frame = document.getElementById(`frame-${p.k}`);
+          const scaleFactor = p.w / frame.clientWidth;
+
+          ctx.save();
+          ctx.beginPath();
+          ctx.rect(p.x0, 0, p.w, targetH);
+          ctx.clip();
+          ctx.translate(p.x0 + p.w / 2 + mirror * s.x * scaleFactor, targetH / 2 + s.y * scaleFactor);
+          ctx.rotate((mirror * s.rotation * Math.PI) / 180);
+          ctx.scale(s.scale * s.flipX * mirror * scaleFactor, s.scale * scaleFactor);
+          ctx.drawImage(img, -img.naturalWidth / 2, -img.naturalHeight / 2);
+          ctx.restore();
+        });
 
         if (drawGuidelines) {
           ctx.save();
@@ -1074,7 +1212,7 @@
           ctx.strokeRect(0, 0, targetW, targetH);
           
           if (key === 'back' || key === 'inside') {
-            const spineW = (0.6 / 15.0) * targetW;
+            const spineW = spinePx;
             ctx.setLineDash([8, 8]);
             ctx.beginPath();
             ctx.moveTo(spineW, 0);
@@ -1124,6 +1262,9 @@
 
     window.addEventListener('DOMContentLoaded', () => {
       setLanguage(currentLang);
+      // Browsers may restore checkbox state after a reload – sync the UI with it
+      toggleInsideCover(document.getElementById('enableInside').checked);
+      toggleSplitSpines(document.getElementById('enableSpines').checked);
     });
   </script>
 </body>
