@@ -14,5 +14,5 @@ Ablauf fuer Nutzer
   (automatische Disc-Erkennung) auf die Festplatte und startet dann das Setup.
 - Optional bei mehreren Discs: "Erst auf die Festplatte kopieren", nur angeboten wenn genug freier Platz da ist.
 
-Co-authored-by: Claude 
+Co-authored-by: Claude
 Co-authored-by: ChatGPT 
