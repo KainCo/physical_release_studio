@@ -1,5 +1,5 @@
 Physical Release Studio - GOG Disc Creator (V5)
-
+ 
 Dateien
 - Physical-Release-Studio-GOG-Disc-Creator.html  Das Tool fuer die Webseite (eine Datei, Launcher eingebettet, kein Upload von Spieldaten).
 - GOGAutoLauncher.exe                            Derselbe Launcher einzeln (zum Testen).
@@ -14,4 +14,5 @@ Ablauf fuer Nutzer
   (automatische Disc-Erkennung) auf die Festplatte und startet dann das Setup.
 - Optional bei mehreren Discs: "Erst auf die Festplatte kopieren", nur angeboten wenn genug freier Platz da ist.
 
-Noch nicht getestet: der Launcher auf echtem Windows mit gebrannten Discs (nur kompiliert, Code-Review, Logiktests unter Linux).
+Co-authored-by: Claude 
+Co-authored-by: ChatGPT 
