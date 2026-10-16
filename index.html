@@ -11,19 +11,71 @@
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
-  <!-- Lokale Fonts (DSGVO-konform gehostet mit .ttf-Dateien) -->
+  <!-- Lokale Fonts (100% DSGVO-konform über exakte statische .ttf Schnitte wie im Backup) -->
   <style>
+    /* Inter Gewichte entsprechend dem Backup */
     @font-face {
       font-family: 'Inter';
-      src: url('./assets/fonts/Inter/Inter-VariableFont_opsz,wght.ttf') format('truetype');
-      font-weight: 100 900;
+      src: url('./assets/fonts/Inter/static/Inter-Light.ttf') format('truetype');
+      font-weight: 300;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Inter';
+      src: url('./assets/fonts/Inter/static/Inter-Regular.ttf') format('truetype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Inter';
+      src: url('./assets/fonts/Inter/static/Inter-Medium.ttf') format('truetype');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Inter';
+      src: url('./assets/fonts/Inter/static/Inter-SemiBold.ttf') format('truetype');
+      font-weight: 600;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Inter';
+      src: url('./assets/fonts/Inter/static/Inter-Bold.ttf') format('truetype');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Inter';
+      src: url('./assets/fonts/Inter/static/Inter-ExtraBold.ttf') format('truetype');
+      font-weight: 800;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    /* JetBrains Mono Gewichte entsprechend dem Backup */
+    @font-face {
+      font-family: 'JetBrains Mono';
+      src: url('./assets/fonts/JetBrainsMono/static/JetBrainsMono-Regular.ttf') format('truetype');
+      font-weight: 400;
       font-style: normal;
       font-display: swap;
     }
     @font-face {
       font-family: 'JetBrains Mono';
-      src: url('./assets/fonts/JetBrainsMono/JetBrainsMono-VariableFont_wght.ttf') format('truetype');
-      font-weight: 100 900;
+      src: url('./assets/fonts/JetBrainsMono/static/JetBrainsMono-Medium.ttf') format('truetype');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'JetBrains Mono';
+      src: url('./assets/fonts/JetBrainsMono/static/JetBrainsMono-Bold.ttf') format('truetype');
+      font-weight: 700;
       font-style: normal;
       font-display: swap;
     }
