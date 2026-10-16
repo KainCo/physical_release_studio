@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="de" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Physical Release Studio — Hub</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#f0f6ff',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              accent: '#a855f7',
+              neon: '#06b6d4',
+            },
+            dark: {
+              bg: '#090d16',
+              card: '#111726',
+              border: '#1f293d',
+              hover: '#1a2336'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .glass-nav {
+      background: rgba(9, 13, 22, 0.88);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .card-glow:hover {
+      box-shadow: 0 0 25px -5px rgba(59, 130, 246, 0.25), 0 0 10px -5px rgba(168, 85, 247, 0.2);
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #60a5fa 0%, #a855f7 50%, #ec4899 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #090d16; }
+    ::-webkit-scrollbar-thumb { background: #1f293d; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #3b82f6; }
+  </style>
+</head>
+<body class="bg-dark-bg text-slate-100 font-sans antialiased min-h-screen flex flex-col selection:bg-brand-500 selection:text-white">
+
+  <!-- ==================== TOP NAVIGATION BAR ==================== -->
+  <header class="sticky top-0 z-50 glass-nav border-b border-dark-border">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      
+      <a href="#" class="flex items-center gap-3 group">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 via-brand-accent to-pink-500 p-0.5 shadow-lg shadow-brand-500/20 group-hover:scale-105 transition-transform duration-300">
+          <div class="w-full h-full bg-dark-bg rounded-[10px] flex items-center justify-center">
+            <i class="fa-solid fa-compact-disc text-brand-500 group-hover:rotate-180 transition-transform duration-700 text-xl"></i>
+          </div>
+        </div>
+        <div>
+          <span class="font-extrabold text-lg tracking-tight block leading-none">PHYSICAL RELEASE</span>
+          <span class="text-xs font-mono text-brand-500 tracking-widest uppercase">Studio Hub</span>
+        </div>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-1 font-medium text-sm text-slate-300">
+        <div class="relative group">
+          <button class="px-3 py-2 rounded-lg hover:text-white hover:bg-dark-hover flex items-center gap-2 transition-colors">
+            <i class="fa-solid fa-cubes text-brand-500"></i>
+            <span data-i18n="nav_studios">Studios</span>
+            <i class="fa-solid fa-chevron-down text-xs text-slate-500 group-hover:rotate-180 transition-transform"></i>
+          </button>
+          <div class="absolute left-0 top-full pt-2 w-64 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform group-hover:translate-y-0 translate-y-2">
+            <div class="bg-dark-card border border-dark-border rounded-xl p-2 shadow-2xl space-y-1">
+              <a href="#cover-studio" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-dark-hover transition-colors">
+                <div class="w-8 h-8 rounded-md bg-blue-500/10 text-blue-400 flex items-center justify-center"><i class="fa-solid fa-compact-disc"></i></div>
+                <div><div class="text-sm font-semibold text-white">Cover Studio</div><div class="text-[11px] text-slate-400">PS1, Dreamcast, GameCube</div></div>
+              </a>
+              <a href="#booklet-studio" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-dark-hover transition-colors">
+                <div class="w-8 h-8 rounded-md bg-amber-500/10 text-amber-400 flex items-center justify-center"><i class="fa-solid fa-book-open"></i></div>
+                <div><div class="text-sm font-semibold text-white">Booklet Studio</div><div class="text-[11px] text-slate-400">Manuals & Guide Makers</div></div>
+              </a>
+              <a href="#sticker-studio" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-dark-hover transition-colors">
+                <div class="w-8 h-8 rounded-md bg-emerald-500/10 text-emerald-400 flex items-center justify-center"><i class="fa-solid fa-tags"></i></div>
+                <div><div class="text-sm font-semibold text-white">Sticker Studio</div><div class="text-[11px] text-slate-400">Memory Cards & Cartridges</div></div>
+              </a>
+              <a href="#craft-studio" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-dark-hover transition-colors">
+                <div class="w-8 h-8 rounded-md bg-purple-500/10 text-purple-400 flex items-center justify-center"><i class="fa-solid fa-box-open"></i></div>
+                <div><div class="text-sm font-semibold text-white">Craft Studio</div><div class="text-[11px] text-slate-400">Big Boxes & Cartridge Boxes</div></div>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <a href="#gog-disc-creator" class="px-3 py-2 rounded-lg hover:text-white hover:bg-dark-hover flex items-center gap-2 transition-colors">
+          <i class="fa-solid fa-rocket text-brand-accent"></i>
+          <span>GOG Disc Creator</span>
+        </a>
+
+        <a href="#materials" class="px-3 py-2 rounded-lg hover:text-white hover:bg-dark-hover flex items-center gap-2 transition-colors">
+          <i class="fa-solid fa-cart-shopping text-emerald-400"></i>
+          <span data-i18n="nav_materials">Materials</span>
+        </a>
+
+        <a href="#intention-section" class="px-3 py-2 rounded-lg hover:text-white hover:bg-dark-hover flex items-center gap-2 transition-colors">
+          <i class="fa-solid fa-circle-info text-sky-400"></i>
+          <span data-i18n="nav_intention">Intention</span>
+        </a>
+      </nav>
+
+      <div class="flex items-center gap-2">
+        
+        <!-- Language Switcher Toggle -->
+        <div class="bg-dark-card border border-dark-border rounded-xl p-1 flex items-center text-xs font-bold font-mono">
+          <button id="lang-en" onclick="setLanguage('en')" class="px-2 py-1 rounded-lg transition-all text-slate-400 hover:text-white">EN</button>
+          <button id="lang-de" onclick="setLanguage('de')" class="px-2 py-1 rounded-lg transition-all text-slate-400 hover:text-white">DE</button>
+        </div>
+
+        <!-- PayPal Button -->
+        <a href="https://paypal.me/kainco" target="_blank" rel="noopener noreferrer" 
+           class="inline-flex items-center gap-1.5 bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/40 text-blue-400 font-bold text-xs px-2.5 py-2 rounded-xl transition-all hover:scale-105">
+          <i class="fa-brands fa-paypal"></i>
+          <span class="hidden xl:inline">PayPal</span>
+        </a>
+
+        <!-- Ko-fi Support Button -->
+        <a href="https://ko-fi.com/kainco" target="_blank" rel="noopener noreferrer" 
+           class="inline-flex items-center gap-1.5 bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white font-bold text-xs px-3 py-2 rounded-xl shadow-lg shadow-red-500/20 hover:scale-105 transition-all">
+          <i class="fa-solid fa-mug-hot"></i>
+          <span data-i18n="btn_kofi">Support on Ko-fi</span>
+        </a>
+
+        <!-- Mobile Menu Toggle Button -->
+        <button id="mobile-menu-btn" class="md:hidden text-slate-400 hover:text-white p-2">
+          <i class="fa-solid fa-bars text-xl"></i>
+        </button>
+      </div>
+    </div>
+
+    <div id="mobile-menu" class="hidden md:hidden bg-dark-card border-b border-dark-border px-4 py-3 space-y-2">
+      <div class="font-bold text-xs text-slate-500 uppercase px-2 mb-1" data-i18n="nav_studios">Studios</div>
+      <a href="#cover-studio" class="block px-3 py-2 rounded-lg hover:bg-dark-hover text-sm">Cover Studio</a>
+      <a href="#booklet-studio" class="block px-3 py-2 rounded-lg hover:bg-dark-hover text-sm">Booklet Studio</a>
+      <a href="#sticker-studio" class="block px-3 py-2 rounded-lg hover:bg-dark-hover text-sm">Sticker Studio</a>
+      <a href="#craft-studio" class="block px-3 py-2 rounded-lg hover:bg-dark-hover text-sm">Craft Studio</a>
+      <a href="#gog-disc-creator" class="block px-3 py-2 rounded-lg hover:bg-dark-hover text-sm">GOG Disc Creator</a>
+      <div class="border-t border-dark-border my-2"></div>
+      <a href="https://paypal.me/kainco" target="_blank" rel="noopener noreferrer" class="block px-3 py-2 rounded-lg hover:bg-dark-hover text-sm text-blue-400">PayPal Spende</a>
+      <a href="#materials" class="block px-3 py-2 rounded-lg hover:bg-dark-hover text-sm" data-i18n="nav_materials">Materials</a>
+      <a href="#intention-section" class="block px-3 py-2 rounded-lg hover:bg-dark-hover text-sm" data-i18n="nav_intention">Intention</a>
+    </div>
+  </header>
+
+  <!-- ==================== HERO & CANVAS ANIMATION ==================== -->
+  <section id="intention-section" class="relative min-h-[540px] flex items-center justify-center overflow-hidden border-b border-dark-border bg-gradient-to-b from-dark-bg via-dark-card to-dark-bg py-16">
+    <canvas id="hero-canvas" class="absolute inset-0 w-full h-full pointer-events-none opacity-40"></canvas>
+
+    <div class="relative z-10 max-w-4xl mx-auto px-4 text-center space-y-6">
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-500/10 border border-brand-500/30 text-brand-500 text-xs font-mono font-medium animate-pulse">
+        <i class="fa-solid fa-gamepad"></i>
+        <span data-i18n="hero_pill">Physical Media Preservation Project</span>
+      </div>
+
+      <h1 class="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-tight">
+        <span data-i18n="hero_title_1">Digital Games.</span><br>
+        <span class="gradient-text" data-i18n="hero_title_2">Genuine Physical Masterpieces.</span>
+      </h1>
+
+      <p class="text-slate-400 text-sm sm:text-lg max-w-2xl mx-auto leading-relaxed" data-i18n="hero_subtitle">
+        Create high-precision, print-ready cover inserts, booklet manuals, stickers, and box sleeves for your physical game collection.
+      </p>
+
+      <div class="mt-8 bg-dark-card/90 border border-dark-border p-6 rounded-2xl shadow-2xl backdrop-blur-md text-left space-y-4 max-w-3xl mx-auto border-l-4 border-l-brand-500">
+        <div class="flex items-center justify-between border-b border-dark-border pb-3">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-red-500"></span>
+            <span class="w-3 h-3 rounded-full bg-yellow-500"></span>
+            <span class="w-3 h-3 rounded-full bg-green-500"></span>
+            <span class="font-mono text-xs text-slate-400 ml-2">Mission_&_Intention.md</span>
+          </div>
+          <span class="text-[10px] font-mono bg-brand-500/20 text-brand-400 px-2 py-0.5 rounded">DIY RELEASE</span>
+        </div>
+
+        <div id="typewriter-container" class="font-mono text-xs sm:text-sm text-slate-300 leading-relaxed min-h-[100px]"></div>
+
+        <div class="flex items-center justify-between text-xs text-slate-500 pt-2 border-t border-dark-border/50">
+          <span class="flex items-center gap-1"><i class="fa-solid fa-heart text-red-500"></i> <span data-i18n="hero_by_gamers">By Gamers for Gamers</span></span>
+          <span class="font-mono">DRM-Free Preservation</span>
+        </div>
+      </div>
+
+      <!-- STATUS-ÜBERSICHT UNTERHALB DER MISSION-BOX -->
+      <div class="mt-6 max-w-3xl mx-auto grid grid-cols-2 sm:grid-cols-3 gap-4">
+        <div class="bg-dark-card/80 border border-dark-border rounded-xl p-4 text-center backdrop-blur-md">
+          <div class="text-2xl font-extrabold text-emerald-400">5</div>
+          <div class="text-xs text-slate-400 mt-1 font-mono">Studios Online</div>
+        </div>
+        <div class="bg-dark-card/80 border border-dark-border rounded-xl p-4 text-center backdrop-blur-md">
+          <div class="text-2xl font-extrabold text-amber-400">2</div>
+          <div class="text-xs text-slate-400 mt-1 font-mono">(BETA) Studios</div>
+        </div>
+        <div class="bg-dark-card/80 border border-dark-border rounded-xl p-4 text-center backdrop-blur-md col-span-2 sm:col-span-1">
+          <div class="text-2xl font-extrabold text-slate-400">10+</div>
+          <div class="text-xs text-slate-400 mt-1 font-mono">In Development</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== MAIN GRID & STUDIOS VIEW ==================== -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-16 flex-1">
+    
+    <!-- SECTION 1: COVER STUDIOS -->
+    <section id="cover-studio" class="space-y-6">
+      <div class="flex items-center justify-between border-b border-dark-border pb-4">
+        <div>
+          <h2 class="text-2xl font-bold text-white flex items-center gap-3">
+            <i class="fa-solid fa-compact-disc text-brand-500"></i>
+            <span data-i18n="section_covers_title">Cover Studio</span>
+          </h2>
+          <p class="text-slate-400 text-sm mt-1" data-i18n="section_covers_desc">Print-ready cover art inserts for classic console cases and future planned formats.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        <!-- Dreamcast Covers (Ready) -->
+        <a href="studios/covers/dreamcast.html" class="group bg-dark-card border border-dark-border rounded-2xl p-6 transition-all duration-300 card-glow hover:-translate-y-1 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-compact-disc text-xl"></i>
+              </div>
+              <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 badge-ready-text">Ready</span>
+            </div>
+            <h3 class="text-lg font-bold text-white group-hover:text-brand-500 transition-colors">Dreamcast Covers</h3>
+            <p class="text-slate-400 text-sm mt-2 leading-relaxed" data-i18n="card_dc_desc">
+              Design custom cover inserts for blue Sega Dreamcast PAL double jewel cases.
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-dark-border/60 flex items-center justify-between text-xs font-semibold text-brand-500">
+            <span data-i18n="open_studio">Open Studio</span>
+            <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+          </div>
+        </a>
+
+        <!-- PS1 PAL Covers (Ready) -->
+        <a href="studios/covers/ps1pal.html" class="group bg-dark-card border border-dark-border rounded-2xl p-6 transition-all duration-300 card-glow hover:-translate-y-1 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-compact-disc text-xl"></i>
+              </div>
+              <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 badge-ready-text">Ready</span>
+            </div>
+            <h3 class="text-lg font-bold text-white group-hover:text-brand-500 transition-colors">PS1 PAL Covers</h3>
+            <p class="text-slate-400 text-sm mt-2 leading-relaxed" data-i18n="card_ps1_desc">
+              Create PAL regional covers and back spine inserts for thick PlayStation 1 cases.
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-dark-border/60 flex items-center justify-between text-xs font-semibold text-brand-500">
+            <span data-i18n="open_studio">Open Studio</span>
+            <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+          </div>
+        </a>
+		
+		<!-- CD Crystal Case Games -->
+        <a href="studios/covers/cdcrystal.html" class="group bg-dark-card border border-dark-border rounded-2xl p-6 transition-all duration-300 card-glow hover:-translate-y-1 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-slate-100/10 border border-slate-100/20 text-slate-200 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-compact-disc text-xl"></i>
+              </div>
+              <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 badge-ready-text">Ready</span>
+            </div>
+            <h3 class="text-lg font-bold text-white group-hover:text-brand-500 transition-colors">CD jewel case games</h3>
+            <p class="text-slate-400 text-sm mt-2 leading-relaxed" data-i18n="card_cd_desc">
+              Design custom cover inserts for CD jewel case games like NTSC PS1, Dreamcast, or PC.
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-dark-border/60 flex items-center justify-between text-xs font-semibold text-brand-500">
+            <span data-i18n="open_studio">Open Studio</span>
+            <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+          </div>
+        </a>
+	
+		<!-- DVD Case Games -->
+        <a href="studios/covers/dvdgame.html" class="group bg-dark-card border border-dark-border rounded-2xl p-6 transition-all duration-300 card-glow hover:-translate-y-1 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-compact-disc text-xl"></i>
+              </div>
+              <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 badge-ready-text">Ready</span>
+            </div>
+            <h3 class="text-lg font-bold text-white group-hover:text-brand-500 transition-colors">DVD case games</h3>
+            <p class="text-slate-400 text-sm mt-2 leading-relaxed" data-i18n="card_dvd_desc">
+              Design custom cover inserts for DVD game cases like GameCube, PS2, or Xbox 360.
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-dark-border/60 flex items-center justify-between text-xs font-semibold text-brand-500">
+            <span data-i18n="open_studio">Open Studio</span>
+            <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+          </div>
+        </a>
+		
+		<!-- BluRay Case Games -->
+        <a href="studios/covers/bluraystudio.html" class="group bg-dark-card border border-dark-border rounded-2xl p-6 transition-all duration-300 card-glow hover:-translate-y-1 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-compact-disc text-xl"></i>
+              </div>
+              <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 badge-ready-text">Ready</span>
+            </div>
+            <h3 class="text-lg font-bold text-white group-hover:text-brand-500 transition-colors">BluRay case games</h3>
+            <p class="text-slate-400 text-sm mt-2 leading-relaxed" data-i18n="card_bluray_desc">
+              Design custom cover inserts for Blu-ray game cases like PS3, PS4, or Xbox Series.
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-dark-border/60 flex items-center justify-between text-xs font-semibold text-brand-500">
+            <span data-i18n="open_studio">Open Studio</span>
+            <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+          </div>
+        </a>
+		
+        <!-- Geplante Cover Studios -->
+        
+        <!-- Master System -->
+        <div class="bg-dark-card border border-dark-border rounded-2xl p-6 opacity-75 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-slate-500/10 border border-slate-500/20 text-slate-400 flex items-center justify-center"><i class="fa-solid fa-gamepad text-xl"></i></div>
+              <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 badge-planned-text">In Development</span>
+            </div>
+            <h3 class="text-lg font-bold text-white">Master System</h3>
+            <p class="text-slate-400 text-sm mt-2 leading-relaxed" data-i18n="planned_cover_desc">Sega Master System Hüllen (Noch in Entwicklung).</p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-dark-border/60 text-xs text-slate-500 font-mono" data-i18n="btn_coming_soon">Coming Soon</div>
+        </div>
+
+        <!-- Mega Drive -->
+        <div class="bg-dark-card border border-dark-border rounded-2xl p-6 opacity-75 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-slate-500/10 border border-slate-500/20 text-slate-400 flex items-center justify-center"><i class="fa-solid fa-gamepad text-xl"></i></div>
+              <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 badge-planned-text">In Development</span>
+            </div>
+            <h3 class="text-lg font-bold text-white">Mega Drive</h3>
+            <p class="text-slate-400 text-sm mt-2 leading-relaxed" data-i18n="planned_cover_desc">Sega Mega Drive Hüllen (Noch in Entwicklung).</p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-dark-border/60 text-xs text-slate-500 font-mono" data-i18n="btn_coming_soon">Coming Soon</div>
+        </div>
+
+        <!-- Nintendo DS -->
+        <div class="bg-dark-card border border-dark-border rounded-2xl p-6 opacity-75 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-slate-500/10 border border-slate-500/20 text-slate-400 flex items-center justify-center"><i class="fa-solid fa-layer-group text-xl"></i></div>
+              <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 badge-planned-text">In Development</span>
+            </div>
+            <h3 class="text-lg font-bold text-white">Nintendo DS</h3>
+            <p class="text-slate-400 text-sm mt-2 leading-relaxed" data-i18n="planned_cover_desc">Nintendo DS Hüllen Inlays (Noch in Entwicklung).</p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-dark-border/60 text-xs text-slate-500 font-mono" data-i18n="btn_coming_soon">Coming Soon</div>
+        </div>
+
+        <!-- PSP -->
+        <div class="bg-dark-card border border-dark-border rounded-2xl p-6 opacity-75 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-slate-500/10 border border-slate-500/20 text-slate-400 flex items-center justify-center"><i class="fa-solid fa-gamepad text-xl"></i></div>
+              <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 badge-planned-text">In Development</span>
+            </div>
+            <h3 class="text-lg font-bold text-white">PSP</h3>
+            <p class="text-slate-400 text-sm mt-2 leading-relaxed" data-i18n="planned_cover_desc">PlayStation Portable Cover (Noch in Entwicklung).</p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-dark-border/60 text-xs text-slate-500 font-mono" data-i18n="btn_coming_soon">Coming Soon</div>
+        </div>
+
+        <!-- PS Vita -->
+        <div class="bg-dark-card border border-dark-border rounded-2xl p-6 opacity-75 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-slate-500/10 border border-slate-500/20 text-slate-400 flex items-center justify-center"><i class="fa-solid fa-gamepad text-xl"></i></div>
+              <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 badge-planned-text">In Development</span>
+            </div>
+            <h3 class="text-lg font-bold text-white">PS Vita</h3>
+            <p class="text-slate-400 text-sm mt-2 leading-relaxed" data-i18n="planned_cover_desc">PS Vita Cover Inlays (Noch in Entwicklung).</p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-dark-border/60 text-xs text-slate-500 font-mono" data-i18n="btn_coming_soon">Coming Soon</div>
+        </div>
+
+        <!-- Nintendo Switch -->
+        <div class="bg-dark-card border border-dark-border rounded-2xl p-6 opacity-75 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-slate-500/10 border border-slate-500/20 text-slate-400 flex items-center justify-center"><i class="fa-solid fa-gamepad text-xl"></i></div>
+              <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 badge-planned-text">In Development</span>
+            </div>
+            <h3 class="text-lg font-bold text-white">Nintendo Switch</h3>
+            <p class="text-slate-400 text-sm mt-2 leading-relaxed" data-i18n="planned_cover_desc">Nintendo Switch Hüllen (Noch in Entwicklung).</p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-dark-border/60 text-xs text-slate-500 font-mono" data-i18n="btn_coming_soon">Coming Soon</div>
+        </div>
+
+        <!-- Universal Case -->
+        <div class="bg-dark-card border border-dark-border rounded-2xl p-6 opacity-75 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-slate-500/10 border border-slate-500/20 text-slate-400 flex items-center justify-center"><i class="fa-solid fa-cube text-xl"></i></div>
+              <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 badge-planned-text">In Development</span>
+            </div>
+            <h3 class="text-lg font-bold text-white">Universal Case</h3>
+            <p class="text-slate-400 text-sm mt-2 leading-relaxed" data-i18n="planned_cover_desc">Universelle Hüllenvorlagen (Noch in Entwicklung).</p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-dark-border/60 text-xs text-slate-500 font-mono" data-i18n="btn_coming_soon">Coming Soon</div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 2: CRAFT MODULES & STUDIOS -->
+    <section class="space-y-6">
+      <div class="flex items-center justify-between border-b border-dark-border pb-4">
+        <div>
+          <h2 class="text-2xl font-bold text-white flex items-center gap-3">
+            <i class="fa-solid fa-cubes text-brand-accent"></i>
+            <span data-i18n="section_modules_title">Craft Modules & Studios</span>
+          </h2>
+          <p class="text-slate-400 text-sm mt-1" data-i18n="section_modules_desc">Separate standalone modules for manuals, stickers, packaging, and launcher automation.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        
+        <!-- 1. Booklet Studio -->
+        <div id="booklet-studio" class="bg-dark-card border border-dark-border rounded-2xl p-6 transition-all duration-300 hover:border-brand-accent/50 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center">
+                <i class="fa-solid fa-book-open text-xl"></i>
+              </div>
+              <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">BETA</span>
+            </div>
+            <h3 class="text-lg font-bold text-white">Booklet Studio</h3>
+            <p class="text-slate-400 text-sm mt-2 leading-relaxed" data-i18n="card_booklet_desc">
+              Create printable multi-page game manuals and booklets with automatic page imposition.
+            </p>
+          </div>
+          <a href="studios/booklet/booklet-studio.html" class="mt-6 block text-center py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold transition-colors shadow-lg shadow-brand-600/20">
+            <span data-i18n="open_studio">Open Studio</span>
+          </a>
+        </div>
+
+        <!-- 2. Sticker Studio -->
+        <div id="sticker-studio" class="bg-dark-card border border-dark-border rounded-2xl p-6 transition-all duration-300 hover:border-brand-accent/50 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center">
+                <i class="fa-solid fa-tags text-xl"></i>
+              </div>
+              <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 badge-planned-text">In Development</span>
+            </div>
+            <h3 class="text-lg font-bold text-white">Sticker Studio</h3>
+            <p class="text-slate-400 text-sm mt-2 leading-relaxed mb-3" data-i18n="card_sticker_desc">
+              Precision labels for memory cards and cartridge sticker replacements:
+            </p>
+            <ul class="text-[11px] text-slate-400 space-y-1 font-mono list-disc list-inside bg-dark-bg p-2 rounded-lg border border-dark-border">
+              <li>Playstation 1 Memory Card</li>
+              <li>Playstation 2 Memory Card</li>
+              <li>GameCube Memory Card</li>
+              <li>N64 Cartridge</li>
+              <li>SNES PAL Cartridge</li>
+              <li>NES Cartridge</li>
+              <li>MegaDrive Cartridge</li>
+              <li>Gameboy Cartridge</li>
+              <li>GameBoy Advance Cartridge</li>
+              <li>Famicom Cartridge</li>
+            </ul>
+          </div>
+          <div class="mt-6 py-2.5 rounded-xl bg-dark-hover border border-dark-border text-slate-400 text-xs font-medium text-center cursor-not-allowed" data-i18n="btn_coming_soon">
+            Coming Soon
+          </div>
+        </div>
+
+        <!-- 3. Craft Studio -->
+        <div id="craft-studio" class="bg-dark-card border border-dark-border rounded-2xl p-6 transition-all duration-300 hover:border-brand-accent/50 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-orange-500/10 border border-orange-500/20 text-orange-400 flex items-center justify-center">
+                <i class="fa-solid fa-box text-xl"></i>
+              </div>
+              <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 badge-planned-text">In Development</span>
+            </div>
+            <h3 class="text-lg font-bold text-white">Craft Studio</h3>
+            <p class="text-slate-400 text-sm mt-2 leading-relaxed mb-3" data-i18n="card_craft_desc">
+              Foldable dielines for cardboard packaging and boxes:
+            </p>
+            <ul class="text-[11px] text-slate-400 space-y-1 font-mono list-disc list-inside bg-dark-bg p-2 rounded-lg border border-dark-border">
+              <li>PC Big Boxes</li>
+              <li>Nintendo Game Boy / Advance</li>
+              <li>SNES Pappschachteln</li>
+              <li>N64 Pappschachteln</li>
+              <li>NES Pappschachteln</li>
+            </ul>
+          </div>
+          <div class="mt-6 py-2.5 rounded-xl bg-dark-hover border border-dark-border text-slate-400 text-xs font-medium text-center cursor-not-allowed" data-i18n="btn_coming_soon">
+            Coming Soon
+          </div>
+        </div>
+
+        <!-- 4. GOG Disc Creator v5.0 (Aktualisiert & Aktiv in Beta) -->
+        <div id="gog-disc-creator" class="bg-dark-card border border-brand-accent/40 rounded-2xl p-6 transition-all duration-300 hover:border-brand-accent shadow-lg shadow-brand-accent/5 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center">
+                <i class="fa-solid fa-rocket text-xl"></i>
+              </div>
+              <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-purple-500/15 text-purple-300 border border-purple-500/30">v5.0 BETA</span>
+            </div>
+            <h3 class="text-lg font-bold text-white">GOG Disc Creator</h3>
+            <p class="text-slate-400 text-sm mt-2 leading-relaxed" data-i18n="card_gog_desc">
+              Generate autostart launchers for your burned backup discs to automatically trigger GOG offline installers upon disc insertion.
+            </p>
+          </div>
+          <a href="studios/GOG_Disc_Creator/Physical-Release-Studio-GOG-Disc-Creator.html" class="mt-6 block text-center py-2.5 rounded-xl bg-gradient-to-r from-brand-600 to-brand-accent hover:from-brand-500 hover:to-purple-600 text-white text-xs font-bold transition-colors shadow-lg shadow-brand-accent/20">
+            <span data-i18n="btn_launch_gog">Open GOG Disc Creator</span>
+          </a>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 3: MATERIALS & AFFILIATE HUB -->
+    <section id="materials" class="space-y-6 pt-8 border-t border-dark-border">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-2xl font-bold text-white flex items-center gap-3">
+            <i class="fa-solid fa-cart-shopping text-emerald-400"></i>
+            <span data-i18n="section_materials_title">Materials & Supplies</span>
+          </h2>
+          <p class="text-slate-400 text-sm mt-1" data-i18n="section_materials_desc">Tested papers, cardboards, and craft tools for optimal physical DIY results.</p>
+        </div>
+        <div class="text-xs text-slate-500 font-mono bg-dark-card px-3 py-1.5 rounded-lg border border-dark-border">
+          <i class="fa-solid fa-info-circle mr-1 text-brand-500"></i> <span data-i18n="affiliate_tag">Affiliate Link Collection</span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-dark-card border border-dark-border rounded-xl p-5 space-y-3 hover:border-emerald-500/40 transition-colors">
+          <div class="text-emerald-400 text-2xl"><i class="fa-solid fa-file-lines"></i></div>
+          <h4 class="font-bold text-white text-sm" data-i18n="mat_paper_title">Photo Paper (130-200g)</h4>
+          <p class="text-xs text-slate-400 leading-relaxed" data-i18n="mat_paper_desc">Ideal paper weight for Dreamcast, PS1, and DVD case cover inserts.</p>
+          <a href="https://amazon.com" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-xs font-semibold text-emerald-400 hover:text-emerald-300 pt-2"><span data-i18n="view_amazon">View on Amazon</span> <i class="fa-solid fa-external-link text-[10px]"></i></a>
+        </div>
+        <div class="bg-dark-card border border-dark-border rounded-xl p-5 space-y-3 hover:border-emerald-500/40 transition-colors">
+          <div class="text-amber-400 text-2xl"><i class="fa-solid fa-box"></i></div>
+          <h4 class="font-bold text-white text-sm" data-i18n="mat_board_title">Duplex Board (300-350g)</h4>
+          <p class="text-xs text-slate-400 leading-relaxed" data-i18n="mat_board_desc">Heavyweight cardboard stock perfect for crafting Nintendo box sleeves and PC Big Boxes.</p>
+          <a href="https://amazon.com" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-xs font-semibold text-emerald-400 hover:text-emerald-300 pt-2"><span data-i18n="view_amazon">View on Amazon</span> <i class="fa-solid fa-external-link text-[10px]"></i></a>
+        </div>
+        <div class="bg-dark-card border border-dark-border rounded-xl p-5 space-y-3 hover:border-emerald-500/40 transition-colors">
+          <div class="text-sky-400 text-2xl"><i class="fa-solid fa-scissors"></i></div>
+          <h4 class="font-bold text-white text-sm" data-i18n="mat_cutter_title">Precision Paper Trimmer</h4>
+          <p class="text-xs text-slate-400 leading-relaxed" data-i18n="mat_cutter_desc">Guillotine & rotary trimmers for clean, razor-sharp edges.</p>
+          <a href="https://amazon.com" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-xs font-semibold text-emerald-400 hover:text-emerald-300 pt-2"><span data-i18n="view_amazon">View on Amazon</span> <i class="fa-solid fa-external-link text-[10px]"></i></a>
+        </div>
+        <div class="bg-dark-card border border-dark-border rounded-xl p-5 space-y-3 hover:border-emerald-500/40 transition-colors">
+          <div class="text-purple-400 text-2xl"><i class="fa-solid fa-compact-disc"></i></div>
+          <h4 class="font-bold text-white text-sm" data-i18n="mat_cases_title">Replacement Jewel Cases</h4>
+          <p class="text-xs text-slate-400 leading-relaxed" data-i18n="mat_cases_desc">High quality replacement cases for PS1 PAL, Sega Dreamcast, and standard CD jewel cases.</p>
+          <a href="https://amazon.com" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-xs font-semibold text-emerald-400 hover:text-emerald-300 pt-2"><span data-i18n="view_amazon">View on Amazon</span> <i class="fa-solid fa-external-link text-[10px]"></i></a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="border-t border-dark-border bg-dark-card/50 py-10 mt-auto text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
+      <div class="flex items-center gap-3">
+        <i class="fa-solid fa-compact-disc text-brand-500 text-lg"></i>
+        <span>&copy; 2026 Physical Release Studio — Open Preservation Suite</span>
+      </div>
+      <div class="flex items-center gap-6 text-slate-400">
+        <a href="#intention-section" class="hover:text-white transition-colors" data-i18n="nav_intention">Intention</a>
+        <a href="#materials" class="hover:text-white transition-colors" data-i18n="nav_materials">Materials</a>
+        <a href="https://paypal.me/kainco" target="_blank" rel="noopener noreferrer" class="hover:text-blue-400 transition-colors">PayPal</a>
+        <a href="https://ko-fi.com/kainco" target="_blank" rel="noopener noreferrer" class="hover:text-red-400 transition-colors">Ko-Fi</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==================== MULTILINGUAL & ANIMATION ENGINE ==================== -->
+  <script>
+    const i18n = {
+      en: {
+        nav_studios: "Studios",
+        nav_materials: "Materials & Supplies",
+        nav_intention: "Mission & Intention",
+        btn_kofi: "Support on Ko-fi",
+        hero_pill: "Physical Media Preservation Project",
+        hero_title_1: "Digital Games.",
+        hero_title_2: "Genuine Physical Masterpieces.",
+        hero_subtitle: "Create high-precision, print-ready cover inserts, booklet manuals, stickers, and box sleeves for your physical game collection.",
+        hero_by_gamers: "By Gamers for Gamers",
+        section_covers_title: "Cover Studio",
+        section_covers_desc: "Print-ready cover art inserts for classic console cases and future planned formats.",
+        card_dc_desc: "Design custom cover inserts for blue Sega Dreamcast PAL double jewel cases.",
+        card_ps1_desc: "Create PAL regional covers and back spine inserts for thick PlayStation 1 cases.",
+		card_cd_desc: "Design custom cover inserts for CD jewel case games like NTSC PS1, Dreamcast, or PC.",
+		card_dvd_desc: "Design custom cover inserts for DVD game cases like GameCube, PS2, or Xbox 360.",
+		card_bluray_desc: "Design custom cover inserts for Blu-ray game cases like PS3, PS4, or Xbox Series.",
+        open_studio: "Open Studio",
+        section_modules_title: "Craft Modules & Studios",
+        section_modules_desc: "Separate standalone modules for manuals, stickers, packaging, and launcher automation.",
+        card_booklet_desc: "Create printable multi-page game manuals and booklets with automatic page imposition.",
+        card_sticker_desc: "Precision labels for memory cards and cartridge sticker replacements:",
+        card_craft_desc: "Foldable dielines for cardboard packaging and boxes:",
+        card_gog_desc: "Generate autostart launchers for your burned backup discs to automatically trigger GOG offline installers upon disc insertion.",
+        btn_launch_gog: "Open GOG Disc Creator (v5.0 Beta)",
+        section_materials_title: "Materials & Supplies",
+        section_materials_desc: "Tested papers, cardboards, and craft tools for optimal physical DIY results.",
+        affiliate_tag: "Affiliate Link Collection",
+        mat_paper_title: "Photo Paper (130-200g)",
+        mat_paper_desc: "Ideal paper weight for Dreamcast, PS1, and DVD case cover inserts.",
+        mat_board_title: "Duplex Board (300-350g)",
+        mat_board_desc: "Heavyweight cardboard stock perfect for crafting Nintendo box sleeves and PC Big Boxes.",
+        mat_cutter_title: "Precision Paper Trimmer",
+        mat_cutter_desc: "Guillotine & rotary trimmers for clean, razor-sharp edges.",
+        mat_cases_title: "Replacement Jewel Cases",
+        mat_cases_desc: "High quality replacement cases for PS1 PAL, Sega Dreamcast, and standard CD jewel cases.",
+        view_amazon: "View on Amazon",
+        ready_badge: "Ready",
+        planned_badge: "In Development",
+        btn_coming_soon: "In Development",
+        planned_cover_desc: "Planned cover format (In Development).",
+        typewriter: `Why Physical Release Studio?
+In an era of digital-only licenses and closing online storefronts, we want to give our favorite games the tangible appreciation they deserve.
+
+With this studio, you can convert DRM-free games, indie titles, or ROM backups into beautiful physical collector items — complete with professional covers, booklets, and packaging.`
+      },
+      de: {
+        nav_studios: "Studios",
+        nav_materials: "Materialien & Hardware",
+        nav_intention: "Sinn & Intention",
+        btn_kofi: "Ko-fi Support",
+        hero_pill: "Physical Media Preservation Projekt",
+        hero_title_1: "Digitale Spiele.",
+        hero_title_2: "Echte Physische Meisterwerke.",
+        hero_subtitle: "Erstelle hochpräzise, druckfertige Inlays, Booklets, Sticker und Verpackungsschachteln für deine Spielesammlung.",
+        hero_by_gamers: "Von Gamern für Gamer",
+        section_covers_title: "Cover Studio",
+        section_covers_desc: "Druckfertige Cover-Art-Einleger für Hüllen klassischer Konsolen und geplante Formate.",
+        card_dc_desc: "Design und Drucklayout für blaue Sega Dreamcast PAL Doppel-Hüllen mit Rücken-Markierungen.",
+		card_ps1_desc: "Passgenaue Front- und Rückseiteninlays für dicke europäische PlayStation 1 Hüllen.",
+		card_cd_desc: "Gestalte individuelle Cover-Inlays für CD-Jewel-Case-Spiele wie NTSC PS1, Dreamcast oder PC.",
+		card_dvd_desc: "Gestalte individuelle Cover-Inlays für DVD-Spielehüllen wie GameCube, PS2 oder Xbox 360.",
+		card_bluray_desc: "Gestalte individuelle Cover-Inlays für Blu-ray-Spielehüllen wie PS3, PS4 oder Xbox Series.",
+        open_studio: "Studio öffnen",
+        section_modules_title: "Craft Module & Studios",
+        section_modules_desc: "Eigenständige Bereiche für Anleitungen, Sticker, Verpackungen und Autostart-Generatoren.",
+        card_booklet_desc: "Erstelle druckfertige mehrseitige Handbücher & Anleitungen mit automatischer Seitensortierung.",
+        card_sticker_desc: "Präzise Aufkleber für Memory Cards und Cartridge-Ersatzsticker:",
+        card_craft_desc: "Faltvorlagen & 3D-Dielines für Pappschachteln und Boxen:",
+        card_gog_desc: "Erstelle Autostart-Skripte für gebrannte Backup-Discs, um deine offline GOG-Installationsdateien direkt bei Disc-Einwurf zu starten.",
+        btn_launch_gog: "GOG Disc Creator öffnen (v5.0 Beta)",
+        section_materials_title: "Materialien & Empfehlungen",
+        section_materials_desc: "Getestete Materialien, Papiere und Werkzeuge für beste DIY-Ergebnisse.",
+        affiliate_tag: "Affiliate Link Sammlung",
+        mat_paper_title: "Fotopapier (130-200g)",
+        mat_paper_desc: "Perfekte Stärke für Cover-Inlays von Dreamcast, PS1 & DVD-Hüllen.",
+        mat_board_title: "Duplex Karton (300-350g)",
+        mat_board_desc: "Ideal für stabiles Crafting von Nintendo Schachteln und PC Big Boxen.",
+        mat_cutter_title: "Hobby-Papierschneider",
+        mat_cutter_desc: "Rollenschneider & Hebelschneider für millimetergenaue Kanten.",
+        mat_cases_title: "Ersatz-Jewel-Cases",
+        mat_cases_desc: "Hochwertige Ersatz-Hüllen für PS1, Dreamcast und Standard CD-Doppel-Hüllen.",
+        view_amazon: "Auf Amazon ansehen",
+        ready_badge: "Bereit",
+        planned_badge: "In Entwicklung",
+        btn_coming_soon: "In Entwicklung",
+        planned_cover_desc: "Geplantes Cover-Format (In Entwicklung).",
+        typewriter: `Warum Physical Release Studio?
+In Zeiten von rein digitalen Lizenzen und sich schließenden Online-Stores wollen wir Lieblingsspielen die physische Wertschätzung zurückgeben, die sie verdienen. 
+
+Mit diesem Studio kannst du DRM-freie Spiele, Indie-Titel oder ROM-Backups in wunderschöne physische Sammlerstücke verwandeln — komplett mit professionellen Covers, Anleitungen und Verpackungen.`
+      }
+    };
+
+    let currentLang = localStorage.getItem('prs_lang') || 'de';
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem('prs_lang', lang);
+
+      const btnEn = document.getElementById('lang-en');
+      const btnDe = document.getElementById('lang-de');
+
+      if (lang === 'en') {
+        btnEn.className = "px-2.5 py-1 rounded-lg transition-all bg-brand-600 text-white shadow-sm";
+        btnDe.className = "px-2.5 py-1 rounded-lg transition-all text-slate-400 hover:text-white";
+        document.documentElement.lang = "en";
+      } else {
+        btnDe.className = "px-2.5 py-1 rounded-lg transition-all bg-brand-600 text-white shadow-sm";
+        btnEn.className = "px-2.5 py-1 rounded-lg transition-all text-slate-400 hover:text-white";
+        document.documentElement.lang = "de";
+      }
+
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (i18n[lang][key]) {
+          el.textContent = i18n[lang][key];
+        }
+      });
+
+      document.querySelectorAll('.badge-ready-text').forEach(el => {
+        el.textContent = i18n[lang].ready_badge;
+      });
+      document.querySelectorAll('.badge-planned-text').forEach(el => {
+        el.textContent = i18n[lang].planned_badge;
+      });
+
+      startTypewriter();
+    }
+
+    const container = document.getElementById('typewriter-container');
+    let charIndex = 0;
+    let typewriterTimeout;
+
+    function startTypewriter() {
+      clearTimeout(typewriterTimeout);
+      container.innerHTML = '';
+      charIndex = 0;
+      typeWriter();
+    }
+
+    function typeWriter() {
+      const text = i18n[currentLang].typewriter;
+      if (charIndex < text.length) {
+        const char = text.charAt(charIndex);
+        if (char === '\n') {
+          container.innerHTML += '<br>';
+        } else {
+          container.innerHTML += char;
+        }
+        charIndex++;
+        typewriterTimeout = setTimeout(typeWriter, 14);
+      } else {
+        container.innerHTML += '<span class="inline-block w-2 h-4 bg-brand-500 ml-1 animate-pulse"></span>';
+      }
+    }
+
+    const mobileBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    mobileBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    const canvas = document.getElementById('hero-canvas');
+    const ctx = canvas.getContext('2d');
+
+    function resizeCanvas() {
+      if (!canvas) return;
+      canvas.width = canvas.parentElement.clientWidth;
+      canvas.height = canvas.parentElement.clientHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    const particles = [];
+    const particleCount = 45;
+
+    for (let i = 0; i < particleCount; i++) {
+      particles.push({
+        x: Math.random() * (canvas.width || 1000),
+        y: Math.random() * (canvas.height || 500),
+        radius: Math.random() * 2 + 1,
+        color: ['#3b82f6', '#a855f7', '#06b6d4'][Math.floor(Math.random() * 3)],
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        alpha: Math.random() * 0.5 + 0.2
+      });
+    }
+
+    function animateCanvas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.pages = particles.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < 0) p.x = canvas.width;
+        if (p.x > canvas.width) p.x = 0;
+        if (p.y < 0) p.y = canvas.height;
+        if (p.y > canvas.height) p.y = 0;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = p.alpha;
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = p.color;
+        ctx.fill();
+      });
+      requestAnimationFrame(animateCanvas);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      animateCanvas();
+      setLanguage(currentLang);
+    });
+  </script>
+</body>
+</html>
