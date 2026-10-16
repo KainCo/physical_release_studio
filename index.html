@@ -11,10 +11,41 @@
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
-  <!-- Google Fonts: Inter & JetBrains Mono -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- Lokale Fonts (DSGVO-konform gehostet) -->
+  <style>
+    @font-face {
+      font-family: 'Inter';
+      src: url('./assets/fonts/Inter/Inter-VariableFont_slnt,wght.woff2') format('woff2-variations');
+      font-weight: 100 900;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'JetBrains Mono';
+      src: url('./assets/fonts/JetBrainsMono/JetBrainsMono-VariableFont_wght.woff2') format('woff2-variations');
+      font-weight: 100 900;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    .glass-nav {
+      background: rgba(9, 13, 22, 0.88);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .card-glow:hover {
+      box-shadow: 0 0 25px -5px rgba(59, 130, 246, 0.25), 0 0 10px -5px rgba(168, 85, 247, 0.2);
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #60a5fa 0%, #a855f7 50%, #ec4899 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #090d16; }
+    ::-webkit-scrollbar-thumb { background: #1f293d; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #3b82f6; }
+  </style>
 
   <script>
     tailwind.config = {
@@ -45,26 +76,6 @@
       }
     }
   </script>
-
-  <style>
-    .glass-nav {
-      background: rgba(9, 13, 22, 0.88);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-    }
-    .card-glow:hover {
-      box-shadow: 0 0 25px -5px rgba(59, 130, 246, 0.25), 0 0 10px -5px rgba(168, 85, 247, 0.2);
-    }
-    .gradient-text {
-      background: linear-gradient(135deg, #60a5fa 0%, #a855f7 50%, #ec4899 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    ::-webkit-scrollbar { width: 8px; }
-    ::-webkit-scrollbar-track { background: #090d16; }
-    ::-webkit-scrollbar-thumb { background: #1f293d; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #3b82f6; }
-  </style>
 </head>
 <body class="bg-dark-bg text-slate-100 font-sans antialiased min-h-screen flex flex-col selection:bg-brand-500 selection:text-white">
 
