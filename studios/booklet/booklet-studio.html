@@ -2,12 +2,12 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Physical Release Studio — Booklet Studio</title>
 
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
+
   <!-- Google Fonts: Inter & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,7 +16,9 @@
   <!-- PDF.js für den PDF/GOG Booklet-Import -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
   <script>
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+    if (window.pdfjsLib) {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+    }
   </script>
 
   <style>
@@ -71,16 +73,9 @@
       color: white;
     }
 
-    .brand-title i {
-      font-size: 1.5rem;
-      color: #3b82f6;
-    }
+    .brand-title i { font-size: 1.5rem; color: #3b82f6; }
 
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
+    .header-actions { display: flex; align-items: center; gap: 12px; }
 
     .lang-switcher {
       background: var(--card-bg);
@@ -102,10 +97,7 @@
       border-radius: 6px;
     }
 
-    .lang-btn.active {
-      background: var(--brand);
-      color: white;
-    }
+    .lang-btn.active { background: var(--brand); color: white; }
 
     .btn-index {
       background: var(--card-bg);
@@ -121,9 +113,7 @@
       gap: 6px;
     }
 
-    .btn-index:hover {
-      border-color: var(--brand);
-    }
+    .btn-index:hover { border-color: var(--brand); }
 
     .ui-container {
       width: 100%;
@@ -136,11 +126,7 @@
       margin-bottom: 24px;
     }
 
-    .header-title {
-      font-size: 1.4rem;
-      font-weight: 800;
-      margin-bottom: 4px;
-    }
+    .header-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 4px; }
 
     .sub-title {
       font-size: 0.8rem;
@@ -162,11 +148,7 @@
       gap: 12px;
     }
 
-    .option-card label {
-      font-weight: bold;
-      font-size: 0.85rem;
-      color: var(--text);
-    }
+    .option-card label { font-weight: bold; font-size: 0.85rem; color: var(--text); }
 
     .option-card select, .option-card input[type="file"] {
       padding: 8px 12px;
@@ -177,7 +159,28 @@
       background: var(--card-bg);
       color: var(--text);
       cursor: pointer;
+      max-width: 100%;
     }
+
+    .num-input {
+      width: 70px;
+      padding: 6px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 6px;
+      text-align: center;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .layout-info {
+      flex-basis: 100%;
+      font-size: 0.75rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-muted);
+    }
+    .layout-info .warn { color: #fbbf24; }
+    .layout-info .bad { color: #f87171; }
 
     .upload-cards {
       display: grid;
@@ -202,9 +205,7 @@
       position: relative;
     }
 
-    .upload-card.active {
-      border-color: var(--brand);
-    }
+    .upload-card.active { border-color: var(--brand); }
 
     .upload-card label {
       display: block;
@@ -214,17 +215,9 @@
       cursor: pointer;
     }
 
-    .upload-card input[type="file"] {
-      width: 100%;
-      font-size: 0.75rem;
-      color: var(--text-muted);
-    }
+    .upload-card input[type="file"] { width: 100%; font-size: 0.75rem; color: var(--text-muted); }
 
-    .dpi-container {
-      display: none;
-      margin-top: 10px;
-      text-align: left;
-    }
+    .dpi-container { display: none; margin-top: 10px; text-align: left; }
 
     .dpi-badge {
       padding: 6px 10px;
@@ -265,13 +258,7 @@
       transition: left 0.3s ease;
     }
 
-    .tabs {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 16px;
-      overflow-x: auto;
-      padding-bottom: 4px;
-    }
+    .tabs { display: flex; gap: 6px; margin-bottom: 16px; overflow-x: auto; padding-bottom: 4px; }
 
     .tab-btn {
       padding: 8px 12px;
@@ -285,11 +272,7 @@
       white-space: nowrap;
     }
 
-    .tab-btn.active {
-      background: var(--brand);
-      color: white;
-      border-color: var(--brand);
-    }
+    .tab-btn.active { background: var(--brand); color: white; border-color: var(--brand); }
 
     .controls-grid {
       display: grid;
@@ -302,7 +285,7 @@
       margin-bottom: 20px;
     }
 
-    .control-group label {
+    .control-group label.group-title {
       font-size: 0.75rem;
       font-weight: bold;
       color: var(--text-muted);
@@ -312,11 +295,7 @@
       margin-bottom: 8px;
     }
 
-    .btn-row {
-      display: flex;
-      gap: 4px;
-      flex-wrap: wrap;
-    }
+    .btn-row { display: flex; gap: 4px; flex-wrap: wrap; }
 
     .btn-small {
       padding: 6px 10px;
@@ -329,9 +308,31 @@
       cursor: pointer;
     }
 
-    .btn-small:hover {
-      border-color: var(--brand);
+    .btn-small:hover { border-color: var(--brand); }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      color: var(--text);
+      cursor: pointer;
+      margin-bottom: 6px;
     }
+
+    details.advanced {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-bottom: 20px;
+      font-size: 0.8rem;
+    }
+    details.advanced summary { cursor: pointer; color: var(--text-muted); font-weight: bold; }
+    details.advanced .adv-body { margin-top: 12px; display: flex; flex-direction: column; gap: 10px; }
+    details.advanced .adv-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    details.advanced .hint { color: var(--text-muted); font-size: 0.72rem; }
 
     .btn-print {
       width: 100%;
@@ -345,9 +346,7 @@
       cursor: pointer;
     }
 
-    .btn-print:hover {
-      background: #059669;
-    }
+    .btn-print:hover { background: #059669; }
 
     .preview-wrapper {
       display: flex;
@@ -370,20 +369,16 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      max-width: 100%;
     }
 
-    .sheet-title {
-      font-size: 0.85rem;
-      font-weight: bold;
-      margin-bottom: 8px;
-      color: var(--text);
-    }
+    .sheet-title { font-size: 0.85rem; font-weight: bold; margin-bottom: 8px; color: var(--text); text-align: center; }
 
     .spread-container {
       display: flex;
-      border: 2px dashed var(--brand);
       background: var(--card-bg);
       position: relative;
+      outline: 2px dashed var(--brand);
     }
 
     .fold-line-preview {
@@ -394,28 +389,40 @@
       width: 0;
       border-left: 1px dotted var(--text-muted);
       z-index: 10;
+      pointer-events: none;
     }
 
+    /* Frames keep a fixed content size; the active state is drawn with an outline,
+       so the preview never changes size when the selection changes (WYSIWYG). */
     .frame-container {
+      box-sizing: content-box;
       position: relative;
       background: var(--bg);
-      border: 1px solid var(--border);
       overflow: hidden;
       touch-action: none;
+      outline: 1px solid var(--border);
+      outline-offset: -1px;
     }
 
     .frame-container.active-target {
-      border: 3px solid var(--brand);
-      box-shadow: 0 0 15px rgba(37, 99, 235, 0.4);
+      outline: 3px solid var(--brand);
+      outline-offset: -3px;
       z-index: 5;
+    }
+
+    .frame-container.blank {
+      background: repeating-linear-gradient(45deg, var(--bg), var(--bg) 8px, var(--card-bg) 8px, var(--card-bg) 16px);
     }
 
     .cover-img {
       position: absolute;
       top: 50%;
       left: 50%;
+      max-width: none;
+      max-height: none;
       transform-origin: center center;
       pointer-events: none;
+      user-select: none;
     }
 
     .placeholder {
@@ -442,16 +449,8 @@
       pointer-events: none;
     }
 
-    .checkbox-label {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.8rem;
-      font-weight: bold;
-      color: var(--text);
-      cursor: pointer;
-    }
-
+    /* ---- Print screen: A4 landscape sheets, one per page.
+       Page height is 1 mm below the sheet so the browser never adds a blank page. ---- */
     #printScreen {
       display: none;
       position: fixed;
@@ -459,77 +458,88 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: white;
+      background: #e5e7eb;
       z-index: 9999;
       padding: 10px;
       overflow: auto;
     }
 
+    #print-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .print-sheet {
+      position: relative;
+      flex: none;
+      width: 297mm;
+      height: 209mm;
+      background: #fff;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.35);
+    }
+
+    .sheet-inner { position: absolute; inset: 0; }
+
+    .print-page-img { position: absolute; display: block; max-width: none; max-height: none; }
+
+    .mark { position: absolute; background: #000; }
+    .mark.fold { background: #555; }
+
+    .sheet-label { font-size: 0.75rem; color: #374151; font-weight: bold; margin-bottom: 4px; text-align: center; }
+
+    @media screen {
+      #print-container { zoom: 0.8; }
+    }
+
     @media print {
-      @page {
-        size: A4 landscape;
-        margin: 0 !important;
-      }
+      @page { size: A4 landscape; margin: 0 !important; }
 
-      html, body {
-        width: 100% !important;
-        height: 100% !important;
+      html, body.print-open {
+        width: 297mm !important;
+        height: auto !important;
+        min-height: 0 !important;
         margin: 0 !important;
         padding: 0 !important;
-        overflow: hidden !important;
-        background: white !important;
+        overflow: visible !important;
+        background: #fff !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
       }
 
-      .ui-container, .preview-wrapper, canvas, header, footer, .no-print {
-        display: none !important;
-      }
+      body.print-open header,
+      body.print-open .ui-container,
+      body.print-open .preview-wrapper,
+      body.print-open canvas,
+      body.print-open footer,
+      body.print-open .no-print { display: none !important; }
 
-      #printScreen {
+      body.print-open #printScreen {
         display: block !important;
-        position: fixed !important;
-        left: 0 !important;
-        top: 0 !important;
-        width: 100vw !important;
-        height: 100vh !important;
+        position: static !important;
+        width: 297mm !important;
+        height: auto !important;
         margin: 0 !important;
         padding: 0 !important;
-        box-sizing: border-box !important;
-        background: white !important;
+        overflow: visible !important;
+        background: #fff !important;
+      }
+
+      body.print-open #print-container {
+        display: block !important;
+        zoom: 1 !important;
       }
 
       .print-sheet {
-        width: 297mm !important;
-        height: 210mm !important;
-        position: relative !important;
-        page-break-after: always !important;
-        break-after: page !important;
-        background: white !important;
-        overflow: hidden !important;
+        box-shadow: none !important;
+        margin: 0 !important;
+        break-after: page;
+        page-break-after: always;
       }
 
-      .print-cut-area {
-        position: absolute !important;
-        display: flex !important;
-      }
-
-      .print-page-img {
-        object-fit: contain !important;
-      }
-
-      .crop-mark {
-        position: absolute !important;
-        border-color: #000 !important;
-        border-style: solid !important;
-      }
-      .crop-tl { top: 30mm; width: 0; height: 8mm; border-width: 0 0 0 1px; }
-      .crop-tl-h { top: 38mm; width: 8mm; height: 0; border-width: 1px 0 0 0; }
-      .fold-line-print {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        z-index: 10;
-        border-left: 1px dotted #aaa;
-      }
+      .print-sheet.is-last { break-after: auto; page-break-after: auto; }
     }
   </style>
 </head>
@@ -554,11 +564,11 @@
         <button id="lang-en" onclick="setLanguage('en')" class="lang-btn">EN</button>
         <button id="lang-de" onclick="setLanguage('de')" class="lang-btn active">DE</button>
       </div>
-      <a href="https://paypal.me/kainco" target="_blank" rel="noopener noreferrer" 
+      <a href="https://paypal.me/kainco" target="_blank" rel="noopener noreferrer"
          style="background: #0070ba; color: white; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
         <i class="fa-brands fa-paypal"></i> <span data-i18n="btn_donation">Spende</span>
       </a>
-      <a href="https://ko-fi.com/kainco" target="_blank" rel="noopener noreferrer" 
+      <a href="https://ko-fi.com/kainco" target="_blank" rel="noopener noreferrer"
          style="background: #ff5e5b; color: white; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
         <i class="fa-solid fa-mug-hot"></i> Support
       </a>
@@ -567,46 +577,47 @@
 
   <div class="ui-container">
     <div class="header-title" data-i18n="studio_title">Booklet Studio</div>
-    <div class="sub-title" data-i18n="studio_subtitle">Booklet-Erstellungsstudio | DIN A4 Querformat Druckvorlage mit Ausschießung</div>
+    <div class="sub-title" data-i18n="studio_subtitle">Booklet-Erstellungsstudio | A4 quer, Sattelheftung für Heimdrucker</div>
 
     <!-- Format Selection -->
     <div class="option-card" style="border-color: var(--brand);">
       <label for="formatSelect"><span data-i18n="lbl_format">📐 Booklet Format / Größe:</span></label>
       <select id="formatSelect" onchange="changeFormat(this.value)">
-        <option value="cd" selected data-i18n="opt_format_cd">CD Größe (12.0 × 12.0 cm - Quadratisch)</option>
-        <option value="dvd" data-i18n="opt_format_dvd">DVD Größe (12.0 × 18.0 cm - Hochkant)</option>
-        <option value="bluray" data-i18n="opt_format_bluray">Blu-ray Größe (12.9 × 14.9 cm)</option>
+        <option value="cd" data-i18n="opt_format_cd">CD (12,0 × 12,0 cm)</option>
+        <option value="ps34" data-i18n="opt_format_ps34">PlayStation 3 / 4</option>
+        <option value="bluray" data-i18n="opt_format_bluray">Blu-ray</option>
+        <option value="dvd" data-i18n="opt_format_dvd">DVD</option>
+        <option value="custom" data-i18n="opt_format_custom">Eigenes Format</option>
       </select>
+      <div id="customFields" style="display: none; align-items: center; gap: 8px; flex-wrap: wrap;">
+        <label><span data-i18n="lbl_custom_w">Breite</span> <input type="number" id="customW" class="num-input" step="0.1" min="3" max="14.5" value="12" oninput="onCustomChange()"> cm</label>
+        <span>×</span>
+        <label><span data-i18n="lbl_custom_h">Höhe</span> <input type="number" id="customH" class="num-input" step="0.1" min="3" max="19" value="12" oninput="onCustomChange()"> cm</label>
+      </div>
+      <div class="layout-info" id="layoutInfo"></div>
     </div>
 
     <!-- PDF / GOG Booklet Import Card -->
     <div class="option-card">
       <label for="pdfImportInput"><i class="fa-solid fa-file-pdf" style="color: #ef4444;"></i> <span data-i18n="lbl_pdf_import">GOG / PDF Booklet Import (Autom. Doppelseiten-Split):</span></label>
       <input type="file" id="pdfImportInput" accept="application/pdf" onchange="importPDFBooklet(event)">
+      <div class="layout-info" id="importStatus"></div>
     </div>
 
     <!-- Page Selection -->
     <div class="option-card">
-      <label for="pageCountSelect"><span data-i18n="lbl_page_count">📖 Booklet Seitenzahl wählen:</span></label>
-      <select id="pageCountSelect" onchange="changeTotalPages(this.value)">
-        <option value="2" data-i18n="opt_p2">2 Seiten</option>
-        <option value="4" selected data-i18n="opt_p4">4 Seiten (1 gefaltetes Blatt)</option>
-        <option value="8" data-i18n="opt_p8">8 Seiten (2 gefaltete Blätter)</option>
-        <option value="12" data-i18n="opt_p12">12 Seiten (3 gefaltete Blätter)</option>
-        <option value="16" data-i18n="opt_p16">16 Seiten (4 gefaltete Blätter)</option>
-        <option value="20" data-i18n="opt_p20">20 Seiten (5 gefaltete Blätter)</option>
-        <option value="24" data-i18n="opt_p24">24 Seiten (6 gefaltete Blätter)</option>
-      </select>
+      <label for="pageCountSelect"><span data-i18n="lbl_page_count">📖 Seitenzahl:</span></label>
+      <select id="pageCountSelect" onchange="changeTotalPages(this.value)"></select>
     </div>
 
     <!-- Print Mode Selection -->
     <div class="option-card">
-      <label for="printModeSelect"><span data-i18n="lbl_print_mode">🖨️ Druckmodus & Layout:</span></label>
+      <label for="printModeSelect"><span data-i18n="lbl_print_mode">🖨️ Druckmodus:</span></label>
       <select id="printModeSelect">
-        <option value="duplex_saddle" data-i18n="opt_mode_saddle">Sattelheftung / Duplex (Autom. Seitensortierung für Booklet)</option>
-        <option value="sequential_duplex" data-i18n="opt_mode_seq">Sequenzieller Duplex (Vorder-/Rückseiten-Paarung)</option>
-        <option value="manual_fronts" data-i18n="opt_mode_fronts">Manuell - Vordersichten zuerst (Ungerade Blätter)</option>
-        <option value="manual_backs" data-i18n="opt_mode_backs">Manuell - Rückseiten allein (Gerade Blätter)</option>
+        <option value="duplex_saddle" data-i18n="opt_mode_saddle">Sattelheftung, automatisch beidseitig (empfohlen)</option>
+        <option value="manual_fronts" data-i18n="opt_mode_fronts">Manuell – erst alle Außenseiten</option>
+        <option value="manual_backs" data-i18n="opt_mode_backs">Manuell – dann alle Innenseiten</option>
+        <option value="sequential_duplex" data-i18n="opt_mode_seq">Doppelseiten der Reihe nach (ohne Ausschießung)</option>
       </select>
     </div>
 
@@ -619,7 +630,7 @@
     <div class="controls-grid">
       <!-- Rotation & Flip -->
       <div class="control-group">
-        <label data-i18n="lbl_rotation">Drehung & Spiegeln</label>
+        <label class="group-title" data-i18n="lbl_rotation">Drehung & Spiegeln</label>
         <div class="btn-row">
           <button class="btn-small" onclick="rotate(0)">0°</button>
           <button class="btn-small" onclick="rotate(-90)">-90°</button>
@@ -629,28 +640,55 @@
         </div>
       </div>
 
-      <!-- Granular Zoom -->
+      <!-- Granular Zoom (100 % = Seite gefüllt) -->
       <div class="control-group">
-        <label for="zoomInput" data-i18n="lbl_zoom">Zoom (%)</label>
+        <label class="group-title" for="zoomInput" data-i18n="lbl_zoom">Zoom (%)</label>
         <div style="display: flex; gap: 6px; align-items: center; width: 100%; margin-bottom: 6px;">
-          <input type="range" id="zoomSlider" min="10" max="300" value="100" style="flex: 1;" oninput="updateZoom(this.value)">
-          <input type="number" id="zoomInput" min="10" max="300" value="100" style="width: 60px; padding: 4px; background: var(--bg); border: 1px solid var(--border); color: white; border-radius: 4px; text-align: center; font-family: 'JetBrains Mono';" oninput="updateZoom(this.value)">
+          <input type="range" id="zoomSlider" min="30" max="400" value="100" style="flex: 1;" oninput="updateZoom(this.value)">
+          <input type="number" id="zoomInput" min="30" max="400" value="100" class="num-input" style="width: 64px;" oninput="updateZoom(this.value)">
         </div>
       </div>
 
       <!-- Alignment & Options -->
       <div class="control-group">
-        <label data-i18n="lbl_alignment">Ausrichtung & Druck</label>
+        <label class="group-title" data-i18n="lbl_alignment">Ausrichtung & Druck</label>
         <div class="btn-row" style="margin-bottom: 8px;">
-          <button class="btn-small" style="flex: 1;" onclick="fitImage()" data-i18n="btn_fit">Einpassen</button>
+          <button class="btn-small" style="flex: 1;" onclick="fitCover()" data-i18n="btn_fit_fill">Füllen</button>
+          <button class="btn-small" style="flex: 1;" onclick="fitContain()" data-i18n="btn_fit_contain">Ganz einpassen</button>
           <button class="btn-small" style="flex: 1;" onclick="resetTransforms()" data-i18n="btn_reset">Zurücksetzen</button>
         </div>
         <label class="checkbox-label">
           <input type="checkbox" id="showGuidelines" checked>
-          <span data-i18n="opt_crop_marks">Schnittmarken drucken</span>
+          <span data-i18n="opt_crop_marks">Schnitt- & Falzmarken drucken</span>
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" id="bleedOn" checked onchange="onAdvChange()">
+          <span data-i18n="opt_bleed">Beschnittzugabe (gleicht Duplex-Versatz aus)</span>
         </label>
       </div>
     </div>
+
+    <details class="advanced">
+      <summary data-i18n="adv_title">Erweitert</summary>
+      <div class="adv-body">
+        <div class="adv-row">
+          <label for="bleedMm" data-i18n="lbl_bleed_mm">Beschnitt (mm):</label>
+          <input type="number" id="bleedMm" class="num-input" step="0.5" min="1" max="5" value="3" oninput="onAdvChange()">
+          <span class="hint" data-i18n="hint_bleed">Der Rand wird aus den äußersten Bildpunkten verlängert. Wichtiges (Schrift) mindestens 4 mm vom Rand weghalten.</span>
+        </div>
+        <div class="adv-row">
+          <label class="checkbox-label" style="margin-bottom: 0;">
+            <input type="checkbox" id="shiftOn" onchange="onAdvChange()">
+            <span data-i18n="opt_shift">Innenseiten verschieben (Druckerversatz korrigieren)</span>
+          </label>
+          <span id="shiftFields" style="display: none; align-items: center; gap: 8px;">
+            <label>X <input type="number" id="shiftX" class="num-input" step="0.5" min="-10" max="10" value="0" oninput="onAdvChange()"> mm</label>
+            <label>Y <input type="number" id="shiftY" class="num-input" step="0.5" min="-10" max="10" value="0" oninput="onAdvChange()"> mm</label>
+          </span>
+          <span class="hint" data-i18n="hint_shift">+X = nach rechts, +Y = nach unten, nur auf den Innenseiten. Wird in diesem Browser gespeichert.</span>
+        </div>
+      </div>
+    </details>
 
     <button class="btn-print" onclick="preparePrint()" data-i18n="btn_print_booklet">🖨️ Booklet drucken / Als PDF speichern</button>
   </div>
@@ -663,661 +701,819 @@
     <div style="padding: 10px; text-align: center; background: #f3f4f6; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap;" class="no-print">
       <button onclick="window.print()" style="padding: 10px 20px; background: #10b981; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;" data-i18n="btn_print_now">Jetzt drucken / PDF speichern</button>
       <button onclick="closePrint()" style="padding: 10px 20px; background: #6b7280; color: white; border: none; border-radius: 6px; cursor: pointer;" data-i18n="btn_close">Schließen</button>
+      <div data-i18n="print_hint" style="flex-basis: 100%; font-size: 0.75rem; color: #4b5563;"></div>
     </div>
     <div id="print-container"></div>
   </div>
 
-  <canvas id="render-canvas" style="display:none;"></canvas>
-
   <script>
-    const formats = {
-      cd: { cmW: 12.0, cmH: 12.0, pxW: 280, pxH: 280 },
-      dvd: { cmW: 12.0, cmH: 18.0, pxW: 220, pxH: 330 },
-      bluray: { cmW: 12.9, cmH: 14.9, pxW: 240, pxH: 277 }
+    // ------------------------------------------------------------------
+    //  Constants & format table (all sizes in cm). Add new formats here.
+    // ------------------------------------------------------------------
+    const MM = 25.4, DPI = 300;
+    const SHEET_W = 297, SHEET_H = 210;     // A4 landscape (nominal)
+    const MARK_LEN = 5;                     // crop mark length in mm
+    const MAX_PAGES = 24;
+
+    const FORMATS = {
+      cd:     { w: 12.0, h: 12.0 },
+      ps34:   { w: 11.8, h: 14.6 },         // PlayStation 3 / 4 booklet (W x H)
+      bluray: { w: 12.9, h: 14.9 },
+      dvd:    { w: 12.0, h: 18.0 },
+      custom: { w: 12.0, h: 12.0 }          // user defined (e.g. GameCube)
     };
 
     let currentFormat = 'cd';
+    let totalPages = 4;
+    let activeTarget = 'p1';
+    let currentLang = localStorage.getItem('prs_lang') || 'de';
 
+    const state = {};                       // per page: x, y (fraction of frame width), userZoom (1 = fills page), ...
+    const geom = { fw: 240, fh: 240, ppc: 20 };
+    const adv = { bleedOn: true, bleedMm: 3, shiftOn: false, dx: 0, dy: 0 };
+
+    const store = {
+      get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+      set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+    };
+
+    // ------------------------------------------------------------------
+    //  i18n
+    // ------------------------------------------------------------------
     const i18n = {
       en: {
-        nav_index: "Back to Overview",
-        btn_donation: "Donation",
+        nav_index: "Back to Overview", btn_donation: "Donation",
         studio_title: "Booklet Studio",
-        studio_subtitle: "Booklet Creation Studio | A4 Landscape Print Template with Imposition",
+        studio_subtitle: "Booklet Creation Studio | A4 landscape, saddle stitch for home printers",
         lbl_format: "📐 Booklet Format / Size:",
-        opt_format_cd: "CD Size (12.0 × 12.0 cm - Square)",
-        opt_format_dvd: "DVD Size (12.0 × 18.0 cm - Tall)",
-        opt_format_bluray: "Blu-ray Size (12.9 × 14.9 cm)",
+        opt_format_cd: "CD (12.0 × 12.0 cm)",
+        opt_format_ps34: "PlayStation 3 / 4 (11.8 × 14.6 cm, W × H)",
+        opt_format_bluray: "Blu-ray (12.9 × 14.9 cm)",
+        opt_format_dvd: "DVD (12.0 × 18.0 cm)",
+        opt_format_custom: "Custom size (e.g. GameCube) …",
+        lbl_custom_w: "Width", lbl_custom_h: "Height",
         lbl_pdf_import: "GOG / PDF Booklet Import (Auto-Split Spreads):",
-        lbl_page_count: "📖 Select Booklet Page Count:",
-        lbl_print_mode: "🖨️ Printer Mode & Layout:",
-        opt_p2: "2 Pages",
-        opt_p4: "4 Pages (1 Folded Sheet)",
-        opt_p8: "8 Pages (2 Folded Sheets)",
-        opt_p12: "12 Pages (3 Folded Sheets)",
-        opt_p16: "16 Pages (4 Folded Sheets)",
-        opt_p20: "20 Pages (5 Folded Sheets)",
-        opt_p24: "24 Pages (6 Folded Sheets)",
-        opt_mode_saddle: "Saddle Stitch / Duplex (Auto Page Ordering for Folded Booklet)",
-        opt_mode_seq: "Sequential Duplex (Front/Back Pair Alignment)",
-        opt_mode_fronts: "Manual Feed - Front Sides First (Odd Sheets)",
-        opt_mode_backs: "Manual Feed - Back Sides Only (Even Sheets)",
-        lbl_rotation: "Rotation & Flip",
-        btn_flip: "↔️ Flip",
+        lbl_page_count: "📖 Number of pages:",
+        pages_opt: "{n} pages · {s} sheet(s)",
+        pages_opt_blank: "{n} pages · {s} sheet(s) (+{b} blank)",
+        lbl_print_mode: "🖨️ Print mode:",
+        opt_mode_saddle: "Saddle stitch, automatic duplex (recommended)",
+        opt_mode_fronts: "Manual – all outsides first",
+        opt_mode_backs: "Manual – then all insides",
+        opt_mode_seq: "Spreads in sequence (no imposition)",
+        lbl_rotation: "Rotation & Flip", btn_flip: "↔️ Flip",
         lbl_zoom: "Zoom (%)",
         lbl_alignment: "Alignment & Print",
-        btn_fit: "Fit",
-        btn_reset: "Reset",
-        opt_crop_marks: "Print crop marks / guidelines",
+        btn_fit_fill: "Fill", btn_fit_contain: "Fit all", btn_reset: "Reset",
+        opt_crop_marks: "Print crop & fold marks",
+        opt_bleed: "Bleed (hides the printer's duplex offset)",
+        adv_title: "Advanced",
+        lbl_bleed_mm: "Bleed (mm):",
+        hint_bleed: "The edge is extended from the outermost pixels. Keep important content (text) at least 4 mm from the edge.",
+        opt_shift: "Shift inside pages (correct printer offset)",
+        hint_shift: "+X = right, +Y = down, inside pages only. Saved in this browser.",
         btn_print_booklet: "🖨️ Print Booklet / Save as PDF",
-        btn_print_now: "Print Now / Save PDF",
-        btn_close: "Close",
-        ph_select: "Select image for P. ",
-        sheet_front: "Front Side (Outside)",
-        sheet_back: "Back Side (Inside)",
+        btn_print_now: "Print Now / Save PDF", btn_close: "Close",
+        print_hint: "A4 landscape, scale 100 %, margins “None”, double-sided → flip on short edge. Then fold, staple on the fold (at ¼ and ¾ of the height) and trim the three open edges at the crop marks.",
+        ph_select: "Select image for P. ", blank_page: "Blank page",
+        sheet_word: "Sheet", sheet_front: "Outside", sheet_back: "Inside", lbl_left: "Left", lbl_right: "Right",
+        page_word: "Page", page_cover: "Cover", page_back: "Back", page_front_label: "Cover / Front", page_back_label: "Back Cover",
         alert_no_image: "Please select at least one image for the booklet!",
         alert_import_success: "Successfully imported and split spreads from PDF booklet!",
-        dpi_excellent: "Excellent",
-        dpi_good: "Good",
-        dpi_low: "Low quality"
+        alert_no_pdfjs: "The PDF library could not be loaded (internet connection?).",
+        alert_too_many: "The PDF has more than 24 pages – only the first 24 were imported.",
+        alert_nofit: "This size does not fit on one A4 sheet (landscape).",
+        info_layout: "{pages} pages → {sheets} sheet(s) A4 · uses {util} % of the sheet",
+        info_nofit: "⚠ Does not fit on A4 landscape (spread {w} × {h} mm incl. bleed)",
+        info_nomarks: "ℹ Not enough room for crop marks – they will be cut off",
+        info_importing: "Importing page {i} / {n} …",
+        dpi_excellent: "Excellent", dpi_good: "Good", dpi_low: "Low quality"
       },
       de: {
-        nav_index: "Zurück zur Übersicht",
-        btn_donation: "Spende",
+        nav_index: "Zurück zur Übersicht", btn_donation: "Spende",
         studio_title: "Booklet Studio",
-        studio_subtitle: "Booklet-Erstellungsstudio | DIN A4 Querformat Druckvorlage mit Ausschießung",
+        studio_subtitle: "Booklet-Erstellungsstudio | A4 quer, Sattelheftung für Heimdrucker",
         lbl_format: "📐 Booklet Format / Größe:",
-        opt_format_cd: "CD Größe (12.0 × 12.0 cm - Quadratisch)",
-        opt_format_dvd: "DVD Größe (12.0 × 18.0 cm - Hochkant)",
-        opt_format_bluray: "Blu-ray Größe (12.9 × 14.9 cm)",
+        opt_format_cd: "CD (12,0 × 12,0 cm)",
+        opt_format_ps34: "PlayStation 3 / 4 (11,8 × 14,6 cm, B × H)",
+        opt_format_bluray: "Blu-ray (12,9 × 14,9 cm)",
+        opt_format_dvd: "DVD (12,0 × 18,0 cm)",
+        opt_format_custom: "Eigenes Format (z. B. GameCube) …",
+        lbl_custom_w: "Breite", lbl_custom_h: "Höhe",
         lbl_pdf_import: "GOG / PDF Booklet Import (Autom. Doppelseiten-Split):",
-        lbl_page_count: "📖 Booklet Seitenzahl wählen:",
-        lbl_print_mode: "🖨️ Druckmodus & Layout:",
-        opt_p2: "2 Seiten",
-        opt_p4: "4 Seiten (1 gefaltetes Blatt)",
-        opt_p8: "8 Seiten (2 gefaltete Blätter)",
-        opt_p12: "12 Seiten (3 gefaltete Blätter)",
-        opt_p16: "16 Seiten (4 gefaltete Blätter)",
-        opt_p20: "20 Seiten (5 gefaltete Blätter)",
-        opt_p24: "24 Seiten (6 gefaltete Blätter)",
-        opt_mode_saddle: "Sattelheftung / Duplex (Autom. Seitensortierung für Booklet)",
-        opt_mode_seq: "Sequenzieller Duplex (Vorder-/Rückseiten-Paarung)",
-        opt_mode_fronts: "Manuell - Vordersichten zuerst (Ungerade Blätter)",
-        opt_mode_backs: "Manuell - Rückseiten allein (Gerade Blätter)",
-        lbl_rotation: "Drehung & Spiegeln",
-        btn_flip: "↔️ Spiegeln",
+        lbl_page_count: "📖 Seitenzahl:",
+        pages_opt: "{n} Seiten · {s} Blatt",
+        pages_opt_blank: "{n} Seiten · {s} Blatt (+{b} Leerseiten)",
+        lbl_print_mode: "🖨️ Druckmodus:",
+        opt_mode_saddle: "Sattelheftung, automatisch beidseitig (empfohlen)",
+        opt_mode_fronts: "Manuell – erst alle Außenseiten",
+        opt_mode_backs: "Manuell – dann alle Innenseiten",
+        opt_mode_seq: "Doppelseiten der Reihe nach (ohne Ausschießung)",
+        lbl_rotation: "Drehung & Spiegeln", btn_flip: "↔️ Spiegeln",
         lbl_zoom: "Zoom (%)",
         lbl_alignment: "Ausrichtung & Druck",
-        btn_fit: "Einpassen",
-        btn_reset: "Zurücksetzen",
-        opt_crop_marks: "Schnittmarken drucken",
+        btn_fit_fill: "Füllen", btn_fit_contain: "Ganz einpassen", btn_reset: "Zurücksetzen",
+        opt_crop_marks: "Schnitt- & Falzmarken drucken",
+        opt_bleed: "Beschnittzugabe (gleicht Duplex-Versatz des Druckers aus)",
+        adv_title: "Erweitert",
+        lbl_bleed_mm: "Beschnitt (mm):",
+        hint_bleed: "Der Rand wird aus den äußersten Bildpunkten verlängert. Wichtiges (Schrift) mindestens 4 mm vom Rand weghalten.",
+        opt_shift: "Innenseiten verschieben (Druckerversatz korrigieren)",
+        hint_shift: "+X = nach rechts, +Y = nach unten, nur auf den Innenseiten. Wird in diesem Browser gespeichert.",
         btn_print_booklet: "🖨️ Booklet drucken / Als PDF speichern",
-        btn_print_now: "Jetzt drucken / PDF speichern",
-        btn_close: "Schließen",
-        ph_select: "Wähle Bild für S. ",
-        sheet_front: "Vorderseite (Außenseite)",
-        sheet_back: "Rückseite (Innenseite)",
+        btn_print_now: "Jetzt drucken / PDF speichern", btn_close: "Schließen",
+        print_hint: "A4 quer, Skalierung 100 %, Ränder „Keine“, beidseitig → kurze Kante. Danach falten, auf dem Falz (bei ¼ und ¾ der Höhe) heften und die drei offenen Seiten an den Schnittmarken beschneiden.",
+        ph_select: "Wähle Bild für S. ", blank_page: "Leerseite",
+        sheet_word: "Blatt", sheet_front: "Außenseite", sheet_back: "Innenseite", lbl_left: "Links", lbl_right: "Rechts",
+        page_word: "Seite", page_cover: "Cover", page_back: "Rück", page_front_label: "Cover / Vorne", page_back_label: "Rückseite",
         alert_no_image: "Bitte wähle mindestens ein Bild für das Booklet aus!",
         alert_import_success: "PDF erfolgreich importiert und Doppelseiten aufgeteilt!",
-        dpi_excellent: "Hervorragend",
-        dpi_good: "Gut",
-        dpi_low: "Niedrige Qualität"
+        alert_no_pdfjs: "Die PDF-Bibliothek konnte nicht geladen werden (Internetverbindung?).",
+        alert_too_many: "Das PDF hat mehr als 24 Seiten – es wurden nur die ersten 24 importiert.",
+        alert_nofit: "Dieses Format passt nicht auf ein A4-Blatt (quer).",
+        info_layout: "{pages} Seiten → {sheets} Blatt A4 · nutzt {util} % der Blattfläche",
+        info_nofit: "⚠ Passt nicht auf A4 quer (Doppelseite {w} × {h} mm inkl. Beschnitt)",
+        info_nomarks: "ℹ Kein Platz für Schnittmarken – sie werden teilweise abgeschnitten",
+        info_importing: "Importiere Seite {i} / {n} …",
+        dpi_excellent: "Hervorragend", dpi_good: "Gut", dpi_low: "Niedrige Qualität"
       }
     };
 
-    let currentLang = localStorage.getItem('prs_lang') || 'de';
+    const t = (key, vars) => {
+      let s = (i18n[currentLang] && i18n[currentLang][key]) || i18n.en[key] || key;
+      if (vars) Object.keys(vars).forEach(k => { s = s.replace(new RegExp('\\{' + k + '\\}', 'g'), vars[k]); });
+      return s;
+    };
 
     function setLanguage(lang) {
       currentLang = lang;
       localStorage.setItem('prs_lang', lang);
-
       document.getElementById('lang-en').classList.toggle('active', lang === 'en');
       document.getElementById('lang-de').classList.toggle('active', lang === 'de');
       document.documentElement.lang = lang;
-
       document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
-        if (i18n[lang][key]) {
-          el.textContent = i18n[lang][key];
-        }
+        if (i18n[lang][key]) el.textContent = i18n[lang][key];
       });
-      initBooklet(totalPages);
+      buildPageOptions();
+      initBooklet();
     }
 
-    let activeTarget = 'p1';
-    let totalPages = 4;
-    const state = {};
+    // ------------------------------------------------------------------
+    //  Format / geometry helpers
+    // ------------------------------------------------------------------
+    const fmt = () => FORMATS[currentFormat];
+    const bleedMm = () => (adv.bleedOn ? adv.bleedMm : 0);
+    const capacity = (n) => Math.ceil(n / 4) * 4;
 
-    function changeFormat(fmt) {
-      currentFormat = fmt;
-      initBooklet(totalPages);
+    function computeGeom() {
+      const f = fmt();
+      const avail = Math.max(220, Math.min(window.innerWidth, 1024) - 110);
+      let ppc = Math.floor(Math.min(20, avail / (2 * f.w)));
+      ppc = Math.max(ppc, 6);
+      geom.ppc = ppc;
+      geom.fw = Math.round(f.w * ppc);
+      geom.fh = geom.fw * f.h / f.w;         // exact aspect ratio (may be fractional)
     }
 
-    function initBooklet(pages) {
-      totalPages = parseInt(pages);
+    // Layout figures for the info line and the print check (all mm)
+    function layoutMetrics() {
+      const f = fmt(), b = bleedMm();
+      const w = f.w * 10, h = f.h * 10;
+      const gap = b + 1;
+      return {
+        w, h, b,
+        spreadW: 2 * w + 2 * b, spreadH: h + 2 * b,
+        fits: (2 * w + 2 * b) <= SHEET_W && (h + 2 * b) <= (SHEET_H - 1),
+        marksFit: (2 * w + 2 * (gap + MARK_LEN)) <= SHEET_W && (h + 2 * (gap + MARK_LEN)) <= (SHEET_H - 1),
+        util: Math.round((2 * w * h) / (SHEET_W * SHEET_H) * 100)
+      };
+    }
+
+    function updateLayoutInfo() {
+      const m = layoutMetrics();
+      const el = document.getElementById('layoutInfo');
+      const sheets = capacity(totalPages) / 4;
+      let html = t('info_layout', { pages: totalPages, sheets, util: m.util });
+      if (!m.fits) html += `<br><span class="bad">${t('info_nofit', { w: Math.round(m.spreadW), h: Math.round(m.spreadH) })}</span>`;
+      else if (!m.marksFit) html += `<br><span class="warn">${t('info_nomarks')}</span>`;
+      el.innerHTML = html;
+    }
+
+    // ------------------------------------------------------------------
+    //  Imposition (saddle stitch) with back cover always on the last slot
+    // ------------------------------------------------------------------
+    function slotToPage(slot, n) {
+      const c = capacity(n);
+      if (slot === c) return n;               // back cover is always the last slot
+      if (slot >= n) return null;             // blank page
+      return slot;
+    }
+
+    function saddleItems(n) {
+      const c = capacity(n), out = [];
+      for (let s = 0; s < c / 4; s++) {
+        out.push({ sheet: s + 1, isBack: false, left: slotToPage(c - 2 * s, n), right: slotToPage(1 + 2 * s, n) });
+        out.push({ sheet: s + 1, isBack: true,  left: slotToPage(2 + 2 * s, n), right: slotToPage(c - 1 - 2 * s, n) });
+      }
+      return out;
+    }
+
+    function sequentialItems(n) {
+      const out = [];
+      for (let i = 1, k = 0; i <= n; i += 2, k++) {
+        out.push({ sheet: Math.floor(k / 2) + 1, isBack: k % 2 === 1, left: i, right: i + 1 <= n ? i + 1 : null });
+      }
+      return out;
+    }
+
+    const isLoaded = (p) => p && state['p' + p] && state['p' + p].loaded;
+
+    // ------------------------------------------------------------------
+    //  State & UI building
+    // ------------------------------------------------------------------
+    function ensure(key) {
+      if (!state[key]) state[key] = { x: 0, y: 0, userZoom: 1, rotation: 0, flipX: 1, loaded: false, src: null, img: null, nw: 0, nh: 0 };
+      return state[key];
+    }
+
+    function pageLabel(i) {
+      if (i === 1) return `${t('page_word')} 1 (${t('page_front_label')})`;
+      if (i === totalPages) return `${t('page_word')} ${i} (${t('page_back_label')})`;
+      return `${t('page_word')} ${i}`;
+    }
+
+    function buildPageOptions() {
+      const sel = document.getElementById('pageCountSelect');
+      sel.innerHTML = '';
+      for (let n = 2; n <= MAX_PAGES; n += 2) {
+        const c = capacity(n);
+        const o = document.createElement('option');
+        o.value = n;
+        o.textContent = n === c
+          ? t('pages_opt', { n, s: c / 4 })
+          : t('pages_opt_blank', { n, s: c / 4, b: c - n });
+        if (n === totalPages) o.selected = true;
+        sel.appendChild(o);
+      }
+    }
+
+    function changeFormat(id) {
+      if (!FORMATS[id]) id = 'cd';
+      currentFormat = id;
+      document.getElementById('formatSelect').value = id;
+      document.getElementById('customFields').style.display = id === 'custom' ? 'flex' : 'none';
+      store.set('prs_booklet_format', id);
+      computeGeom();
+      initBooklet();
+    }
+
+    function onCustomChange() {
+      const w = Math.min(14.5, Math.max(3, parseFloat(document.getElementById('customW').value) || 12));
+      const h = Math.min(19, Math.max(3, parseFloat(document.getElementById('customH').value) || 12));
+      FORMATS.custom = { w, h };
+      store.set('prs_booklet_custom', FORMATS.custom);
+      if (currentFormat === 'custom') { computeGeom(); initBooklet(); }
+    }
+
+    function changeTotalPages(val) {
+      totalPages = parseInt(val, 10);
+      initBooklet();
+    }
+
+    function initBooklet() {
       const container = document.getElementById('upload-cards-container');
       const tabsContainer = document.getElementById('tabs-container');
       const previewWrapper = document.getElementById('preview-wrapper');
-
       container.innerHTML = '';
       tabsContainer.innerHTML = '';
       previewWrapper.innerHTML = '';
 
-      const cfg = formats[currentFormat];
+      if (!state[activeTarget] || parseInt(activeTarget.slice(1), 10) > totalPages) activeTarget = 'p1';
 
       for (let i = 1; i <= totalPages; i++) {
-        const pKey = 'p' + i;
-        if (!state[pKey]) {
-          state[pKey] = { x: 0, y: 0, scale: 1, rotation: 0, flipX: 1, loaded: false, targetCmW: cfg.cmW, targetCmH: cfg.cmH, dataUrl: null };
-        } else {
-          state[pKey].targetCmW = cfg.cmW;
-          state[pKey].targetCmH = cfg.cmH;
-        }
-      }
-
-      for (let i = 1; i <= totalPages; i++) {
-        const pKey = 'p' + i;
-        let labelText = `${currentLang === 'de' ? 'Seite' : 'Page'} ${i}`;
-        if (i === 1) labelText = `${currentLang === 'de' ? 'Seite 1 (Cover / Vorne)' : 'Page 1 (Cover / Front)'}`;
-        else if (i === totalPages) labelText = `${currentLang === 'de' ? 'Seite' : 'Page'} ${i} (${currentLang === 'de' ? 'Rückseite' : 'Back Cover'})`;
+        const key = 'p' + i;
+        ensure(key);
 
         const card = document.createElement('div');
-        card.className = `upload-card ${pKey === activeTarget ? 'active' : ''}`;
-        card.id = `card-${pKey}`;
-        card.onclick = () => selectTab(pKey);
+        card.className = 'upload-card' + (key === activeTarget ? ' active' : '');
+        card.id = `card-${key}`;
+        card.onclick = () => selectTab(key);
         card.innerHTML = `
-          <label for="file-${pKey}">📷 ${labelText}</label>
-          <input type="file" id="file-${pKey}" accept="image/*" onchange="loadFile(event, '${pKey}')">
-          <div id="dpi-container-${pKey}" class="dpi-container">
-            <div id="dpi-badge-${pKey}" class="dpi-badge"></div>
+          <label for="file-${key}">📷 ${pageLabel(i)}</label>
+          <input type="file" id="file-${key}" accept="image/*" onchange="loadFile(event, '${key}')">
+          <div id="dpi-container-${key}" class="dpi-container">
+            <div id="dpi-badge-${key}" class="dpi-badge"></div>
             <div class="dpi-scale-wrapper">
               <div class="scale-segment scale-red"></div>
               <div class="scale-segment scale-yellow"></div>
               <div class="scale-segment scale-green"></div>
-              <div id="dpi-marker-${pKey}" class="scale-marker" style="left: 0%;"></div>
+              <div id="dpi-marker-${key}" class="scale-marker" style="left: 0%;"></div>
             </div>
-          </div>
-        `;
+          </div>`;
         container.appendChild(card);
 
         const btn = document.createElement('button');
-        btn.className = `tab-btn ${pKey === activeTarget ? 'active' : ''}`;
-        btn.id = `tab-${pKey}`;
-        btn.onclick = () => selectTab(pKey);
-        btn.innerText = `S. ${i}`;
+        btn.className = 'tab-btn' + (key === activeTarget ? ' active' : '');
+        btn.id = `tab-${key}`;
+        btn.onclick = () => selectTab(key);
+        btn.textContent = `S. ${i}`;
         tabsContainer.appendChild(btn);
       }
 
-      const spreads = calculateBookletImposition(totalPages);
-
-      spreads.forEach((spread, index) => {
+      saddleItems(totalPages).forEach((item) => {
         const sheetDiv = document.createElement('div');
         sheetDiv.className = 'sheet-preview';
 
         const title = document.createElement('div');
         title.className = 'sheet-title';
-        const sideName = index % 2 === 0 ? i18n[currentLang].sheet_front : i18n[currentLang].sheet_back;
-        title.innerText = `${currentLang === 'de' ? 'Blatt' : 'Sheet'} ${Math.floor(index / 2) + 1} - ${sideName} [${currentLang === 'de' ? 'Links' : 'Left'}: S. ${spread.left} | ${currentLang === 'de' ? 'Rechts' : 'Right'}: S. ${spread.right}]`;
+        const side = item.isBack ? t('sheet_back') : t('sheet_front');
+        title.textContent = `${t('sheet_word')} ${item.sheet} – ${side} [${t('lbl_left')}: S. ${item.left || '–'} | ${t('lbl_right')}: S. ${item.right || '–'}]`;
         sheetDiv.appendChild(title);
 
         const spreadBox = document.createElement('div');
         spreadBox.className = 'spread-container';
-        spreadBox.innerHTML = `<div class="fold-line-preview"></div>`;
-
-        spreadBox.appendChild(createFrameElement('p' + spread.left, spread.left));
-        spreadBox.appendChild(createFrameElement('p' + spread.right, spread.right));
-
+        spreadBox.innerHTML = '<div class="fold-line-preview"></div>';
+        spreadBox.appendChild(createFrame(item.left));
+        spreadBox.appendChild(createFrame(item.right));
         sheetDiv.appendChild(spreadBox);
         previewWrapper.appendChild(sheetDiv);
       });
 
-      if (!state[activeTarget]) {
-        activeTarget = 'p1';
-      }
+      for (let i = 1; i <= totalPages; i++) refreshFrame('p' + i);
       selectTab(activeTarget);
-      attachDragListeners();
+      updateLayoutInfo();
     }
 
-    function createFrameElement(pKey, pageNum) {
+    function createFrame(pageNum) {
       const frame = document.createElement('div');
-      frame.className = `frame-container ${pKey === activeTarget ? 'active-target' : ''}`;
-      frame.id = `frame-${pKey}`;
-      frame.onclick = (e) => { e.stopPropagation(); selectTab(pKey); };
+      frame.style.width = geom.fw + 'px';
+      frame.style.height = geom.fh + 'px';
 
-      const cfg = formats[currentFormat];
-      frame.style.width = cfg.pxW + 'px';
-      frame.style.height = cfg.pxH + 'px';
-
-      let badgeText = `${currentLang === 'de' ? 'Seite' : 'Page'} ${pageNum}`;
-      if (pageNum === 1) badgeText = `${currentLang === 'de' ? 'Seite 1 (Cover)' : 'Page 1 (Cover)'}`;
-      else if (pageNum === totalPages) badgeText = `${currentLang === 'de' ? 'Seite' : 'Page'} ${pageNum} (${currentLang === 'de' ? 'Rück' : 'Back'})`;
-
-      frame.innerHTML = `
-        <div class="page-badge-preview">${badgeText}</div>
-        <div class="placeholder" id="ph-${pKey}">${i18n[currentLang].ph_select}${pageNum}</div>
-        <img id="img-${pKey}" class="cover-img" style="display:${state[pKey] && state[pKey].loaded ? 'block' : 'none'};" alt="S. ${pageNum}">
-      `;
-
-      if (state[pKey] && state[pKey].loaded && state[pKey].dataUrl) {
-        setTimeout(() => {
-          const img = document.getElementById(`img-${pKey}`);
-          const ph = document.getElementById(`ph-${pKey}`);
-          if (img) {
-            img.src = state[pKey].dataUrl;
-            img.style.display = 'block';
-            if (ph) ph.style.display = 'none';
-            applyTransformsForPage(pKey);
-            calculateAndDisplayDPI(pKey);
-          }
-        }, 10);
+      if (!pageNum) {
+        frame.className = 'frame-container blank';
+        frame.innerHTML = `<div class="placeholder">${t('blank_page')}</div>`;
+        return frame;
       }
 
+      const key = 'p' + pageNum;
+      frame.className = 'frame-container' + (key === activeTarget ? ' active-target' : '');
+      frame.id = `frame-${key}`;
+      frame.dataset.key = key;
+
+      let badge = `${t('page_word')} ${pageNum}`;
+      if (pageNum === 1) badge = `${t('page_word')} 1 (${t('page_cover')})`;
+      else if (pageNum === totalPages) badge = `${t('page_word')} ${pageNum} (${t('page_back')})`;
+
+      frame.innerHTML = `
+        <div class="page-badge-preview">${badge}</div>
+        <div class="placeholder">${t('ph_select')}${pageNum}</div>
+        <img class="cover-img" style="display:none;" alt="S. ${pageNum}" draggable="false">`;
       return frame;
     }
 
-    async function importPDFBooklet(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      const fileReader = new FileReader();
-      fileReader.onload = async function() {
-        const typedarray = new Uint8Array(this.result);
-        const pdf = await pdfjsLib.getDocument(typedarray).promise;
-        const numPdfPages = pdf.numPages;
-
-        let extractedImages = [];
-
-        for (let i = 1; i <= numPdfPages; i++) {
-          const page = await pdf.getPage(i);
-          const viewport = page.getViewport({ scale: 2.0 });
-          const canvas = document.createElement('canvas');
-          const context = canvas.getContext('2d');
-          canvas.height = viewport.height;
-          canvas.width = viewport.width;
-
-          await page.render({ canvasContext: context, viewport: viewport }).promise;
-
-          if (canvas.width > canvas.height) {
-            const halfW = Math.floor(canvas.width / 2);
-            
-            const canvasLeft = document.createElement('canvas');
-            canvasLeft.width = halfW;
-            canvasLeft.height = canvas.height;
-            canvasLeft.getContext('2d').drawImage(canvas, 0, 0, halfW, canvas.height, 0, 0, halfW, canvas.height);
-            extractedImages.push(canvasLeft.toDataURL('image/png'));
-
-            const canvasRight = document.createElement('canvas');
-            canvasRight.width = halfW;
-            canvasRight.height = canvas.height;
-            canvasRight.getContext('2d').drawImage(canvas, halfW, 0, halfW, canvas.height, 0, 0, halfW, canvas.height);
-            extractedImages.push(canvasRight.toDataURL('image/png'));
-          } else {
-            extractedImages.push(canvas.toDataURL('image/png'));
-          }
-        }
-
-        const totalExtracted = extractedImages.length;
-        let targetPages = Math.max(4, Math.ceil(totalExtracted / 4) * 4);
-        if (targetPages > 24) targetPages = 24;
-
-        document.getElementById('pageCountSelect').value = targetPages;
-        initBooklet(targetPages);
-
-        for (let idx = 0; idx < extractedImages.length && idx < totalPages; idx++) {
-          const pKey = 'p' + (idx + 1);
-          state[pKey].dataUrl = extractedImages[idx];
-          state[pKey].loaded = true;
-
-          const img = document.getElementById(`img-${pKey}`);
-          const ph = document.getElementById(`ph-${pKey}`);
-          if (img) {
-            img.src = extractedImages[idx];
-            img.style.display = 'block';
-            if (ph) ph.style.display = 'none';
-            fitImageForPage(pKey);
-            calculateAndDisplayDPI(pKey);
-          }
-        }
-        alert(i18n[currentLang].alert_import_success);
-      };
-      fileReader.readAsArrayBuffer(file);
-    }
-
-    function calculateBookletImposition(count) {
-      const spreads = [];
-      const numSheets = Math.ceil(count / 4);
-      const totalCapacity = numSheets * 4;
-
-      for (let s = 0; s < numSheets; s++) {
-        const frontLeft = totalCapacity - (s * 2);
-        const frontRight = 1 + (s * 2);
-        spreads.push({ left: frontLeft, right: frontRight });
-
-        const backLeft = 2 + (s * 2);
-        const backRight = totalCapacity - 1 - (s * 2);
-        spreads.push({ left: backLeft, right: backRight });
-      }
-      return spreads;
-    }
-
-    function calculateSequentialImposition(count) {
-      const spreads = [];
-      for (let i = 1; i <= count; i += 2) {
-        spreads.push({ left: i, right: i + 1 <= count ? i + 1 : null });
-      }
-      return spreads;
-    }
-
-    function changeTotalPages(val) {
-      initBooklet(val);
-    }
-
-    function selectTab(target) {
-      activeTarget = target;
+    function selectTab(key) {
+      activeTarget = key;
       for (let i = 1; i <= totalPages; i++) {
-        const pKey = 'p' + i;
-        const tab = document.getElementById(`tab-${pKey}`);
-        const card = document.getElementById(`card-${pKey}`);
-        const frame = document.getElementById(`frame-${pKey}`);
-        if (tab) tab.classList.toggle('active', pKey === activeTarget);
-        if (card) card.classList.toggle('active', pKey === activeTarget);
-        if (frame) frame.classList.toggle('active-target', pKey === activeTarget);
+        const k = 'p' + i;
+        const tab = document.getElementById(`tab-${k}`);
+        const card = document.getElementById(`card-${k}`);
+        const frame = document.getElementById(`frame-${k}`);
+        if (tab) tab.classList.toggle('active', k === key);
+        if (card) card.classList.toggle('active', k === key);
+        if (frame) frame.classList.toggle('active-target', k === key);
       }
       updateControls();
     }
 
-    function calculateAndDisplayDPI(target) {
-      const img = document.getElementById(`img-${target}`);
-      const container = document.getElementById(`dpi-container-${target}`);
-      const badge = document.getElementById(`dpi-badge-${target}`);
-      const marker = document.getElementById(`dpi-marker-${target}`);
-      
-      if (!img || !img.naturalWidth || !img.naturalHeight) return;
-      if (container) container.style.display = 'block';
-
-      const inchesW = state[target].targetCmW / 2.54;
-      const inchesH = state[target].targetCmH / 2.54;
-
-      const is90 = Math.abs(state[target].rotation % 180) === 90;
-      const imgW = is90 ? img.naturalHeight : img.naturalWidth;
-      const imgH = is90 ? img.naturalWidth : img.naturalHeight;
-
-      const dpiW = Math.round(imgW / inchesW);
-      const dpiH = Math.round(imgH / inchesH);
-      const dpi = Math.min(dpiW, dpiH);
-
-      if (badge) {
-        badge.className = 'dpi-badge';
-        let markerPos = 0;
-        if (dpi <= 150) {
-          markerPos = (dpi / 150) * 37.5;
-        } else if (dpi < 300) {
-          markerPos = 37.5 + ((dpi - 150) / 150) * 37.5;
-        } else {
-          const extra = Math.min(dpi - 300, 100);
-          markerPos = 75 + (extra / 100) * 25;
-        }
-        if (marker) marker.style.left = `${Math.min(Math.max(markerPos, 2), 98)}%`;
-
-        if (dpi >= 300) {
-          badge.classList.add('green');
-          badge.innerHTML = `🟢 <b>${dpi} DPI</b> – ${i18n[currentLang].dpi_excellent}`;
-        } else if (dpi >= 150) {
-          badge.classList.add('yellow');
-          badge.innerHTML = `🟡 <b>${dpi} DPI</b> – ${i18n[currentLang].dpi_good}`;
-        } else {
-          badge.classList.add('red');
-          badge.innerHTML = `🔴 <b>${dpi} DPI</b> – ${i18n[currentLang].dpi_low}`;
-        }
-      }
+    // ------------------------------------------------------------------
+    //  Transforms (stored resolution independent: x/y as fraction of frame width,
+    //  userZoom relative to "page filled")
+    // ------------------------------------------------------------------
+    function dims(s) {
+      const swap = Math.abs(s.rotation % 180) === 90;
+      return { w: swap ? s.nh : s.nw, h: swap ? s.nw : s.nh };
     }
 
-    function loadFile(e, target) {
-      const file = e.target.files[0];
-      if (file) {
-        selectTab(target);
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          const img = document.getElementById(`img-${target}`);
-          const ph = document.getElementById(`ph-${target}`);
-          img.src = event.target.result;
+    function coverScale(s) { const d = dims(s); return Math.max(geom.fw / d.w, geom.fh / d.h); }
+    function containScale(s) { const d = dims(s); return Math.min(geom.fw / d.w, geom.fh / d.h); }
+    function effScale(s) { return coverScale(s) * s.userZoom; }
+
+    function applyTransform(key) {
+      const fr = document.getElementById(`frame-${key}`);
+      const s = state[key];
+      if (!fr || !s || !s.loaded) return;
+      const img = fr.querySelector('img');
+      const sc = effScale(s);
+      img.style.width = s.nw + 'px';
+      img.style.height = s.nh + 'px';
+      img.style.transform =
+        `translate(calc(-50% + ${s.x * geom.fw}px), calc(-50% + ${s.y * geom.fw}px)) rotate(${s.rotation}deg) scale(${sc * s.flipX}, ${sc})`;
+    }
+
+    function refreshFrame(key) {
+      const fr = document.getElementById(`frame-${key}`);
+      const s = state[key];
+      if (fr && s) {
+        const img = fr.querySelector('img');
+        const ph = fr.querySelector('.placeholder');
+        if (s.loaded) {
+          img.src = s.src;
           img.style.display = 'block';
           if (ph) ph.style.display = 'none';
-          state[target].dataUrl = event.target.result;
-          img.onload = () => {
-            state[target].loaded = true;
-            resetTransforms();
-            fitImage();
-            calculateAndDisplayDPI(target);
-          };
-        };
-        reader.readAsDataURL(file);
+          applyTransform(key);
+        } else {
+          img.style.display = 'none';
+          if (ph) ph.style.display = '';
+        }
       }
-    }
-
-    function applyTransforms() {
-      applyTransformsForPage(activeTarget);
-      updateControls();
-    }
-
-    function applyTransformsForPage(target) {
-      const img = document.getElementById(`img-${target}`);
-      if (!img) return;
-      const s = state[target];
-      img.style.transform = `translate(calc(-50% + ${s.x}px), calc(-50% + ${s.y}px)) rotate(${s.rotation}deg) scale(${s.scale * s.flipX}, ${s.scale})`;
+      updateDPI(key);
     }
 
     function updateControls() {
       const s = state[activeTarget];
       if (!s) return;
-      const val = Math.round(s.scale * 100);
-      const slider = document.getElementById('zoomSlider');
-      const input = document.getElementById('zoomInput');
-      if (slider) slider.value = val;
-      if (input) input.value = val;
+      const val = Math.round(s.userZoom * 100);
+      document.getElementById('zoomSlider').value = val;
+      document.getElementById('zoomInput').value = val;
+    }
+
+    // Effective DPI = native pixels per inch of the page as it will be printed (includes zoom)
+    function updateDPI(key) {
+      const s = state[key];
+      const container = document.getElementById(`dpi-container-${key}`);
+      const badge = document.getElementById(`dpi-badge-${key}`);
+      const marker = document.getElementById(`dpi-marker-${key}`);
+      if (!s || !s.loaded || !container) return;
+      container.style.display = 'block';
+
+      const dpi = Math.round(geom.fw / (effScale(s) * (fmt().w / 2.54)));
+      let pos;
+      if (dpi <= 150) pos = (dpi / 150) * 37.5;
+      else if (dpi < 300) pos = 37.5 + ((dpi - 150) / 150) * 37.5;
+      else pos = 75 + (Math.min(dpi - 300, 100) / 100) * 25;
+      marker.style.left = `${Math.min(Math.max(pos, 2), 98)}%`;
+
+      badge.className = 'dpi-badge';
+      if (dpi >= 300) { badge.classList.add('green'); badge.innerHTML = `🟢 <b>${dpi} DPI</b> – ${t('dpi_excellent')}`; }
+      else if (dpi >= 150) { badge.classList.add('yellow'); badge.innerHTML = `🟡 <b>${dpi} DPI</b> – ${t('dpi_good')}`; }
+      else { badge.classList.add('red'); badge.innerHTML = `🔴 <b>${dpi} DPI</b> – ${t('dpi_low')}`; }
+    }
+
+    function updateZoom(val) {
+      const s = state[activeTarget];
+      if (!s) return;
+      const v = Math.min(400, Math.max(30, parseFloat(val) || 100));
+      s.userZoom = v / 100;
+      applyTransform(activeTarget);
+      updateDPI(activeTarget);
+      updateControls();
+    }
+
+    function rotate(deg) {
+      const s = state[activeTarget];
+      s.rotation = deg;
+      applyTransform(activeTarget);
+      updateDPI(activeTarget);
     }
 
     function toggleFlip() {
-      state[activeTarget].flipX = state[activeTarget].flipX === 1 ? -1 : 1;
-      applyTransforms();
+      const s = state[activeTarget];
+      s.flipX = s.flipX === 1 ? -1 : 1;
+      applyTransform(activeTarget);
     }
 
-    function rotate(deg) { 
-      state[activeTarget].rotation = deg; 
-      applyTransforms(); 
-      calculateAndDisplayDPI(activeTarget);
+    function fitCover() {
+      const s = state[activeTarget];
+      s.x = 0; s.y = 0; s.userZoom = 1;
+      applyTransform(activeTarget); updateDPI(activeTarget); updateControls();
     }
 
-    function updateZoom(val) { state[activeTarget].scale = val / 100; applyTransforms(); }
-
-    function fitImage() { fitImageForPage(activeTarget); }
-
-    function fitImageForPage(target) {
-      const img = document.getElementById(`img-${target}`);
-      if (!img || !img.naturalWidth) return;
-      const frame = document.getElementById(`frame-${target}`);
-      const is90 = Math.abs(state[target].rotation % 180) === 90;
-      const w = is90 ? img.naturalHeight : img.naturalWidth;
-      const h = is90 ? img.naturalWidth : img.naturalHeight;
-      state[target].scale = Math.max(frame.clientWidth / w, frame.clientHeight / h);
-      state[target].x = 0;
-      state[target].y = 0;
-      applyTransformsForPage(target);
+    function fitContain() {
+      const s = state[activeTarget];
+      if (!s.loaded) return;
+      s.x = 0; s.y = 0; s.userZoom = containScale(s) / coverScale(s);
+      applyTransform(activeTarget); updateDPI(activeTarget); updateControls();
     }
 
     function resetTransforms() {
-      state[activeTarget].x = 0;
-      state[activeTarget].y = 0;
-      state[activeTarget].scale = 1;
-      state[activeTarget].rotation = 0;
-      state[activeTarget].flipX = 1;
-      applyTransforms();
-      calculateAndDisplayDPI(activeTarget);
+      const s = state[activeTarget];
+      s.x = 0; s.y = 0; s.userZoom = 1; s.rotation = 0; s.flipX = 1;
+      if (s.loaded) { applyTransform(activeTarget); updateDPI(activeTarget); }
+      updateControls();
     }
 
-    function attachDragListeners() {
-      for (let i = 1; i <= totalPages; i++) {
-        const key = 'p' + i;
-        const frame = document.getElementById(`frame-${key}`);
-        if (!frame) continue;
+    // ------------------------------------------------------------------
+    //  Dragging (pointer events, registered once, delegated)
+    // ------------------------------------------------------------------
+    let drag = null;
+    function initDrag() {
+      const wrap = document.getElementById('preview-wrapper');
+      wrap.addEventListener('pointerdown', (e) => {
+        const fr = e.target.closest('.frame-container');
+        if (!fr || !fr.dataset.key) return;
+        const key = fr.dataset.key;
+        selectTab(key);
+        const s = state[key];
+        if (!s.loaded) return;
+        drag = { key, sx: e.clientX, sy: e.clientY, ox: s.x, oy: s.y };
+        try { fr.setPointerCapture(e.pointerId); } catch (err) {}
+      });
+      wrap.addEventListener('pointermove', (e) => {
+        if (!drag) return;
+        const s = state[drag.key];
+        s.x = drag.ox + (e.clientX - drag.sx) / geom.fw;
+        s.y = drag.oy + (e.clientY - drag.sy) / geom.fw;
+        applyTransform(drag.key);
+      });
+      const end = () => { drag = null; };
+      wrap.addEventListener('pointerup', end);
+      wrap.addEventListener('pointercancel', end);
+    }
 
-        let startX, startY, isDragging = false;
-
-        const handleStart = (e) => {
-          if (!state[key].loaded) return;
-          selectTab(key);
-          isDragging = true;
-          const touch = e.touches ? e.touches[0] : e;
-          startX = touch.clientX - state[key].x;
-          startY = touch.clientY - state[key].y;
+    // ------------------------------------------------------------------
+    //  Image loading
+    // ------------------------------------------------------------------
+    function setPageImage(key, url) {
+      return new Promise((resolve) => {
+        const s = ensure(key);
+        const im = new Image();
+        im.onload = () => {
+          if (s.src && s.src.startsWith('blob:') && s.src !== url) URL.revokeObjectURL(s.src);
+          s.img = im; s.src = url; s.nw = im.naturalWidth; s.nh = im.naturalHeight; s.loaded = true;
+          s.x = 0; s.y = 0; s.userZoom = 1; s.rotation = 0; s.flipX = 1;
+          resolve();
         };
+        im.onerror = () => resolve();
+        im.src = url;
+      });
+    }
 
-        const handleMove = (e) => {
-          if (!isDragging) return;
-          const touch = e.touches ? e.touches[0] : e;
-          state[key].x = touch.clientX - startX;
-          state[key].y = touch.clientY - startY;
-          applyTransformsForPage(key);
-        };
+    async function loadFile(e, key) {
+      const file = e.target.files[0];
+      if (!file) return;
+      selectTab(key);
+      await setPageImage(key, URL.createObjectURL(file));
+      refreshFrame(key);
+      updateControls();
+    }
 
-        const handleEnd = () => { isDragging = false; };
+    // ------------------------------------------------------------------
+    //  PDF / GOG import – renders at print resolution, splits landscape spreads
+    // ------------------------------------------------------------------
+    const canvasToBlobUrl = (canvas) => new Promise((res) =>
+      canvas.toBlob((b) => res(URL.createObjectURL(b)), 'image/jpeg', 0.92));
 
-        frame.addEventListener('touchstart', handleStart, { passive: true });
-        frame.addEventListener('touchmove', handleMove, { passive: true });
-        frame.addEventListener('touchend', handleEnd);
-        frame.addEventListener('mousedown', handleStart);
-        window.addEventListener('mousemove', handleMove);
-        window.addEventListener('mouseup', handleEnd);
+    async function importPDFBooklet(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      if (!window.pdfjsLib) { alert(t('alert_no_pdfjs')); return; }
+      const status = document.getElementById('importStatus');
+
+      try {
+        const buf = await file.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(buf) }).promise;
+        const f = fmt();
+        const targetW = Math.round(f.w / MM * DPI), targetH = Math.round(f.h / MM * DPI);
+        const urls = [];
+
+        for (let i = 1; i <= pdf.numPages && urls.length < MAX_PAGES; i++) {
+          status.textContent = t('info_importing', { i, n: pdf.numPages });
+          const page = await pdf.getPage(i);
+          const v1 = page.getViewport({ scale: 1 });
+          const spread = v1.width > v1.height * 1.3;
+          const pw = spread ? v1.width / 2 : v1.width;
+          const scale = Math.min(4, Math.max(1, Math.max(targetW / pw, targetH / v1.height)));
+          const vp = page.getViewport({ scale });
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.round(vp.width);
+          canvas.height = Math.round(vp.height);
+          const ctx = canvas.getContext('2d');
+          ctx.fillStyle = '#fff';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          await page.render({ canvasContext: ctx, viewport: vp }).promise;
+
+          if (spread) {
+            const half = Math.floor(canvas.width / 2);
+            for (const x0 of [0, half]) {
+              if (urls.length >= MAX_PAGES) break;
+              const c = document.createElement('canvas');
+              c.width = half; c.height = canvas.height;
+              c.getContext('2d').drawImage(canvas, x0, 0, half, canvas.height, 0, 0, half, canvas.height);
+              urls.push(await canvasToBlobUrl(c));
+            }
+          } else {
+            urls.push(await canvasToBlobUrl(canvas));
+          }
+        }
+
+        let target = Math.max(2, Math.ceil(urls.length / 2) * 2);
+        target = Math.min(target, MAX_PAGES);
+        totalPages = target;
+        buildPageOptions();
+        initBooklet();
+
+        for (let idx = 0; idx < urls.length && idx < totalPages; idx++) {
+          const key = 'p' + (idx + 1);
+          await setPageImage(key, urls[idx]);
+          refreshFrame(key);
+        }
+        status.textContent = '';
+        if (pdf.numPages > 0 && urls.length >= MAX_PAGES) alert(t('alert_too_many'));
+        else alert(t('alert_import_success'));
+      } catch (err) {
+        status.textContent = String(err && err.message ? err.message : err);
       }
     }
 
-    function renderPageToCanvas(pKey, targetW, targetH) {
-      if (!state[pKey] || !state[pKey].loaded) return null;
-      const canvas = document.getElementById('render-canvas');
-      const ctx = canvas.getContext('2d');
-      const img = document.getElementById(`img-${pKey}`);
-      const s = state[pKey];
-      const frame = document.getElementById(`frame-${pKey}`);
+    // ------------------------------------------------------------------
+    //  Rendering at 300 DPI, with bleed on the three outer sides only
+    // ------------------------------------------------------------------
+    function renderPage(key, side) {
+      const s = state[key];
+      if (!s || !s.loaded) return null;
+      const f = fmt();
+      const Wp = Math.round(f.w / MM * DPI), Hp = Math.round(f.h / MM * DPI);
+      const bp = Math.round(bleedMm() / MM * DPI);
 
-      canvas.width = targetW;
-      canvas.height = targetH;
-      ctx.clearRect(0, 0, targetW, targetH);
+      // 1) the page itself, exactly trim size
+      const trim = document.createElement('canvas');
+      trim.width = Wp; trim.height = Hp;
+      const c = trim.getContext('2d');
+      c.fillStyle = '#fff';
+      c.fillRect(0, 0, Wp, Hp);
+      c.imageSmoothingQuality = 'high';
+      const sf = Wp / geom.fw;                                  // preview px -> print px
+      c.save();
+      c.translate(Wp / 2 + s.x * Wp, Hp / 2 + s.y * Wp);
+      c.rotate(s.rotation * Math.PI / 180);
+      c.scale(effScale(s) * sf * s.flipX, effScale(s) * sf);
+      c.drawImage(s.img, -s.nw / 2, -s.nh / 2);
+      c.restore();
+      if (bp === 0) return trim.toDataURL('image/jpeg', 0.95);
 
-      const cfg = formats[currentFormat];
-      const scaleFactor = targetW / (frame ? frame.clientWidth : cfg.pxW);
-      ctx.save();
-      ctx.translate(targetW / 2 + s.x * scaleFactor, targetH / 2 + s.y * scaleFactor);
-      ctx.rotate((s.rotation * Math.PI) / 180);
-      ctx.scale(s.scale * s.flipX * scaleFactor, s.scale * scaleFactor);
-      ctx.drawImage(img, -img.naturalWidth / 2, -img.naturalHeight / 2);
-      ctx.restore();
+      // 2) bleed: top, bottom and the outer side – extended from the edge pixels
+      const out = document.createElement('canvas');
+      out.width = Wp + bp; out.height = Hp + 2 * bp;
+      const o = out.getContext('2d');
+      o.fillStyle = '#fff';
+      o.fillRect(0, 0, out.width, out.height);
+      const ox = side === 'L' ? bp : 0;
+      const k = 3;                                              // sample a few px inside: skips scan/edge artefacts
+      o.drawImage(trim, ox, bp);
+      o.drawImage(trim, 0, k, Wp, 1, ox, 0, Wp, bp);                       // top
+      o.drawImage(trim, 0, Hp - 1 - k, Wp, 1, ox, bp + Hp, Wp, bp);        // bottom
+      if (side === 'L') {
+        o.drawImage(trim, k, 0, 1, Hp, 0, bp, bp, Hp);                     // outer left
+        o.drawImage(trim, k, k, 1, 1, 0, 0, bp, bp);
+        o.drawImage(trim, k, Hp - 1 - k, 1, 1, 0, bp + Hp, bp, bp);
+      } else {
+        o.drawImage(trim, Wp - 1 - k, 0, 1, Hp, Wp, bp, bp, Hp);           // outer right
+        o.drawImage(trim, Wp - 1 - k, k, 1, 1, Wp, 0, bp, bp);
+        o.drawImage(trim, Wp - 1 - k, Hp - 1 - k, 1, 1, Wp, bp + Hp, bp, bp);
+      }
+      return out.toDataURL('image/jpeg', 0.95);
+    }
 
-      return canvas.toDataURL('image/png');
+    // ------------------------------------------------------------------
+    //  Print
+    // ------------------------------------------------------------------
+    function el(tag, cls) { const e = document.createElement(tag); if (cls) e.className = cls; return e; }
+
+    function printItems(mode) {
+      const n = totalPages;
+      const has = (it) => isLoaded(it.left) || isLoaded(it.right);
+      if (mode === 'sequential_duplex') return sequentialItems(n).filter(has);
+      const all = saddleItems(n);
+      // skip whole sheets that have no image at all (saves paper)
+      const used = new Set();
+      all.forEach(it => { if (has(it)) used.add(it.sheet); });
+      let items = all.filter(it => used.has(it.sheet));
+      if (mode === 'manual_fronts') items = items.filter(it => !it.isBack && has(it));
+      if (mode === 'manual_backs') items = items.filter(it => it.isBack && has(it));
+      return items;
+    }
+
+    function buildSheet(item, isLast) {
+      const m = layoutMetrics();
+      const { w, h, b } = m;
+      const x0 = (SHEET_W - 2 * w) / 2, xm = x0 + w, x1 = x0 + 2 * w;
+      const y0 = (SHEET_H - h) / 2, y1 = y0 + h;
+
+      const sheet = el('div', 'print-sheet' + (isLast ? ' is-last' : ''));
+      const inner = el('div', 'sheet-inner');
+      if (item.isBack && adv.shiftOn) inner.style.transform = `translate(${adv.dx}mm, ${adv.dy}mm)`;
+
+      const addImg = (url, left, width) => {
+        if (!url) return;
+        const im = el('img', 'print-page-img');
+        im.style.cssText = `left:${left}mm;top:${y0 - b}mm;width:${width}mm;height:${h + 2 * b}mm;`;
+        im.src = url;
+        inner.appendChild(im);
+      };
+      addImg(item.left && isLoaded(item.left) ? renderPage('p' + item.left, 'L') : null, x0 - b, w + b);
+      addImg(item.right && isLoaded(item.right) ? renderPage('p' + item.right, 'R') : null, xm, w + b);
+
+      if (document.getElementById('showGuidelines').checked) {
+        const gap = b + 1, T = 0.2;
+        const line = (l, tp, ww, hh, cls) => {
+          const d = el('div', 'mark' + (cls ? ' ' + cls : ''));
+          d.style.cssText = `left:${l}mm;top:${tp}mm;width:${ww}mm;height:${hh}mm;`;
+          inner.appendChild(d);
+        };
+        [x0, x1].forEach(x => { line(x - T / 2, y0 - gap - MARK_LEN, T, MARK_LEN); line(x - T / 2, y1 + gap, T, MARK_LEN); });
+        line(xm - T / 2, y0 - gap - MARK_LEN, T, MARK_LEN, 'fold');
+        line(xm - T / 2, y1 + gap, T, MARK_LEN, 'fold');
+        [y0, y1].forEach(y => { line(x0 - gap - MARK_LEN, y - T / 2, MARK_LEN, T); line(x1 + gap, y - T / 2, MARK_LEN, T); });
+      }
+
+      sheet.appendChild(inner);
+      return sheet;
     }
 
     function preparePrint() {
       let loadedCount = 0;
-      for (let i = 1; i <= totalPages; i++) {
-        if (state['p' + i] && state['p' + i].loaded) loadedCount++;
-      }
+      for (let i = 1; i <= totalPages; i++) if (isLoaded(i)) loadedCount++;
+      if (!loadedCount) { alert(t('alert_no_image')); return; }
+      if (!layoutMetrics().fits) { alert(t('alert_nofit')); return; }
 
-      if (loadedCount === 0) {
-        alert(i18n[currentLang].alert_no_image);
-        return;
-      }
+      const mode = document.getElementById('printModeSelect').value;
+      const items = printItems(mode);
+      const container = document.getElementById('print-container');
+      container.innerHTML = '';
 
-      const drawGuidelines = document.getElementById('showGuidelines').checked;
-      const printMode = document.getElementById('printModeSelect').value;
-      const printContainer = document.getElementById('print-container');
-      printContainer.innerHTML = '';
-
-      const cfg = formats[currentFormat];
-      const targetW = Math.round((cfg.cmW / 2.54) * 300);
-      const targetH = Math.round((cfg.cmH / 2.54) * 300);
-
-      const renderedPages = {};
-
-      for (let i = 1; i <= totalPages; i++) {
-        const pKey = 'p' + i;
-        if (state[pKey] && state[pKey].loaded) {
-          renderedPages[i] = renderPageToCanvas(pKey, targetW, targetH);
-        } else {
-          renderedPages[i] = null;
-        }
-      }
-
-      let spreads = [];
-      if (printMode === 'duplex_saddle') {
-        spreads = calculateBookletImposition(totalPages);
-      } else if (printMode === 'sequential_duplex') {
-        spreads = calculateSequentialImposition(totalPages);
-      } else if (printMode === 'manual_fronts') {
-        const allSpreads = calculateBookletImposition(totalPages);
-        spreads = allSpreads.filter((_, idx) => idx % 2 === 0);
-      } else if (printMode === 'manual_backs') {
-        const allSpreads = calculateBookletImposition(totalPages);
-        spreads = allSpreads.filter((_, idx) => idx % 2 === 1);
-      }
-
-      spreads.forEach(spread => {
-        const sheet = document.createElement('div');
-        sheet.className = 'print-sheet';
-
-        const singleW_mm = cfg.cmW * 10;
-        const singleH_mm = cfg.cmH * 10;
-
-        if (drawGuidelines) {
-          sheet.innerHTML += `
-            <div class="crop-mark crop-tl"></div><div class="crop-mark crop-tl-h"></div>
-            <div class="fold-line-print" style="left: calc((297mm - ${singleW_mm * 2}mm) / 2 + ${singleW_mm}mm);"></div>
-          `;
-        }
-
-        const cutArea = document.createElement('div');
-        cutArea.className = 'print-cut-area';
-        cutArea.style.cssText = `
-          position: absolute;
-          top: calc((210mm - ${singleH_mm}mm) / 2);
-          left: calc((297mm - ${singleW_mm * 2}mm) / 2);
-          width: ${singleW_mm * 2}mm;
-          height: ${singleH_mm}mm;
-          display: flex;
-        `;
-
-        const imgLeft = document.createElement('img');
-        imgLeft.className = 'print-page-img';
-        imgLeft.style.cssText = `width: ${singleW_mm}mm; height: ${singleH_mm}mm; object-fit: contain;`;
-        if (spread.left && spread.left <= totalPages && renderedPages[spread.left]) {
-          imgLeft.src = renderedPages[spread.left];
-        } else {
-          imgLeft.style.visibility = 'hidden';
-        }
-
-        const imgRight = document.createElement('img');
-        imgRight.className = 'print-page-img';
-        imgRight.style.cssText = `width: ${singleW_mm}mm; height: ${singleH_mm}mm; object-fit: contain;`;
-        if (spread.right && spread.right <= totalPages && renderedPages[spread.right]) {
-          imgRight.src = renderedPages[spread.right];
-        } else {
-          imgRight.style.visibility = 'hidden';
-        }
-
-        cutArea.appendChild(imgLeft);
-        cutArea.appendChild(imgRight);
-        sheet.appendChild(cutArea);
-        printContainer.appendChild(sheet);
+      items.forEach((item, idx) => {
+        const wrap = el('div');
+        const label = el('div', 'sheet-label no-print');
+        label.textContent = `${t('sheet_word')} ${item.sheet} – ${item.isBack ? t('sheet_back') : t('sheet_front')}`;
+        wrap.appendChild(label);
+        wrap.appendChild(buildSheet(item, idx === items.length - 1));
+        container.appendChild(wrap);
       });
 
+      document.body.classList.add('print-open');
       document.getElementById('printScreen').style.display = 'block';
     }
 
     function closePrint() {
       document.getElementById('printScreen').style.display = 'none';
+      document.body.classList.remove('print-open');
     }
 
-    window.onload = () => {
+    // ------------------------------------------------------------------
+    //  Advanced options (bleed, duplex shift) – persisted
+    // ------------------------------------------------------------------
+    function onAdvChange() {
+      adv.bleedOn = document.getElementById('bleedOn').checked;
+      adv.bleedMm = Math.min(5, Math.max(1, parseFloat(document.getElementById('bleedMm').value) || 3));
+      adv.shiftOn = document.getElementById('shiftOn').checked;
+      adv.dx = parseFloat(document.getElementById('shiftX').value) || 0;
+      adv.dy = parseFloat(document.getElementById('shiftY').value) || 0;
+      document.getElementById('shiftFields').style.display = adv.shiftOn ? 'inline-flex' : 'none';
+      document.getElementById('bleedMm').disabled = !adv.bleedOn;
+      store.set('prs_booklet_adv', adv);
+      updateLayoutInfo();
+    }
+
+    function restoreAdv() {
+      Object.assign(adv, store.get('prs_booklet_adv', {}));
+      document.getElementById('bleedOn').checked = !!adv.bleedOn;
+      document.getElementById('bleedMm').value = adv.bleedMm;
+      document.getElementById('shiftOn').checked = !!adv.shiftOn;
+      document.getElementById('shiftX').value = adv.dx;
+      document.getElementById('shiftY').value = adv.dy;
+      document.getElementById('shiftFields').style.display = adv.shiftOn ? 'inline-flex' : 'none';
+      document.getElementById('bleedMm').disabled = !adv.bleedOn;
+    }
+
+    // ------------------------------------------------------------------
+    //  Init
+    // ------------------------------------------------------------------
+    window.addEventListener('DOMContentLoaded', () => {
+      Object.assign(FORMATS.custom, store.get('prs_booklet_custom', {}));
+      document.getElementById('customW').value = FORMATS.custom.w;
+      document.getElementById('customH').value = FORMATS.custom.h;
+      restoreAdv();
+      initDrag();
+
+      const q = (new URLSearchParams(window.location.search).get('format') || '').toLowerCase();
+      const wanted = FORMATS[q] ? q : store.get('prs_booklet_format', 'cd');
+      currentFormat = FORMATS[wanted] ? wanted : 'cd';
+      document.getElementById('formatSelect').value = currentFormat;
+      document.getElementById('customFields').style.display = currentFormat === 'custom' ? 'flex' : 'none';
+      computeGeom();
       setLanguage(currentLang);
-    };
+
+      let rt;
+      window.addEventListener('resize', () => {
+        clearTimeout(rt);
+        rt = setTimeout(() => {
+          const old = geom.fw;
+          computeGeom();
+          if (geom.fw !== old) initBooklet();
+        }, 250);
+      });
+    });
   </script>
 </body>
 </html>
