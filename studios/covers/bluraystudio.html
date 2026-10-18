@@ -355,9 +355,9 @@
       touch-action: none;
     }
 
-    /* PS3 Proportions (27.3 cm wide x 14.9 cm high) */
+    /* PS3 Proportions (27.2 cm wide x 14.9 cm high) */
     /* Format geometry, set by applyFormat(): 20 px per cm (content-box, so clientWidth/clientHeight are exact).
-       Defaults = PS3: 27.3 x 14.9 cm, spine x = 12.9 cm, 1.4 cm wide */
+       Defaults = PS3: 27.2 x 14.9 cm, spine x = 12.9 cm, 1.4 cm wide */
     :root {
       --fw: 546px; --fh: 298px;      /* preview frame */
       --spl: 258px; --spw: 28px;     /* spine overlay (left, width) */
@@ -445,6 +445,17 @@
     }
 
     .print-page[hidden] { display: none !important; }
+
+    /* Printer-specific duplex correction: only the inside page (page 2) is shifted */
+    #page-2 img {
+      left: calc(var(--il) + var(--dx, 0mm));
+      top: calc(var(--it) + var(--dy, 0mm));
+    }
+    /* Overscan: the inside image is enlarged around its center so it reaches past the cut line */
+    #page-2.overscan img {
+      transform: scale(var(--os, 1));
+      transform-origin: center center;
+    }
 
     .print-page img {
       position: absolute;
@@ -548,7 +559,7 @@
 
   <div class="ui-container">
     <div class="header-title" data-i18n="studio_title">PlayStation Cover Studio</div>
-    <div class="sub-title" id="subTitle">Full Inlay: 27.3 × 14.9 cm (Spine: 1.4 cm)</div>
+    <div class="sub-title" id="subTitle">Full Inlay: 27.2 × 14.9 cm (Spine: 1.4 cm)</div>
 
     <!-- Format selection (PS3 / PS4 / PS5). Also selectable via ?format=ps3|ps4|ps5 -->
     <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
@@ -687,6 +698,21 @@
             <input type="checkbox" id="mirrorInside">
             <span data-i18n="opt_mirror_inside">Mirror inside image</span>
           </label>
+          <div id="insideAdvWrap" style="display: none; flex-direction: column; gap: 6px; padding-left: 20px;">
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; cursor: pointer; color: #38bdf8;">
+              <input type="checkbox" id="overscanInside" onchange="applyDuplexOffset()">
+              <span data-i18n="opt_overscan">Inside overscan (+4 mm bleed, hides duplex offset)</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; cursor: pointer; color: #38bdf8;">
+              <input type="checkbox" id="manualShift" onchange="applyDuplexOffset()">
+              <span data-i18n="opt_manual_shift">Shift inside image manually (X / Y)</span>
+            </label>
+            <div id="shiftFields" style="display: none; align-items: center; gap: 8px; font-size: 0.75rem; flex-wrap: wrap;">
+              <label>X <input type="number" id="dupX" step="0.5" min="-10" max="10" value="0" style="width: 60px; padding: 3px;" oninput="applyDuplexOffset()"> mm</label>
+              <label>Y <input type="number" id="dupY" step="0.5" min="-10" max="10" value="0" style="width: 60px; padding: 3px;" oninput="applyDuplexOffset()"> mm</label>
+              <span data-i18n="dx_hint" style="flex-basis: 100%; color: #94a3b8;">+X = right, +Y = down (as you look at page 2). Saved in this browser.</span>
+            </div>
+          </div>
           <label style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; cursor: pointer; color: #fbbf24;">
             <input type="checkbox" id="enableSpine" onchange="toggleSplitSpine(this.checked)">
             <span data-i18n="opt_split_spine">Upload spine separately (center)</span>
@@ -700,7 +726,7 @@
 
   <div class="preview-wrapper">
     <div style="text-align: center;">
-      <div style="font-size: 0.8rem; font-weight: bold; margin-bottom: 6px;" data-i18n="prev_ps3">PS3 Inlay (Außenseite: 27,3 × 14,9 cm)</div>
+      <div style="font-size: 0.8rem; font-weight: bold; margin-bottom: 6px;" data-i18n="prev_ps3">PS3 Inlay (Außenseite: 27,2 × 14,9 cm)</div>
       <div class="frame-container frame-ps3 active-target" id="frame-ps3" onclick="selectTab('ps3')">
         <div class="placeholder" id="ph-ps3" data-i18n="ph_select_ps3">Select file above</div>
         <img id="img-ps3" class="cover-img" style="display:none;" alt="PS3 Outside">
@@ -739,7 +765,7 @@
       <div data-i18n="print_hint" style="flex-basis: 100%; font-size: 0.75rem; color: #4b5563;">Duplex: A4 landscape, scale 100%, margins "None", double-sided → flip on short edge.</div>
     </div>
     <div class="print-pages">
-      <!-- Seite 1: Außenseite (PS3 Inlays: 27.3 cm x 14.9 cm) -->
+      <!-- Seite 1: Außenseite (PS3 Inlays: 27.2 cm x 14.9 cm) -->
       <div class="print-page" id="page-1" hidden>
         <img id="print-img-ps3" style="display: none;">
       </div>
@@ -775,6 +801,9 @@
         spine_label: "📷 Spine ({spw} × {h} cm)",
         lbl_format: "Format",
         tab_edit_spine: "Edit: Spine",
+        opt_overscan: "Inside overscan (+4 mm bleed, hides duplex offset)",
+        opt_manual_shift: "Shift inside image manually (X / Y)",
+        dx_hint: "+X = right, +Y = down (as you look at page 2). Saved in this browser.",
         print_hint: "Duplex: A4 landscape, scale 100%, margins \"None\", double-sided → flip on short edge. Page 1 = Outside, Page 2 = Inside. If the inside is upside down, switch long/short edge.",
         btn_print_both: "🖨️ Print / Save as PDF",
         ph_select_ps3: "Select {fmt} inlay file above",
@@ -802,6 +831,9 @@
         spine_label: "📷 Spine ({spw} × {h} cm)",
         lbl_format: "Format",
         tab_edit_spine: "Bearbeiten: Spine",
+        opt_overscan: "Innenseite mit Überstand (+4 mm Beschnitt, gleicht Duplex-Versatz aus)",
+        opt_manual_shift: "Innenseite manuell verschieben (X / Y)",
+        dx_hint: "+X = nach rechts, +Y = nach unten (so wie du Seite 2 ansiehst). Wird in diesem Browser gespeichert.",
         print_hint: "Duplex: A4 quer, Skalierung 100 %, Ränder „Keine“, beidseitig → kurze Kante. Seite 1 = Außenseite, Seite 2 = Innenseite. Steht die Innenseite auf dem Kopf, wechsle zwischen langer/kurzer Kante.",
         btn_print_both: "🖨️ Drucken / Als PDF speichern",
         ph_select_ps3: "Wähle {fmt} Inlay Datei oben",
@@ -816,7 +848,7 @@
     // ---- Formats (all values in cm). The spine sits at x = spineX … spineX + spineW ----
     // PS5 cases are identical to PS4. Add further formats here.
     const FORMATS = {
-      ps3: { name: 'PS3', w: 27.3, h: 14.9, spineX: 12.9, spineW: 1.4 },
+      ps3: { name: 'PS3', w: 27.2, h: 14.9, spineX: 12.9, spineW: 1.4 },
       ps4: { name: 'PS4', w: 27.3, h: 16.1, spineX: 12.9, spineW: 1.4 },
       ps5: { name: 'PS5', w: 27.3, h: 16.1, spineX: 12.9, spineW: 1.4 }
     };
@@ -865,8 +897,8 @@
     let currentNudgeStep = 1;
 
     const state = {
-      ps3: { x: 0, y: 0, scale: 1, baseFitScale: 1, userZoom: 1, rotation: 0, flipX: 1, loaded: false, targetCmW: 27.3, targetCmH: 14.9 },
-      inside: { x: 0, y: 0, scale: 1, baseFitScale: 1, userZoom: 1, rotation: 0, flipX: 1, loaded: false, targetCmW: 27.3, targetCmH: 14.9 },
+      ps3: { x: 0, y: 0, scale: 1, baseFitScale: 1, userZoom: 1, rotation: 0, flipX: 1, loaded: false, targetCmW: 27.2, targetCmH: 14.9 },
+      inside: { x: 0, y: 0, scale: 1, baseFitScale: 1, userZoom: 1, rotation: 0, flipX: 1, loaded: false, targetCmW: 27.2, targetCmH: 14.9 },
       spine: { x: 0, y: 0, scale: 1, baseFitScale: 1, userZoom: 1, rotation: 0, flipX: 1, loaded: false, targetCmW: 1.4, targetCmH: 14.9 }
     };
 
@@ -880,11 +912,13 @@
         tabInside.style.display = 'block';
         prevInside.style.display = 'block';
         document.getElementById('mirrorInsideWrap').style.display = 'flex';
+        document.getElementById('insideAdvWrap').style.display = 'flex';
       } else {
         cardInside.style.display = 'none';
         tabInside.style.display = 'none';
         prevInside.style.display = 'none';
         document.getElementById('mirrorInsideWrap').style.display = 'none';
+        document.getElementById('insideAdvWrap').style.display = 'none';
         if (activeTarget === 'inside') selectTab('ps3');
       }
     }
@@ -919,6 +953,7 @@
       state.spine.targetCmH = f.h;
 
       document.getElementById('formatSelect').value = currentFormat;
+      if (typeof applyDuplexOffset === 'function' && document.getElementById('manualShift')) applyDuplexOffset(false);
       document.getElementById('subTitle').textContent =
         `Full Inlay: ${f.w} × ${f.h} cm (Spine: ${f.spineW} cm)`;
       setLanguage(currentLang);
@@ -1168,7 +1203,7 @@
         return;
       }
 
-      const drawGuidelines = document.getElementById('showGuidelines').checked;
+      let drawGuidelines = document.getElementById('showGuidelines').checked;
 
       // mirror = -1 mirrors the whole finished canvas horizontally (position, rotation and flip included)
       function renderCanvas(key, targetW, targetH, mirror = 1) {
@@ -1213,7 +1248,7 @@
           ctx.lineWidth = 3;
           ctx.strokeRect(0, 0, targetW, targetH);
           
-          // Spine-Hilfslinien für PS3 (ca. 12.9 cm und 14.3 cm von links bei 27.3 cm Gesamtbreite)
+          // Spine-Hilfslinien für PS3 (ca. 12.9 cm und 14.3 cm von links)
           const spineLeft = spX0;
           const spineRight = spX1;
           ctx.setLineDash([10, 10]);
@@ -1229,12 +1264,13 @@
         return canvas.toDataURL('image/png');
       }
 
-      // 300 DPI Rendering-Auflösung für PS3 Inlays (27.3 cm x 14.9 cm -> ca. 3222 x 1758 Pixel)
+      // 300 DPI Rendering-Auflösung für PS3 Inlays (PS3: 27.2 x 14.9 cm -> ca. 3213 x 1760 Pixel)
       const fmtSel = FORMATS[currentFormat];
       const canvasW = Math.round(fmtSel.w / 2.54 * 300);
       const canvasH = Math.round(fmtSel.h / 2.54 * 300);
       const ps3Data = renderCanvas('ps3', canvasW, canvasH, 1);
       const mirrorInside = document.getElementById('mirrorInside').checked ? -1 : 1;
+      if (document.getElementById('overscanInside').checked) drawGuidelines = false;
       const insideData = hasInside ? renderCanvas('inside', canvasW, canvasH, mirrorInside) : null;
 
       const printPs3 = document.getElementById('print-img-ps3');
@@ -1257,6 +1293,29 @@
       document.getElementById('printScreen').style.display = 'block';
     }
 
+    // Inside page tweaks for printers with a duplex offset: optional overscan (bleed) and manual X/Y shift
+    const OVERSCAN_MM = 4;
+    function applyDuplexOffset(save) {
+      const manual = document.getElementById('manualShift').checked;
+      const over = document.getElementById('overscanInside').checked;
+      document.getElementById('shiftFields').style.display = manual ? 'flex' : 'none';
+      const x = manual ? (parseFloat(document.getElementById('dupX').value) || 0) : 0;
+      const y = manual ? (parseFloat(document.getElementById('dupY').value) || 0) : 0;
+      const f = FORMATS[currentFormat];
+      const wMm = f.w * 10, hMm = f.h * 10;
+      const os = Math.max((wMm + 2 * OVERSCAN_MM) / wMm, (hMm + 2 * OVERSCAN_MM) / hMm);
+      const root = document.documentElement.style;
+      root.setProperty('--dx', `${x}mm`);
+      root.setProperty('--dy', `${y}mm`);
+      root.setProperty('--os', String(os));
+      document.getElementById('page-2').classList.toggle('overscan', over);
+      if (save !== false) try {
+        localStorage.setItem('prs_ps_dup', JSON.stringify({
+          x: parseFloat(document.getElementById('dupX').value) || 0,
+          y: parseFloat(document.getElementById('dupY').value) || 0, manual, over }));
+      } catch (e) {}
+    }
+
     function closePrint() {
       document.getElementById('printScreen').style.display = 'none';
     }
@@ -1266,6 +1325,16 @@
       // Format from the URL (?format=ps3|ps4|ps5), default PS3
       const q = (new URLSearchParams(window.location.search).get('format') || '').toLowerCase();
       applyFormat(FORMATS[q] ? q : 'ps3');
+      try {
+        const d = JSON.parse(localStorage.getItem('prs_ps_dup') || 'null');
+        if (d) {
+          document.getElementById('dupX').value = d.x || 0;
+          document.getElementById('dupY').value = d.y || 0;
+          document.getElementById('manualShift').checked = !!d.manual;
+          document.getElementById('overscanInside').checked = !!d.over;
+        }
+      } catch (e) {}
+      applyDuplexOffset();
       // Browsers may restore checkbox state after a reload – sync the UI with it
       toggleInsideCover(document.getElementById('enableInside').checked);
       toggleSplitSpine(document.getElementById('enableSpine').checked);
