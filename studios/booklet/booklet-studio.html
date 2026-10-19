@@ -1095,7 +1095,12 @@
       return { w: swap ? s.nh : s.nw, h: swap ? s.nw : s.nh };
     }
 
-    function coverScale(s) { const d = dims(s); return Math.max(geom.fw / d.w, geom.fh / d.h); }
+    // "Fit" covers the trim area PLUS the bleed, so the bleed consists of real image pixels
+    function coverScale(s) {
+      const d = dims(s);
+      const m = bleedMm() / 10 * geom.ppc;                       // bleed in preview px
+      return Math.max((geom.fw + 2 * m) / d.w, (geom.fh + 2 * m) / d.h);
+    }
     function containScale(s) { const d = dims(s); return Math.min(geom.fw / d.w, geom.fh / d.h); }
     function effScale(s) { return coverScale(s) * s.userZoom; }
 
@@ -1359,19 +1364,34 @@
       o.fillStyle = '#fff';
       o.fillRect(0, 0, out.width, out.height);
       const ox = side === 'L' ? bp : 0;
-      const k = 3;                                              // sample a few px inside: skips scan/edge artefacts
       o.drawImage(trim, ox, bp);
-      o.drawImage(trim, 0, k, Wp, 1, ox, 0, Wp, bp);                       // top
-      o.drawImage(trim, 0, Hp - 1 - k, Wp, 1, ox, bp + Hp, Wp, bp);        // bottom
+      // Bleed = the page edge mirrored outwards (looks natural, no smeared streaks)
+      const mir = (sx, sy, sw, sh, dx, dy, fx, fy) => {
+        o.save();
+        o.translate(dx + (fx ? sw : 0), dy + (fy ? sh : 0));
+        o.scale(fx ? -1 : 1, fy ? -1 : 1);
+        o.drawImage(trim, sx, sy, sw, sh, 0, 0, sw, sh);
+        o.restore();
+      };
+      mir(0, 0, Wp, bp, ox, 0, false, true);                      // top
+      mir(0, Hp - bp, Wp, bp, ox, bp + Hp, false, true);          // bottom
       if (side === 'L') {
-        o.drawImage(trim, k, 0, 1, Hp, 0, bp, bp, Hp);                     // outer left
-        o.drawImage(trim, k, k, 1, 1, 0, 0, bp, bp);
-        o.drawImage(trim, k, Hp - 1 - k, 1, 1, 0, bp + Hp, bp, bp);
+        mir(0, 0, bp, Hp, 0, bp, true, false);                    // outer left
+        mir(0, 0, bp, bp, 0, 0, true, true);
+        mir(0, Hp - bp, bp, bp, 0, bp + Hp, true, true);
       } else {
-        o.drawImage(trim, Wp - 1 - k, 0, 1, Hp, Wp, bp, bp, Hp);           // outer right
-        o.drawImage(trim, Wp - 1 - k, k, 1, 1, Wp, 0, bp, bp);
-        o.drawImage(trim, Wp - 1 - k, Hp - 1 - k, 1, 1, Wp, bp + Hp, bp, bp);
+        mir(Wp - bp, 0, bp, Hp, Wp, bp, true, false);            // outer right
+        mir(Wp - bp, 0, bp, bp, Wp, 0, true, true);
+        mir(Wp - bp, Hp - bp, bp, bp, Wp, bp + Hp, true, true);
       }
+      // Real image pixels over the whole bleed area wherever the image reaches that far (mirrored edge is only the fallback)
+      o.save();
+      o.translate(ox + Wp / 2 + s.x * Wp, bp + Hp / 2 + s.y * Wp);
+      o.rotate(s.rotation * Math.PI / 180);
+      o.scale(effScale(s) * sf * s.flipX, effScale(s) * sf);
+      o.imageSmoothingQuality = 'high';
+      o.drawImage(s.img, -s.nw / 2, -s.nh / 2);
+      o.restore();
       return out.toDataURL('image/jpeg', 0.95);
     }
 
@@ -1473,6 +1493,7 @@
       document.getElementById('bleedMm').disabled = !adv.bleedOn;
       store.set('prs_booklet_adv', adv);
       updateLayoutInfo();
+      Object.keys(state).forEach(k => { if (state[k] && state[k].loaded) { applyTransform(k); updateDPI(k); } });
     }
 
     function restoreAdv() {
