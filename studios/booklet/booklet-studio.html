@@ -1274,7 +1274,7 @@
         const buf = await file.arrayBuffer();
         const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(buf) }).promise;
         const f = fmt();
-        const targetW = Math.round(f.w / MM * DPI), targetH = Math.round(f.h / MM * DPI);
+        const targetW = Math.round(f.w * 10 / MM * DPI), targetH = Math.round(f.h * 10 / MM * DPI);   // FORMATS are in cm
         const urls = [];
 
         for (let i = 1; i <= pdf.numPages && urls.length < MAX_PAGES; i++) {
@@ -1333,7 +1333,7 @@
       const s = state[key];
       if (!s || !s.loaded) return null;
       const f = fmt();
-      const Wp = Math.round(f.w / MM * DPI), Hp = Math.round(f.h / MM * DPI);
+      const Wp = Math.round(f.w * 10 / MM * DPI), Hp = Math.round(f.h * 10 / MM * DPI);   // FORMATS are in cm
       const bp = Math.round(bleedMm() / MM * DPI);
 
       // 1) the page itself, exactly trim size
