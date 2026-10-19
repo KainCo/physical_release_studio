@@ -174,6 +174,11 @@
       position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 0.65rem;
       color: var(--text-muted); text-align: center; pointer-events: none; white-space: nowrap;
     }
+    /* corner flaps (not uploadable): belong to the left / right wall, folded inside and glued */
+    .corner-flap {
+      outline: 1px dashed var(--border); outline-offset: -1px;
+      background: repeating-linear-gradient(45deg, transparent 0 4px, rgba(148, 163, 184, 0.14) 4px 5px);
+    }
     .placeholder.vert { writing-mode: vertical-rl; letter-spacing: 0.1em; }
 
     /* ---- Print ---- */
@@ -313,6 +318,10 @@
           <input type="checkbox" id="showGuidelines" checked>
           <span data-i18n="opt_cut_lines">Print cut & fold lines</span>
         </label>
+        <label style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; cursor: pointer; text-transform: none; letter-spacing: 0; margin-top: 6px;">
+          <input type="checkbox" id="fitA4" checked onchange="updateSizeNote()">
+          <span data-i18n="opt_fit_a4">Shrink net to A4 width if needed</span>
+        </label>
       </div>
     </div>
 
@@ -359,7 +368,7 @@
       en: {
         nav_index: "Back to Overview",
         studio_title: "Big Box Cover Studio",
-        studio_sub: "One image per segment: main area + the four spines (lid and base).",
+        studio_sub: "One image per segment: main area + the four spines (lid and base). The corner squares stay blank – they are folded inside.",
         sec_top: "Top part (lid / box outside)",
         sec_bottom: "Bottom part (base / inner tray)",
         seg_top_center: "📷 Lid front",
@@ -383,13 +392,15 @@
         btn_reset: "Reset",
         btn_donation: "Donation",
         opt_cut_lines: "Print cut & fold lines",
+        opt_fit_a4: "Scale both parts proportionally to fit A4 (~1.4 %)",
         btn_print: "🖨️ Generate cut-out sheets & print",
         btn_print_now: "Print Now / Save PDF",
         btn_close: "Close",
         prev_top: "Layout preview: top part (lid)",
         prev_bottom: "Layout preview: bottom part (base)",
-        print_hint: "A4 portrait, scale 100 %, margins \"None\". Cut along the solid lines, fold along the dashed lines.",
+        print_hint: "A4 portrait, scale 100 %, margins \"None\". Cut along the solid lines (incl. the 4 short cuts at the corners), fold along the dashed lines. Fold the corner squares inwards and glue them to the inside of the top / bottom wall.",
         warn_clip: "⚠ The top part is {w} cm wide, A4 only 21.0 cm: about {mm} mm of the left and right spine flaps are cut off when printing.",
+        fit_note: "Lid and base scaled to {pct} % so the net fits the A4 width.",
         warn_clip_print: "⚠ {part}: net {w} cm is wider than A4 (21.0 cm) – {mm} mm per side are cut off.",
         part_top: "Top part", part_bottom: "Bottom part",
         alert_none: "Please select at least one image!",
@@ -398,7 +409,7 @@
       de: {
         nav_index: "Zurück zur Übersicht",
         studio_title: "Big Box Cover Studio",
-        studio_sub: "Ein Bild pro Segment: Hauptfläche + die vier Spines (Deckel und Boden).",
+        studio_sub: "Ein Bild pro Segment: Hauptfläche + die vier Spines (Deckel und Boden). Die Eckquadrate bleiben leer – sie werden nach innen geklappt.",
         sec_top: "Oberteil (Deckel / Box-Außenseite)",
         sec_bottom: "Unterteil (Boden / innerer Schuber)",
         seg_top_center: "📷 Deckel Front",
@@ -422,13 +433,15 @@
         btn_reset: "Zurücksetzen",
         btn_donation: "Spende",
         opt_cut_lines: "Schnitt- & Faltlinien drucken",
+        opt_fit_a4: "Beide Teile prozentual auf A4 verkleinern (ca. 1,4 %)",
         btn_print: "🖨️ Bastelbögen generieren & drucken",
         btn_print_now: "Jetzt drucken / Als PDF speichern",
         btn_close: "Schließen",
         prev_top: "Layout-Vorschau: Oberteil (Deckel)",
         prev_bottom: "Layout-Vorschau: Unterteil (Boden)",
-        print_hint: "A4 hoch, Skalierung 100 %, Ränder „Keine“. Entlang der durchgezogenen Linien schneiden, an den gestrichelten falten.",
+        print_hint: "A4 hoch, Skalierung 100 %, Ränder „Keine“. Entlang der durchgezogenen Linien schneiden (auch die 4 kurzen Schnitte an den Ecken), an den gestrichelten falten. Eckquadrate nach innen einschlagen und innen an die obere / untere Wand kleben.",
         warn_clip: "⚠ Das Oberteil ist {w} cm breit, A4 nur 21,0 cm: Beim Druck werden links und rechts ca. {mm} mm der Spine-Laschen abgeschnitten.",
+        fit_note: "Deckel und Boden auf {pct} % verkleinert, damit das Netz auf die A4-Breite passt.",
         warn_clip_print: "⚠ {part}: Netz {w} cm ist breiter als A4 (21,0 cm) – pro Seite gehen {mm} mm verloren.",
         part_top: "Oberteil", part_bottom: "Unterteil",
         alert_none: "Bitte mindestens ein Bild auswählen!",
@@ -492,7 +505,9 @@
         net.style.gridTemplateColumns = `${SPINE * PX_PER_CM}px ${P.w * PX_PER_CM}px ${SPINE * PX_PER_CM}px`;
         net.style.gridTemplateRows = `${SPINE * PX_PER_CM}px ${P.h * PX_PER_CM}px ${SPINE * PX_PER_CM}px`;
         const cell = { spineTop: [1, 2], spineLeft: [2, 1], center: [2, 2], spineRight: [2, 3], spineBottom: [3, 2] };
-        net.innerHTML = POS.map(pos => {
+        const flaps = [[1, 1], [1, 3], [3, 1], [3, 3]].map(([r, c]) =>
+          `<div class="corner-flap" style="grid-row:${r};grid-column:${c};width:${SPINE * PX_PER_CM}px;height:${SPINE * PX_PER_CM}px;"></div>`).join('');
+        net.innerHTML = flaps + POS.map(pos => {
           const k = `${part}_${pos}`, d = dimsOf(k), [row, col] = cell[pos];
           const vert = (pos === 'spineLeft' || pos === 'spineRight');
           return `<div class="frame-container${k === activeTarget ? ' active-target' : ''}" id="frame-${k}" data-key="${k}"
@@ -529,7 +544,7 @@
     function updateSizeNote() {
       const el = document.getElementById('sizeNote');
       const parts = ['top', 'bottom'].filter(p => clipMm(p) > 0.05);
-      if (!parts.length) { el.style.display = 'none'; return; }
+      if (!parts.length || document.getElementById('fitA4').checked) { el.style.display = 'none'; return; }
       const p = parts[0];
       el.textContent = t('warn_clip').replace('{w}', fmtNum(Math.round(netSize(p).w * 10) / 10)).replace('{mm}', fmtNum(Math.round(clipMm(p) * 10) / 10));
       el.style.display = 'block';
@@ -724,6 +739,15 @@
       ctx.restore();
     }
 
+    // Net = one full rectangle (w + 2d) x (h + 2d). The four corner squares belong to the LEFT / RIGHT walls:
+    // they are cut free from the top / bottom walls (solid), folded in along the dashed line and glued on the inside.
+    // One common factor for lid AND base, so the clearance between the two parts stays proportional
+    function netScale() {
+      if (!document.getElementById('fitA4').checked) return 1;
+      const widest = Math.max(netSize('top').w, netSize('bottom').w);
+      return widest > PAGE_W_CM ? PAGE_W_CM / widest : 1;
+    }
+
     function drawFullNet(canvasId, part, lines) {
       const canvas = document.getElementById(canvasId);
       canvas.width = PX_PAGE_W; canvas.height = PX_PAGE_H;
@@ -735,8 +759,16 @@
       const w = P.w * PX_CM, h = P.h * PX_CM, d = SPINE * PX_CM;
       const startX = (canvas.width - (w + 2 * d)) / 2;      // negative when the net is wider than the page (centred, clipped evenly)
       const startY = (canvas.height - (h + 2 * d)) / 2;
-      const xL = startX, xC = startX + d, xR = xC + w;
-      const yT = startY, yC = startY + d, yB = yC + h;
+      const xL = startX, xC = startX + d, xR = xC + w, xE = xR + d;
+      const yT = startY, yC = startY + d, yB = yC + h, yE = yB + d;
+
+      ctx.save();
+      const k = netScale();                              // optional: shrink to the A4 width around the page centre
+      if (k !== 1) {
+        ctx.translate(canvas.width / 2, canvas.height / 2);
+        ctx.scale(k, k);
+        ctx.translate(-canvas.width / 2, -canvas.height / 2);
+      }
 
       drawSegment(ctx, `${part}_center`, xC, yC, w, h);
       drawSegment(ctx, `${part}_spineTop`, xC, yT, w, d);
@@ -744,33 +776,33 @@
       drawSegment(ctx, `${part}_spineLeft`, xL, yC, d, h);
       drawSegment(ctx, `${part}_spineRight`, xR, yC, d, h);
 
-      if (!lines) return;
-      ctx.save();
-      ctx.strokeStyle = '#000';
-      ctx.lineWidth = 3;
-      ctx.strokeRect(xC, yC, w, h);
-      ctx.strokeRect(xC, yT, w, d);
-      ctx.strokeRect(xC, yB, w, d);
-      ctx.strokeRect(xL, yC, d, h);
-      ctx.strokeRect(xR, yC, d, h);
+      if (lines) {
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 3;
+        ctx.setLineDash([]);
+        // cut lines: outer outline + the four cuts between corner square and top / bottom wall
+        ctx.strokeRect(xL, yT, xE - xL, yE - yT);
+        ctx.beginPath();
+        [xC, xR].forEach(x => {
+          ctx.moveTo(x, yT); ctx.lineTo(x, yC);
+          ctx.moveTo(x, yB); ctx.lineTo(x, yE);
+        });
+        ctx.stroke();
 
-      // glue tab at the top-left corner of the left spine
-      const tabW = 1.2 * PX_CM;
-      ctx.beginPath();
-      ctx.moveTo(xL, yC);
-      ctx.lineTo(xL + d, yC - tabW);
-      ctx.lineTo(xL + d, yC);
-      ctx.stroke();
-
-      // fold lines (dashed)
-      ctx.lineWidth = 1.5;
-      ctx.setLineDash([8, 6]);
-      ctx.beginPath();
-      ctx.moveTo(xC, yC); ctx.lineTo(xR, yC);
-      ctx.moveTo(xC, yB); ctx.lineTo(xR, yB);
-      ctx.moveTo(xC, yC); ctx.lineTo(xC, yB);
-      ctx.moveTo(xR, yC); ctx.lineTo(xR, yB);
-      ctx.stroke();
+        // fold lines (dashed): around the centre face and between wall and corner square
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([8, 6]);
+        ctx.beginPath();
+        ctx.moveTo(xC, yC); ctx.lineTo(xR, yC);
+        ctx.moveTo(xC, yB); ctx.lineTo(xR, yB);
+        ctx.moveTo(xC, yC); ctx.lineTo(xC, yB);
+        ctx.moveTo(xR, yC); ctx.lineTo(xR, yB);
+        ctx.moveTo(xL, yC); ctx.lineTo(xC, yC);               // left wall | corner squares
+        ctx.moveTo(xL, yB); ctx.lineTo(xC, yB);
+        ctx.moveTo(xR, yC); ctx.lineTo(xE, yC);               // right wall | corner squares
+        ctx.moveTo(xR, yB); ctx.lineTo(xE, yB);
+        ctx.stroke();
+      }
       ctx.restore();
     }
 
@@ -788,8 +820,9 @@
         if (on) drawFullNet(part === 'top' ? 'printCanvasTop' : 'printCanvasBottom', part, lines);
       });
 
-      const warns = todo.filter(p => clipMm(p) > 0.05).map(p =>
-        t('warn_clip_print').replace('{part}', t('part_' + p))
+      const fit = document.getElementById('fitA4').checked, k = netScale();
+      const warns = fit ? (k < 1 ? [t('fit_note').replace('{pct}', fmtNum(Math.round(k * 1000) / 10))] : []) :
+        todo.filter(p => clipMm(p) > 0.05).map(p => t('warn_clip_print').replace('{part}', t('part_' + p))
           .replace('{w}', fmtNum(Math.round(netSize(p).w * 10) / 10)).replace('{mm}', fmtNum(Math.round(clipMm(p) * 10) / 10)));
       const w = document.getElementById('printWarn');
       w.textContent = warns.join('  ');
