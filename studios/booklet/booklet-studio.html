@@ -309,6 +309,10 @@
     }
 
     .btn-small:hover { border-color: var(--brand); }
+    .btn-small.on { background: var(--brand); color: #fff; border-color: var(--brand); }
+    .nudge-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; width: 110px; margin: 0 auto; }
+    .nudge-grid button { padding: 6px; font-size: 0.75rem; background: var(--card-bg); border: 1px solid var(--border); color: #fff; border-radius: 6px; cursor: pointer; }
+    .nudge-grid button:hover { border-color: var(--brand); }
 
     .checkbox-label {
       display: flex;
@@ -644,8 +648,37 @@
       <div class="control-group">
         <label class="group-title" for="zoomInput" data-i18n="lbl_zoom">Zoom (%)</label>
         <div style="display: flex; gap: 6px; align-items: center; width: 100%; margin-bottom: 6px;">
-          <input type="range" id="zoomSlider" min="30" max="400" value="100" style="flex: 1;" oninput="updateZoom(this.value)">
-          <input type="number" id="zoomInput" min="30" max="400" value="100" class="num-input" style="width: 64px;" oninput="updateZoom(this.value)">
+          <input type="range" id="zoomSlider" min="30" max="400" step="0.1" value="100" style="flex: 1;" oninput="updateZoom(this.value)">
+          <input type="number" id="zoomInput" min="30" max="400" step="0.1" value="100" class="num-input" style="width: 64px;" oninput="updateZoom(this.value)">
+        </div>
+        <div class="btn-row">
+          <button class="btn-small" style="flex: 1;" onclick="stepZoom(-1)">-1%</button>
+          <button class="btn-small" style="flex: 1;" onclick="stepZoom(-0.1)">-0.1%</button>
+          <button class="btn-small" style="flex: 1;" onclick="stepZoom(0.1)">+0.1%</button>
+          <button class="btn-small" style="flex: 1;" onclick="stepZoom(1)">+1%</button>
+        </div>
+      </div>
+
+      <!-- Position Nudge Pad -->
+      <div class="control-group">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <label class="group-title" style="margin: 0;" data-i18n="lbl_nudge">Position verschieben</label>
+          <div class="btn-row" style="gap: 2px;">
+            <button id="step-1" class="btn-small on" style="padding: 2px 6px;" onclick="setNudgeStep(1)">1px</button>
+            <button id="step-5" class="btn-small" style="padding: 2px 6px;" onclick="setNudgeStep(5)">5px</button>
+            <button id="step-10" class="btn-small" style="padding: 2px 6px;" onclick="setNudgeStep(10)">10px</button>
+          </div>
+        </div>
+        <div class="nudge-grid">
+          <div></div>
+          <button onclick="nudge(0, -1)"><i class="fa-solid fa-arrow-up"></i></button>
+          <div></div>
+          <button onclick="nudge(-1, 0)"><i class="fa-solid fa-arrow-left"></i></button>
+          <button style="color: var(--brand); font-weight: bold;" onclick="resetPos()">•</button>
+          <button onclick="nudge(1, 0)"><i class="fa-solid fa-arrow-right"></i></button>
+          <div></div>
+          <button onclick="nudge(0, 1)"><i class="fa-solid fa-arrow-down"></i></button>
+          <div></div>
         </div>
       </div>
 
@@ -662,8 +695,8 @@
           <span data-i18n="opt_crop_marks">Schnitt- & Falzmarken drucken</span>
         </label>
         <label class="checkbox-label">
-          <input type="checkbox" id="bleedOn" checked onchange="onAdvChange()">
-          <span data-i18n="opt_bleed">Beschnittzugabe (gleicht Duplex-Versatz aus)</span>
+          <input type="checkbox" id="bleedOn" onchange="onAdvChange()">
+          <span data-i18n="opt_bleed">Innenseiten mit leichtem Überstand (gleicht Duplex-Versatz aus)</span>
         </label>
       </div>
     </div>
@@ -672,9 +705,9 @@
       <summary data-i18n="adv_title">Erweitert</summary>
       <div class="adv-body">
         <div class="adv-row">
-          <label for="bleedMm" data-i18n="lbl_bleed_mm">Beschnitt (mm):</label>
-          <input type="number" id="bleedMm" class="num-input" step="0.5" min="1" max="5" value="3" oninput="onAdvChange()">
-          <span class="hint" data-i18n="hint_bleed">Der Rand wird aus den äußersten Bildpunkten verlängert. Wichtiges (Schrift) mindestens 4 mm vom Rand weghalten.</span>
+          <label for="bleedMm" data-i18n="lbl_bleed_mm">Überstand (mm):</label>
+          <input type="number" id="bleedMm" class="num-input" step="0.5" min="1" max="5" value="3.5" oninput="onAdvChange()">
+          <span class="hint" data-i18n="hint_bleed">Nur Innenseiten: Das Bild wird nach außen etwas größer gedruckt und ragt über die Schnittkante hinaus. Wichtiges (Schrift) mindestens 5 mm vom Rand weghalten.</span>
         </div>
         <div class="adv-row">
           <label class="checkbox-label" style="margin-bottom: 0;">
@@ -730,7 +763,7 @@
 
     const state = {};                       // per page: x, y (fraction of frame width), userZoom (1 = fills page), ...
     const geom = { fw: 240, fh: 240, ppc: 20 };
-    const adv = { bleedOn: true, bleedMm: 3, shiftOn: false, dx: 0, dy: 0 };
+    const adv = { bleedOn: false, bleedMm: 3.5, shiftOn: false, dx: 0, dy: 0 };
 
     const store = {
       get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
@@ -762,14 +795,14 @@
         opt_mode_backs: "Manual – then all insides",
         opt_mode_seq: "Spreads in sequence (no imposition)",
         lbl_rotation: "Rotation & Flip", btn_flip: "↔️ Flip",
-        lbl_zoom: "Zoom (%)",
+        lbl_zoom: "Zoom (%)", lbl_nudge: "Nudge position",
         lbl_alignment: "Alignment & Print",
         btn_fit_fill: "Fill", btn_fit_contain: "Fit all", btn_reset: "Reset",
         opt_crop_marks: "Print crop & fold marks",
-        opt_bleed: "Bleed (hides the printer's duplex offset)",
+        opt_bleed: "Inside pages with slight overscan (hides the printer's duplex offset)",
         adv_title: "Advanced",
-        lbl_bleed_mm: "Bleed (mm):",
-        hint_bleed: "The edge is extended from the outermost pixels. Keep important content (text) at least 4 mm from the edge.",
+        lbl_bleed_mm: "Overscan (mm):",
+        hint_bleed: "Inside pages only: the image is printed slightly larger towards the outer edges and reaches past the cut line. Keep important content (text) at least 5 mm from the edge.",
         opt_shift: "Shift inside pages (correct printer offset)",
         hint_shift: "+X = right, +Y = down, inside pages only. Saved in this browser.",
         btn_print_booklet: "🖨️ Print Booklet / Save as PDF",
@@ -784,7 +817,7 @@
         alert_too_many: "The PDF has more than 24 pages – only the first 24 were imported.",
         alert_nofit: "This size does not fit on one A4 sheet (landscape).",
         info_layout: "{pages} pages → {sheets} sheet(s) A4 · uses {util} % of the sheet",
-        info_nofit: "⚠ Does not fit on A4 landscape (spread {w} × {h} mm incl. bleed)",
+        info_nofit: "⚠ Does not fit on A4 landscape (spread {w} × {h} mm incl. overscan)",
         info_nomarks: "ℹ Not enough room for crop marks – they will be cut off",
         info_importing: "Importing page {i} / {n} …",
         dpi_excellent: "Excellent", dpi_good: "Good", dpi_low: "Low quality"
@@ -810,14 +843,14 @@
         opt_mode_backs: "Manuell – dann alle Innenseiten",
         opt_mode_seq: "Doppelseiten der Reihe nach (ohne Ausschießung)",
         lbl_rotation: "Drehung & Spiegeln", btn_flip: "↔️ Spiegeln",
-        lbl_zoom: "Zoom (%)",
+        lbl_zoom: "Zoom (%)", lbl_nudge: "Position verschieben",
         lbl_alignment: "Ausrichtung & Druck",
         btn_fit_fill: "Füllen", btn_fit_contain: "Ganz einpassen", btn_reset: "Zurücksetzen",
         opt_crop_marks: "Schnitt- & Falzmarken drucken",
-        opt_bleed: "Beschnittzugabe (gleicht Duplex-Versatz des Druckers aus)",
+        opt_bleed: "Innenseiten mit leichtem Überstand (gleicht Duplex-Versatz aus)",
         adv_title: "Erweitert",
-        lbl_bleed_mm: "Beschnitt (mm):",
-        hint_bleed: "Der Rand wird aus den äußersten Bildpunkten verlängert. Wichtiges (Schrift) mindestens 4 mm vom Rand weghalten.",
+        lbl_bleed_mm: "Überstand (mm):",
+        hint_bleed: "Nur Innenseiten: Das Bild wird nach außen etwas größer gedruckt und ragt über die Schnittkante hinaus. Wichtiges (Schrift) mindestens 5 mm vom Rand weghalten.",
         opt_shift: "Innenseiten verschieben (Druckerversatz korrigieren)",
         hint_shift: "+X = nach rechts, +Y = nach unten, nur auf den Innenseiten. Wird in diesem Browser gespeichert.",
         btn_print_booklet: "🖨️ Booklet drucken / Als PDF speichern",
@@ -832,7 +865,7 @@
         alert_too_many: "Das PDF hat mehr als 24 Seiten – es wurden nur die ersten 24 importiert.",
         alert_nofit: "Dieses Format passt nicht auf ein A4-Blatt (quer).",
         info_layout: "{pages} Seiten → {sheets} Blatt A4 · nutzt {util} % der Blattfläche",
-        info_nofit: "⚠ Passt nicht auf A4 quer (Doppelseite {w} × {h} mm inkl. Beschnitt)",
+        info_nofit: "⚠ Passt nicht auf A4 quer (Doppelseite {w} × {h} mm inkl. Überstand)",
         info_nomarks: "ℹ Kein Platz für Schnittmarken – sie werden teilweise abgeschnitten",
         info_importing: "Importiere Seite {i} / {n} …",
         dpi_excellent: "Hervorragend", dpi_good: "Gut", dpi_low: "Niedrige Qualität"
@@ -1095,13 +1128,7 @@
       return { w: swap ? s.nh : s.nw, h: swap ? s.nw : s.nh };
     }
 
-    // "Fit" covers the trim area PLUS the bleed, so the bleed consists of real image pixels
-    function coverScale(s) {
-      const d = dims(s);
-      const m = bleedMm() / 10 * geom.ppc;                       // bleed in preview px
-      return Math.max((geom.fw + 2 * m) / d.w, (geom.fh + 2 * m) / d.h);
-    }
-    function containScale(s) { const d = dims(s); return Math.min(geom.fw / d.w, geom.fh / d.h); }
+    function coverScale(s) { const d = dims(s); return Math.max(geom.fw / d.w, geom.fh / d.h); }
     function effScale(s) { return coverScale(s) * s.userZoom; }
 
     function applyTransform(key) {
@@ -1138,7 +1165,7 @@
     function updateControls() {
       const s = state[activeTarget];
       if (!s) return;
-      const val = Math.round(s.userZoom * 100);
+      const val = parseFloat((s.userZoom * 100).toFixed(1));
       document.getElementById('zoomSlider').value = val;
       document.getElementById('zoomInput').value = val;
     }
@@ -1173,6 +1200,31 @@
       applyTransform(activeTarget);
       updateDPI(activeTarget);
       updateControls();
+    }
+
+    function stepZoom(delta) {
+      const s = state[activeTarget];
+      if (s) updateZoom(s.userZoom * 100 + delta);
+    }
+
+    // Nudge in preview pixels (s.x / s.y are stored as a fraction of the page width)
+    let nudgeStep = 1;
+    function setNudgeStep(n) {
+      nudgeStep = n;
+      [1, 5, 10].forEach(v => document.getElementById('step-' + v).classList.toggle('on', v === n));
+    }
+    function nudge(dx, dy) {
+      const s = state[activeTarget];
+      if (!s || !s.loaded) return;
+      s.x += dx * nudgeStep / geom.fw;
+      s.y += dy * nudgeStep / geom.fw;
+      applyTransform(activeTarget);
+    }
+    function resetPos() {
+      const s = state[activeTarget];
+      if (!s || !s.loaded) return;
+      s.x = 0; s.y = 0;
+      applyTransform(activeTarget);
     }
 
     function rotate(deg) {
@@ -1332,66 +1384,38 @@
     }
 
     // ------------------------------------------------------------------
-    //  Rendering at 300 DPI, with bleed on the three outer sides only
+    //  Rendering at 300 DPI; optional overscan on the inside pages (outer sides only)
     // ------------------------------------------------------------------
-    function renderPage(key, side) {
+    function renderPage(key, side, over) {
       const s = state[key];
       if (!s || !s.loaded) return null;
       const f = fmt();
       const Wp = Math.round(f.w * 10 / MM * DPI), Hp = Math.round(f.h * 10 / MM * DPI);   // FORMATS are in cm
-      const bp = Math.round(bleedMm() / MM * DPI);
-
-      // 1) the page itself, exactly trim size
-      const trim = document.createElement('canvas');
-      trim.width = Wp; trim.height = Hp;
-      const c = trim.getContext('2d');
-      c.fillStyle = '#fff';
-      c.fillRect(0, 0, Wp, Hp);
-      c.imageSmoothingQuality = 'high';
+      const bp = over ? Math.round(adv.bleedMm / MM * DPI) : 0;
       const sf = Wp / geom.fw;                                  // preview px -> print px
+      const out = document.createElement('canvas');
+      out.width = Wp + bp; out.height = Hp + 2 * bp;
+      const c = out.getContext('2d');
+      c.fillStyle = '#fff';
+      c.fillRect(0, 0, out.width, out.height);
+      c.imageSmoothingQuality = 'high';
+      const ox = side === 'L' ? bp : 0;                         // page origin inside the canvas
       c.save();
+      if (over) {
+        // enlarge around the fold edge (stays in place) / vertical centre -> grows only outwards, never over the neighbour page
+        const os = (f.w * 10 + adv.bleedMm) / (f.w * 10);
+        const ax = side === 'L' ? Wp : 0, ay = Hp / 2;
+        c.translate(ox + ax, bp + ay);
+        c.scale(os, os);
+        c.translate(-ax, -ay);
+      } else {
+        c.translate(ox, bp);
+      }
       c.translate(Wp / 2 + s.x * Wp, Hp / 2 + s.y * Wp);
       c.rotate(s.rotation * Math.PI / 180);
       c.scale(effScale(s) * sf * s.flipX, effScale(s) * sf);
       c.drawImage(s.img, -s.nw / 2, -s.nh / 2);
       c.restore();
-      if (bp === 0) return trim.toDataURL('image/jpeg', 0.95);
-
-      // 2) bleed: top, bottom and the outer side – extended from the edge pixels
-      const out = document.createElement('canvas');
-      out.width = Wp + bp; out.height = Hp + 2 * bp;
-      const o = out.getContext('2d');
-      o.fillStyle = '#fff';
-      o.fillRect(0, 0, out.width, out.height);
-      const ox = side === 'L' ? bp : 0;
-      o.drawImage(trim, ox, bp);
-      // Bleed = the page edge mirrored outwards (looks natural, no smeared streaks)
-      const mir = (sx, sy, sw, sh, dx, dy, fx, fy) => {
-        o.save();
-        o.translate(dx + (fx ? sw : 0), dy + (fy ? sh : 0));
-        o.scale(fx ? -1 : 1, fy ? -1 : 1);
-        o.drawImage(trim, sx, sy, sw, sh, 0, 0, sw, sh);
-        o.restore();
-      };
-      mir(0, 0, Wp, bp, ox, 0, false, true);                      // top
-      mir(0, Hp - bp, Wp, bp, ox, bp + Hp, false, true);          // bottom
-      if (side === 'L') {
-        mir(0, 0, bp, Hp, 0, bp, true, false);                    // outer left
-        mir(0, 0, bp, bp, 0, 0, true, true);
-        mir(0, Hp - bp, bp, bp, 0, bp + Hp, true, true);
-      } else {
-        mir(Wp - bp, 0, bp, Hp, Wp, bp, true, false);            // outer right
-        mir(Wp - bp, 0, bp, bp, Wp, 0, true, true);
-        mir(Wp - bp, Hp - bp, bp, bp, Wp, bp + Hp, true, true);
-      }
-      // Real image pixels over the whole bleed area wherever the image reaches that far (mirrored edge is only the fallback)
-      o.save();
-      o.translate(ox + Wp / 2 + s.x * Wp, bp + Hp / 2 + s.y * Wp);
-      o.rotate(s.rotation * Math.PI / 180);
-      o.scale(effScale(s) * sf * s.flipX, effScale(s) * sf);
-      o.imageSmoothingQuality = 'high';
-      o.drawImage(s.img, -s.nw / 2, -s.nh / 2);
-      o.restore();
       return out.toDataURL('image/jpeg', 0.95);
     }
 
@@ -1424,15 +1448,16 @@
       const inner = el('div', 'sheet-inner');
       if (item.isBack && adv.shiftOn) inner.style.transform = `translate(${adv.dx}mm, ${adv.dy}mm)`;
 
+      const bb = item.isBack ? b : 0;                           // overscan only on the inside pages
       const addImg = (url, left, width) => {
         if (!url) return;
         const im = el('img', 'print-page-img');
-        im.style.cssText = `left:${left}mm;top:${y0 - b}mm;width:${width}mm;height:${h + 2 * b}mm;`;
+        im.style.cssText = `left:${left}mm;top:${y0 - bb}mm;width:${width}mm;height:${h + 2 * bb}mm;`;
         im.src = url;
         inner.appendChild(im);
       };
-      addImg(item.left && isLoaded(item.left) ? renderPage('p' + item.left, 'L') : null, x0 - b, w + b);
-      addImg(item.right && isLoaded(item.right) ? renderPage('p' + item.right, 'R') : null, xm, w + b);
+      addImg(item.left && isLoaded(item.left) ? renderPage('p' + item.left, 'L', bb > 0) : null, x0 - bb, w + bb);
+      addImg(item.right && isLoaded(item.right) ? renderPage('p' + item.right, 'R', bb > 0) : null, xm, w + bb);
 
       if (document.getElementById('showGuidelines').checked) {
         const gap = b + 1, T = 0.2;
@@ -1491,13 +1516,13 @@
       adv.dy = parseFloat(document.getElementById('shiftY').value) || 0;
       document.getElementById('shiftFields').style.display = adv.shiftOn ? 'inline-flex' : 'none';
       document.getElementById('bleedMm').disabled = !adv.bleedOn;
-      store.set('prs_booklet_adv', adv);
+      store.set('prs_booklet_adv2', adv);
       updateLayoutInfo();
       Object.keys(state).forEach(k => { if (state[k] && state[k].loaded) { applyTransform(k); updateDPI(k); } });
     }
 
     function restoreAdv() {
-      Object.assign(adv, store.get('prs_booklet_adv', {}));
+      Object.assign(adv, store.get('prs_booklet_adv2', {}));
       document.getElementById('bleedOn').checked = !!adv.bleedOn;
       document.getElementById('bleedMm').value = adv.bleedMm;
       document.getElementById('shiftOn').checked = !!adv.shiftOn;
