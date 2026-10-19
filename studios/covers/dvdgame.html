@@ -355,8 +355,29 @@
       touch-action: none;
     }
 
-    .frame-dvd { width: 420px; height: 278px; }
-    .frame-inside { width: 420px; height: 278px; }
+    /* 20 px per cm: 27.6 x 18.3 cm -> 552 x 366 px (content-box, so clientWidth/clientHeight are exact) */
+    .frame-dvd, .frame-inside { box-sizing: content-box; width: 552px; height: 366px; }
+
+    /* Optional separate spine overlay: 1.4 cm wide, x = 12.7 … 14.1 cm */
+    .frame-spine {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 254px;   /* 12.7 cm */
+      width: 28px;   /* 1.4 cm  */
+      height: 366px;
+      border: 0;
+      border-radius: 0;
+      background: rgba(168, 85, 247, 0.12);
+      outline: 1px dashed var(--brand-accent);
+      outline-offset: -1px;
+      z-index: 2;
+    }
+    .frame-spine.on { display: block; }
+    .frame-spine.empty { pointer-events: none; }
+    .frame-spine.has-img { background: var(--bg); outline-color: transparent; }
+    .frame-container.frame-spine.active-target { box-shadow: none; outline: 2px solid var(--brand); outline-offset: -2px; }
+    .spine-ph { writing-mode: vertical-rl; font-size: 0.65rem; letter-spacing: 0.15em; white-space: nowrap; }
 
     .frame-container.active-target {
       border-color: var(--brand);
@@ -395,18 +416,68 @@
       overflow: auto;
     }
 
+    /* ---- Print pages (A4 landscape, 297 x 210 mm).
+       Page 1 = outside, page 2 = inside at EXACTLY the same position -> duplex alignment.
+       Inlay 276 x 183 mm centered: left (297-276)/2 = 10.5 mm, top (210-183)/2 = 13.5 mm ---- */
+    .print-pages {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .print-page {
+      position: relative;
+      flex: none;
+      width: 297mm;
+      height: 209mm;
+      background: #fff;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.35);
+      overflow: hidden;
+    }
+
+    .print-page[hidden] { display: none !important; }
+
+    /* Printer-specific duplex correction: only the inside page (page 2) is shifted */
+    #page-2 img {
+      left: calc(10.5mm + var(--dx, 0mm));
+      top: calc(13.5mm + var(--dy, 0mm));
+    }
+    /* Overscan: the inside image is enlarged around its center so it reaches past the cut line */
+    #page-2.overscan img {
+      transform: scale(var(--os, 1));
+      transform-origin: center center;
+    }
+
+    .print-page img {
+      position: absolute;
+      display: block;
+      max-width: none;
+      max-height: none;
+      left: 10.5mm;
+      top: 13.5mm;
+      width: 276mm;
+      height: 183mm;
+    }
+
+    @media screen {
+      .print-pages { zoom: 0.8; }
+    }
+
     @media print {
       @page {
-        size: A3 landscape;
+        size: A4 landscape;
         margin: 0mm !important;
       }
 
       html, body {
-        width: 420mm !important;
-        height: 297mm !important;
+        display: block !important;
+        width: 297mm !important;
+        height: auto !important;
+        min-height: 0 !important;
         margin: 0 !important;
         padding: 0 !important;
-        overflow: hidden !important;
+        overflow: visible !important;
         background: white !important;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
@@ -418,38 +489,29 @@
 
       #printScreen {
         display: block !important;
-        position: absolute !important;
-        left: 0 !important;
-        top: 0 !important;
-        width: 420mm !important;
-        height: 297mm !important;
+        position: static !important;
+        width: 297mm !important;
+        height: auto !important;
         margin: 0 !important;
         padding: 0 !important;
-        overflow: hidden !important;
+        overflow: visible !important;
         background: white !important;
       }
 
-      .print-container {
-        display: flex !important;
-        flex-direction: column !important;
-        justify-content: center !important;
-        align-items: center !important;
-        gap: 10mm !important;
-        width: 420mm !important;
-        height: 297mm !important;
-        margin: 0 auto !important;
-        padding: 0 !important;
-        box-sizing: border-box !important;
-        page-break-inside: avoid !important;
-        break-inside: avoid !important;
+      .print-pages {
+        display: block !important;
       }
 
-      .print-container img {
-        display: block !important;
-        max-width: none !important;
-        max-height: none !important;
-        page-break-inside: avoid !important;
-        break-inside: avoid !important;
+      .print-page {
+        box-shadow: none !important;
+        margin: 0 !important;
+        break-after: page;
+        page-break-after: always;
+      }
+
+      .print-page.is-last {
+        break-after: auto;
+        page-break-after: auto;
       }
     }
   </style>
@@ -508,6 +570,22 @@
         </div>
       </div>
 
+      <!-- Optional: Spine (Mitte) separat -->
+      <div class="upload-card" id="card-spine" onclick="selectTab('spine')" style="display: none;">
+        <label for="file-spine" data-i18n="spine_label">📷 Spine (1.4 × 18.3 cm)</label>
+        <input type="file" id="file-spine" accept="image/*" onchange="loadFile(event, 'spine')">
+
+        <div id="dpi-container-spine" class="dpi-container">
+          <div id="dpi-badge-spine" class="dpi-badge"></div>
+          <div class="dpi-scale-wrapper">
+            <div class="scale-segment scale-red"></div>
+            <div class="scale-segment scale-yellow"></div>
+            <div class="scale-segment scale-green"></div>
+            <div id="dpi-marker-spine" class="scale-marker" style="left: 0%;"></div>
+          </div>
+        </div>
+      </div>
+
       <!-- DVD Inlay (Innenseite / Duplex) -->
       <div class="upload-card" id="card-inside" onclick="selectTab('inside')" style="display: none;">
         <label for="file-inside" data-i18n="dvd_inside_label">📷 DVD Inlay (Innenseite / Duplex)</label>
@@ -527,6 +605,7 @@
 
     <div class="tabs">
       <button class="tab-btn active" id="tab-dvd" onclick="selectTab('dvd')" data-i18n="tab_edit_dvd">Edit: Inlay (Außen)</button>
+      <button class="tab-btn" id="tab-spine" onclick="selectTab('spine')" style="display: none;" data-i18n="tab_edit_spine">Edit: Spine</button>
       <button class="tab-btn" id="tab-inside" onclick="selectTab('inside')" style="display: none;" data-i18n="tab_edit_inside">Edit: Inlay (Innen)</button>
     </div>
 
@@ -597,6 +676,29 @@
             <input type="checkbox" id="enableInside" onchange="toggleInsideCover(this.checked)">
             <span data-i18n="opt_inside_cover">DVD Innenseite (Duplex / Transparent)</span>
           </label>
+          <label id="mirrorInsideWrap" style="display: none; align-items: center; gap: 6px; font-size: 0.75rem; cursor: pointer; color: #38bdf8; padding-left: 20px;">
+            <input type="checkbox" id="mirrorInside">
+            <span data-i18n="opt_mirror_inside">Mirror inside image</span>
+          </label>
+          <div id="insideAdvWrap" style="display: none; flex-direction: column; gap: 6px; padding-left: 20px;">
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; cursor: pointer; color: #38bdf8;">
+              <input type="checkbox" id="overscanInside" onchange="applyDuplexOffset()">
+              <span data-i18n="opt_overscan">Inside overscan (slight bleed, hides duplex offset)</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; cursor: pointer; color: #38bdf8;">
+              <input type="checkbox" id="manualShift" onchange="applyDuplexOffset()">
+              <span data-i18n="opt_manual_shift">Shift inside image manually (X / Y)</span>
+            </label>
+            <div id="shiftFields" style="display: none; align-items: center; gap: 8px; font-size: 0.75rem; flex-wrap: wrap;">
+              <label>X <input type="number" id="dupX" step="0.5" min="-10" max="10" value="0" style="width: 60px; padding: 3px;" oninput="applyDuplexOffset()"> mm</label>
+              <label>Y <input type="number" id="dupY" step="0.5" min="-10" max="10" value="0" style="width: 60px; padding: 3px;" oninput="applyDuplexOffset()"> mm</label>
+              <span data-i18n="dx_hint" style="flex-basis: 100%; color: #94a3b8;">+X = right, +Y = down (as you look at page 2). Saved in this browser.</span>
+            </div>
+          </div>
+          <label style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; cursor: pointer; color: #fbbf24;">
+            <input type="checkbox" id="enableSpine" onchange="toggleSplitSpine(this.checked)">
+            <span data-i18n="opt_split_spine">Upload spine separately (center)</span>
+          </label>
         </div>
       </div>
     </div>
@@ -610,6 +712,11 @@
       <div class="frame-container frame-dvd active-target" id="frame-dvd" onclick="selectTab('dvd')">
         <div class="placeholder" id="ph-dvd" data-i18n="ph_select_dvd">Select file above</div>
         <img id="img-dvd" class="cover-img" style="display:none;" alt="DVD Outside">
+        <!-- Optional spine overlay (center, 1.4 cm) -->
+        <div class="frame-container frame-spine empty" id="frame-spine" onclick="event.stopPropagation(); selectTab('spine')">
+          <div class="placeholder spine-ph" id="ph-spine">SPINE</div>
+          <img id="img-spine" class="cover-img" style="display:none;" alt="Spine">
+        </div>
       </div>
     </div>
 
@@ -637,10 +744,17 @@
       </a>
 
       <button onclick="closePrint()" style="padding: 10px 20px; background: #6b7280; color: white; border: none; border-radius: 6px; cursor: pointer;">Close</button>
+      <div data-i18n="print_hint" style="flex-basis: 100%; font-size: 0.75rem; color: #4b5563;">Duplex: A4 landscape, scale 100%, margins "None", double-sided → flip on short edge.</div>
     </div>
-    <div class="print-container">
-      <img id="print-img-dvd" style="width: 27.6cm; height: 18.3cm; object-fit: contain; display: none;">
-      <img id="print-img-inside" style="width: 27.6cm; height: 18.3cm; object-fit: contain; display: none;">
+    <div class="print-pages">
+      <!-- Seite 1: Außenseite (DVD Inlay: 27.6 cm x 18.3 cm) -->
+      <div class="print-page" id="page-1" hidden>
+        <img id="print-img-dvd" style="display: none;">
+      </div>
+      <!-- Seite 2: Innenseite – exakt gleiche Position wie Seite 1 -->
+      <div class="print-page" id="page-2" hidden>
+        <img id="print-img-inside" style="display: none;">
+      </div>
     </div>
   </div>
 
@@ -664,6 +778,14 @@
         btn_donation: "Donation",
         opt_crop_marks: "Print crop marks / guidelines",
         opt_inside_cover: "DVD Inside Cover (Duplex / Transparent)",
+        opt_mirror_inside: "Mirror inside image (if text is mirrored after printing)",
+        opt_split_spine: "Upload spine separately (center)",
+        spine_label: "📷 Spine (1.4 × 18.3 cm)",
+        tab_edit_spine: "Edit: Spine",
+        opt_overscan: "Inside overscan (slight bleed, hides duplex offset)",
+        opt_manual_shift: "Shift inside image manually (X / Y)",
+        dx_hint: "+X = right, +Y = down (as you look at page 2). Saved in this browser.",
+        print_hint: "Duplex: A4 landscape, scale 100%, margins \"None\", double-sided → flip on short edge. Page 1 = Outside, Page 2 = Inside. If the inside is upside down, switch long/short edge.",
         btn_print_both: "🖨️ Print / Save as PDF",
         ph_select_dvd: "Select DVD inlay file above",
         ph_select_inside: "Select inside file above",
@@ -685,6 +807,14 @@
         btn_donation: "Spende",
         opt_crop_marks: "Schnittmarken drucken",
         opt_inside_cover: "DVD Innenseite (Duplex / Transparent)",
+        opt_mirror_inside: "Innenseite spiegeln (falls Schrift nach dem Druck spiegelverkehrt ist)",
+        opt_split_spine: "Spine separat hochladen (Mitte)",
+        spine_label: "📷 Spine (1,4 × 18,3 cm)",
+        tab_edit_spine: "Bearbeiten: Spine",
+        opt_overscan: "Innenseite mit leichtem Überstand (gleicht Duplex-Versatz aus)",
+        opt_manual_shift: "Innenseite manuell verschieben (X / Y)",
+        dx_hint: "+X = nach rechts, +Y = nach unten (so wie du Seite 2 ansiehst). Wird in diesem Browser gespeichert.",
+        print_hint: "Duplex: A4 quer, Skalierung 100 %, Ränder „Keine“, beidseitig → kurze Kante. Seite 1 = Außenseite, Seite 2 = Innenseite. Steht die Innenseite auf dem Kopf, wechsle zwischen langer/kurzer Kante.",
         btn_print_both: "🖨️ Drucken / Als PDF speichern",
         ph_select_dvd: "Wähle DVD Inlay Datei oben",
         ph_select_inside: "Wähle Innenseite Datei oben",
@@ -725,7 +855,8 @@
 
     const state = {
       dvd: { x: 0, y: 0, scale: 1, baseFitScale: 1, userZoom: 1, rotation: 0, flipX: 1, loaded: false, targetCmW: 27.6, targetCmH: 18.3 },
-      inside: { x: 0, y: 0, scale: 1, baseFitScale: 1, userZoom: 1, rotation: 0, flipX: 1, loaded: false, targetCmW: 27.6, targetCmH: 18.3 }
+      inside: { x: 0, y: 0, scale: 1, baseFitScale: 1, userZoom: 1, rotation: 0, flipX: 1, loaded: false, targetCmW: 27.6, targetCmH: 18.3 },
+      spine: { x: 0, y: 0, scale: 1, baseFitScale: 1, userZoom: 1, rotation: 0, flipX: 1, loaded: false, targetCmW: 1.4, targetCmH: 18.3 }
     };
 
     function toggleInsideCover(show) {
@@ -737,17 +868,29 @@
         cardInside.style.display = 'block';
         tabInside.style.display = 'block';
         prevInside.style.display = 'block';
+        document.getElementById('mirrorInsideWrap').style.display = 'flex';
+        document.getElementById('insideAdvWrap').style.display = 'flex';
       } else {
         cardInside.style.display = 'none';
         tabInside.style.display = 'none';
         prevInside.style.display = 'none';
+        document.getElementById('mirrorInsideWrap').style.display = 'none';
+        document.getElementById('insideAdvWrap').style.display = 'none';
         if (activeTarget === 'inside') selectTab('dvd');
       }
     }
 
+    // Optional: separate spine, laid over the center (1.4 cm, x = 12.7 … 14.1 cm) of the outside inlay
+    function toggleSplitSpine(on) {
+      document.getElementById('card-spine').style.display = on ? 'block' : 'none';
+      document.getElementById('tab-spine').style.display = on ? 'block' : 'none';
+      document.getElementById('frame-spine').classList.toggle('on', on);
+      if (!on && activeTarget === 'spine') selectTab('dvd');
+    }
+
     function selectTab(target) {
       activeTarget = target;
-      ['dvd', 'inside'].forEach(t => {
+      ['dvd', 'inside', 'spine'].forEach(t => {
         const tab = document.getElementById(`tab-${t}`);
         const card = document.getElementById(`card-${t}`);
         const frame = document.getElementById(`frame-${t}`);
@@ -817,6 +960,8 @@
           if (ph) ph.style.display = 'none';
           img.onload = () => {
             state[target].loaded = true;
+            const fr = document.getElementById(`frame-${target}`);
+            if (fr) { fr.classList.add('has-img'); fr.classList.remove('empty'); }
             fitImage();
             calculateAndDisplayDPI(target);
           };
@@ -923,13 +1068,15 @@
       calculateAndDisplayDPI(activeTarget);
     }
 
-    ['dvd', 'inside'].forEach(key => {
+    ['dvd', 'inside', 'spine'].forEach(key => {
       const frame = document.getElementById(`frame-${key}`);
       if (!frame) return;
       let startX, startY, isDragging = false;
 
       const handleStart = (e) => {
         if (!state[key].loaded) return;
+        // The spine overlay sits inside the main frame: don't let the main frame start a drag too
+        if (key === 'spine') e.stopPropagation();
         selectTab(key);
         isDragging = true;
         const touch = e.touches ? e.touches[0] : e;
@@ -956,7 +1103,8 @@
     });
 
     function preparePrint() {
-      const hasDvd = state.dvd.loaded;
+      const split = document.getElementById('enableSpine').checked;
+      const hasDvd = state.dvd.loaded || (split && state.spine.loaded);
       const enableInside = document.getElementById('enableInside').checked;
       const hasInside = enableInside && state.inside.loaded;
 
@@ -965,27 +1113,43 @@
         return;
       }
 
-      const drawGuidelines = document.getElementById('showGuidelines').checked;
+      let drawGuidelines = document.getElementById('showGuidelines').checked;
 
-      function renderCanvas(key, targetW, targetH, forceFlipX = 1) {
-        if (!state[key].loaded) return null;
+      // mirror = -1 mirrors the whole finished canvas horizontally (position, rotation and flip included)
+      function renderCanvas(key, targetW, targetH, mirror = 1) {
+        // Spine strip (1.4 cm, x = 12.7 … 14.1 cm of 27.6 cm) in canvas pixels
+        const spX0 = Math.round((12.7 / 27.6) * targetW);
+        const spX1 = Math.round((14.1 / 27.6) * targetW);
+
+        // Parts: main image, plus (outside only, split mode) the spine on top of the center
+        const parts = [];
+        if (state[key].loaded) parts.push({ k: key, x0: 0, w: targetW });
+        if (key === 'dvd' && split && state.spine.loaded) parts.push({ k: 'spine', x0: spX0, w: spX1 - spX0 });
+        if (!parts.length) return null;
+
         const canvas = document.getElementById(`canvas-${key}`);
         const ctx = canvas.getContext('2d');
-        const img = document.getElementById(`img-${key}`);
-        const s = state[key];
-        const frame = document.getElementById(`frame-${key}`);
 
         canvas.width = targetW;
         canvas.height = targetH;
         ctx.clearRect(0, 0, targetW, targetH);
 
-        const scaleFactor = targetW / frame.clientWidth;
-        ctx.save();
-        ctx.translate(targetW / 2 + s.x * scaleFactor, targetH / 2 + s.y * scaleFactor);
-        ctx.rotate((s.rotation * Math.PI) / 180);
-        ctx.scale(s.scale * s.flipX * forceFlipX * scaleFactor, s.scale * scaleFactor);
-        ctx.drawImage(img, -img.naturalWidth / 2, -img.naturalHeight / 2);
-        ctx.restore();
+        parts.forEach(p => {
+          const img = document.getElementById(`img-${p.k}`);
+          const s = state[p.k];
+          const frame = document.getElementById(`frame-${p.k}`);
+          const scaleFactor = p.w / frame.clientWidth;
+
+          ctx.save();
+          ctx.beginPath();
+          ctx.rect(p.x0, 0, p.w, targetH);
+          ctx.clip();
+          ctx.translate(p.x0 + p.w / 2 + mirror * s.x * scaleFactor, targetH / 2 + s.y * scaleFactor);
+          ctx.rotate((mirror * s.rotation * Math.PI) / 180);
+          ctx.scale(s.scale * s.flipX * mirror * scaleFactor, s.scale * scaleFactor);
+          ctx.drawImage(img, -img.naturalWidth / 2, -img.naturalHeight / 2);
+          ctx.restore();
+        });
 
         if (drawGuidelines) {
           ctx.save();
@@ -993,8 +1157,8 @@
           ctx.lineWidth = 3;
           ctx.strokeRect(0, 0, targetW, targetH);
           
-          const spineLeft = (12.7 / 27.6) * targetW;
-          const spineRight = (14.1 / 27.6) * targetW;
+          const spineLeft = spX0;
+          const spineRight = spX1;
           ctx.setLineDash([10, 10]);
           ctx.beginPath();
           ctx.moveTo(spineLeft, 0);
@@ -1009,7 +1173,9 @@
       }
 
       const dvdData = renderCanvas('dvd', 3255, 2161, 1);
-      const insideData = hasInside ? renderCanvas('inside', 3255, 2161, -1) : null;
+      const mirrorInside = document.getElementById('mirrorInside').checked ? -1 : 1;
+      if (document.getElementById('overscanInside').checked) drawGuidelines = false;
+      const insideData = hasInside ? renderCanvas('inside', 3255, 2161, mirrorInside) : null;
 
       const printDvd = document.getElementById('print-img-dvd');
       const printInside = document.getElementById('print-img-inside');
@@ -1020,7 +1186,37 @@
       if (insideData) { printInside.src = insideData; printInside.style.display = 'block'; }
       else { printInside.style.display = 'none'; }
 
+      // Page 1 stays (even if empty) whenever an inside page exists, so the duplex pairing is kept
+      const page1 = document.getElementById('page-1');
+      const page2 = document.getElementById('page-2');
+      page1.hidden = !(dvdData || insideData);
+      page2.hidden = !insideData;
+      page1.classList.toggle('is-last', page2.hidden);
+      page2.classList.toggle('is-last', !page2.hidden);
+
       document.getElementById('printScreen').style.display = 'block';
+    }
+
+    // Inside page tweaks for printers with a duplex offset: optional overscan (bleed) and manual X/Y shift
+    const OVERSCAN_MM = 3.5;   // bleed on the left/right side; top/bottom gets proportionally less (uniform zoom)
+    function applyDuplexOffset(save) {
+      const manual = document.getElementById('manualShift').checked;
+      const over = document.getElementById('overscanInside').checked;
+      document.getElementById('shiftFields').style.display = manual ? 'flex' : 'none';
+      const x = manual ? (parseFloat(document.getElementById('dupX').value) || 0) : 0;
+      const y = manual ? (parseFloat(document.getElementById('dupY').value) || 0) : 0;
+      const wMm = 276;
+      const os = (wMm + 2 * OVERSCAN_MM) / wMm;
+      const root = document.documentElement.style;
+      root.setProperty('--dx', `${x}mm`);
+      root.setProperty('--dy', `${y}mm`);
+      root.setProperty('--os', String(os));
+      document.getElementById('page-2').classList.toggle('overscan', over);
+      if (save !== false) try {
+        localStorage.setItem('prs_dvd_dup', JSON.stringify({
+          x: parseFloat(document.getElementById('dupX').value) || 0,
+          y: parseFloat(document.getElementById('dupY').value) || 0, manual, over }));
+      } catch (e) {}
     }
 
     function closePrint() {
@@ -1029,6 +1225,19 @@
 
     window.addEventListener('DOMContentLoaded', () => {
       setLanguage(currentLang);
+      try {
+        const d = JSON.parse(localStorage.getItem('prs_dvd_dup') || 'null');
+        if (d) {
+          document.getElementById('dupX').value = d.x || 0;
+          document.getElementById('dupY').value = d.y || 0;
+          document.getElementById('manualShift').checked = !!d.manual;
+          document.getElementById('overscanInside').checked = !!d.over;
+        }
+      } catch (e) {}
+      applyDuplexOffset();
+      // Browsers may restore checkbox state after a reload – sync the UI with it
+      toggleInsideCover(document.getElementById('enableInside').checked);
+      toggleSplitSpine(document.getElementById('enableSpine').checked);
     });
   </script>
 </body>
