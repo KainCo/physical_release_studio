@@ -698,30 +698,22 @@
           <input type="checkbox" id="bleedOn" onchange="onAdvChange()">
           <span data-i18n="opt_bleed">Innenseiten mit leichtem Überstand (gleicht Duplex-Versatz aus)</span>
         </label>
+        <label class="checkbox-label">
+          <input type="checkbox" id="mirrorBacks" onchange="onAdvChange()">
+          <span data-i18n="opt_mirror">Innenseiten spiegeln (falls Schrift nach dem Druck spiegelverkehrt ist)</span>
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" id="shiftOn" onchange="onAdvChange()">
+          <span data-i18n="opt_shift">Innenseiten manuell verschieben (X / Y)</span>
+        </label>
+        <div id="shiftFields" style="display: none; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 0.75rem; padding-left: 22px;">
+          <label>X <input type="number" id="shiftX" class="num-input" step="0.5" min="-10" max="10" value="0" oninput="onAdvChange()"> mm</label>
+          <label>Y <input type="number" id="shiftY" class="num-input" step="0.5" min="-10" max="10" value="0" oninput="onAdvChange()"> mm</label>
+          <span class="hint" data-i18n="hint_shift" style="flex-basis: 100%;">+X = nach rechts, +Y = nach unten (so wie du die Innenseite ansiehst). Wird in diesem Browser gespeichert.</span>
+        </div>
       </div>
     </div>
 
-    <details class="advanced">
-      <summary data-i18n="adv_title">Erweitert</summary>
-      <div class="adv-body">
-        <div class="adv-row">
-          <label for="bleedMm" data-i18n="lbl_bleed_mm">Überstand (mm):</label>
-          <input type="number" id="bleedMm" class="num-input" step="0.5" min="1" max="5" value="3.5" oninput="onAdvChange()">
-          <span class="hint" data-i18n="hint_bleed">Nur Innenseiten: Das Bild wird nach außen etwas größer gedruckt und ragt über die Schnittkante hinaus. Wichtiges (Schrift) mindestens 5 mm vom Rand weghalten.</span>
-        </div>
-        <div class="adv-row">
-          <label class="checkbox-label" style="margin-bottom: 0;">
-            <input type="checkbox" id="shiftOn" onchange="onAdvChange()">
-            <span data-i18n="opt_shift">Innenseiten verschieben (Druckerversatz korrigieren)</span>
-          </label>
-          <span id="shiftFields" style="display: none; align-items: center; gap: 8px;">
-            <label>X <input type="number" id="shiftX" class="num-input" step="0.5" min="-10" max="10" value="0" oninput="onAdvChange()"> mm</label>
-            <label>Y <input type="number" id="shiftY" class="num-input" step="0.5" min="-10" max="10" value="0" oninput="onAdvChange()"> mm</label>
-          </span>
-          <span class="hint" data-i18n="hint_shift">+X = nach rechts, +Y = nach unten, nur auf den Innenseiten. Wird in diesem Browser gespeichert.</span>
-        </div>
-      </div>
-    </details>
 
     <button class="btn-print" onclick="preparePrint()" data-i18n="btn_print_booklet">🖨️ Booklet drucken / Als PDF speichern</button>
   </div>
@@ -763,7 +755,7 @@
 
     const state = {};                       // per page: x, y (fraction of frame width), userZoom (1 = fills page), ...
     const geom = { fw: 240, fh: 240, ppc: 20 };
-    const adv = { bleedOn: false, bleedMm: 3.5, shiftOn: false, dx: 0, dy: 0 };
+    const adv = { bleedOn: false, bleedMm: 3.5, mirror: false, shiftOn: false, dx: 0, dy: 0 };
 
     const store = {
       get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
@@ -803,8 +795,9 @@
         adv_title: "Advanced",
         lbl_bleed_mm: "Overscan (mm):",
         hint_bleed: "Inside pages only: the image is printed slightly larger towards the outer edges and reaches past the cut line. Keep important content (text) at least 5 mm from the edge.",
-        opt_shift: "Shift inside pages (correct printer offset)",
-        hint_shift: "+X = right, +Y = down, inside pages only. Saved in this browser.",
+        opt_mirror: "Mirror inside pages (if text is mirrored after printing)",
+        opt_shift: "Shift inside pages manually (X / Y)",
+        hint_shift: "+X = right, +Y = down (as you look at the inside page). Saved in this browser.",
         btn_print_booklet: "🖨️ Print Booklet / Save as PDF",
         btn_print_now: "Print Now / Save PDF", btn_close: "Close",
         print_hint: "A4 landscape, scale 100 %, margins “None”, double-sided → flip on short edge. Then fold, staple on the fold (at ¼ and ¾ of the height) and trim the three open edges at the crop marks.",
@@ -851,8 +844,9 @@
         adv_title: "Erweitert",
         lbl_bleed_mm: "Überstand (mm):",
         hint_bleed: "Nur Innenseiten: Das Bild wird nach außen etwas größer gedruckt und ragt über die Schnittkante hinaus. Wichtiges (Schrift) mindestens 5 mm vom Rand weghalten.",
-        opt_shift: "Innenseiten verschieben (Druckerversatz korrigieren)",
-        hint_shift: "+X = nach rechts, +Y = nach unten, nur auf den Innenseiten. Wird in diesem Browser gespeichert.",
+        opt_mirror: "Innenseiten spiegeln (falls Schrift nach dem Druck spiegelverkehrt ist)",
+        opt_shift: "Innenseiten manuell verschieben (X / Y)",
+        hint_shift: "+X = nach rechts, +Y = nach unten (so wie du die Innenseite ansiehst). Wird in diesem Browser gespeichert.",
         btn_print_booklet: "🖨️ Booklet drucken / Als PDF speichern",
         btn_print_now: "Jetzt drucken / PDF speichern", btn_close: "Schließen",
         print_hint: "A4 quer, Skalierung 100 %, Ränder „Keine“, beidseitig → kurze Kante. Danach falten, auf dem Falz (bei ¼ und ¾ der Höhe) heften und die drei offenen Seiten an den Schnittmarken beschneiden.",
@@ -1446,7 +1440,10 @@
 
       const sheet = el('div', 'print-sheet' + (isLast ? ' is-last' : ''));
       const inner = el('div', 'sheet-inner');
-      if (item.isBack && adv.shiftOn) inner.style.transform = `translate(${adv.dx}mm, ${adv.dy}mm)`;
+      if (item.isBack && (adv.shiftOn || adv.mirror)) {
+        // mirror the whole back sheet around its centre, then shift (shift is measured as you look at the printed sheet)
+        inner.style.transform = `${adv.shiftOn ? `translate(${adv.dx}mm, ${adv.dy}mm) ` : ''}${adv.mirror ? 'scaleX(-1)' : ''}`;
+      }
 
       const bb = item.isBack ? b : 0;                           // overscan only on the inside pages
       const addImg = (url, left, width) => {
@@ -1510,26 +1507,24 @@
     // ------------------------------------------------------------------
     function onAdvChange() {
       adv.bleedOn = document.getElementById('bleedOn').checked;
-      adv.bleedMm = Math.min(5, Math.max(1, parseFloat(document.getElementById('bleedMm').value) || 3));
+      adv.mirror = document.getElementById('mirrorBacks').checked;
       adv.shiftOn = document.getElementById('shiftOn').checked;
       adv.dx = parseFloat(document.getElementById('shiftX').value) || 0;
       adv.dy = parseFloat(document.getElementById('shiftY').value) || 0;
-      document.getElementById('shiftFields').style.display = adv.shiftOn ? 'inline-flex' : 'none';
-      document.getElementById('bleedMm').disabled = !adv.bleedOn;
-      store.set('prs_booklet_adv2', adv);
+      document.getElementById('shiftFields').style.display = adv.shiftOn ? 'flex' : 'none';
+      store.set('prs_booklet_adv3', adv);
       updateLayoutInfo();
-      Object.keys(state).forEach(k => { if (state[k] && state[k].loaded) { applyTransform(k); updateDPI(k); } });
     }
 
     function restoreAdv() {
-      Object.assign(adv, store.get('prs_booklet_adv2', {}));
+      Object.assign(adv, store.get('prs_booklet_adv3', {}));
+      adv.bleedMm = 3.5;                                        // fixed overscan
       document.getElementById('bleedOn').checked = !!adv.bleedOn;
-      document.getElementById('bleedMm').value = adv.bleedMm;
+      document.getElementById('mirrorBacks').checked = !!adv.mirror;
       document.getElementById('shiftOn').checked = !!adv.shiftOn;
       document.getElementById('shiftX').value = adv.dx;
       document.getElementById('shiftY').value = adv.dy;
-      document.getElementById('shiftFields').style.display = adv.shiftOn ? 'inline-flex' : 'none';
-      document.getElementById('bleedMm').disabled = !adv.bleedOn;
+      document.getElementById('shiftFields').style.display = adv.shiftOn ? 'flex' : 'none';
     }
 
     // ------------------------------------------------------------------
