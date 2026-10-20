@@ -322,6 +322,10 @@
           <input type="checkbox" id="fitA4" checked onchange="updateSizeNote()">
           <span data-i18n="opt_fit_a4">Shrink net to A4 width if needed</span>
         </label>
+        <label style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; cursor: pointer; text-transform: none; letter-spacing: 0; margin-top: 6px;">
+          <input type="checkbox" id="rimTabs" checked onchange="updateSizeNote()">
+          <span data-i18n="opt_rim_tabs">Reinforcement tabs on the top / bottom rim (1.5 cm)</span>
+        </label>
       </div>
     </div>
 
@@ -393,12 +397,13 @@
         btn_donation: "Donation",
         opt_cut_lines: "Print cut & fold lines",
         opt_fit_a4: "Scale both parts proportionally to fit A4 (~1.4 %)",
+        opt_rim_tabs: "Reinforcement tabs on the top / bottom rim (1.5 cm, uses the spare A4 height)",
         btn_print: "🖨️ Generate cut-out sheets & print",
         btn_print_now: "Print Now / Save PDF",
         btn_close: "Close",
         prev_top: "Layout preview: top part (lid)",
         prev_bottom: "Layout preview: bottom part (base)",
-        print_hint: "A4 portrait, scale 100 %, margins \"None\". Cut along the solid lines (incl. the 4 short cuts at the corners), fold along the dashed lines. Fold the corner squares inwards and glue them to the inside of the top / bottom wall.",
+        print_hint: "A4 portrait, scale 100 %, margins \"None\". Cut along the solid lines (incl. the 4 short cuts at the corners), fold along the dashed lines. Fold the corner squares inwards and glue them to the inside of the top / bottom wall. Fold the 1.5 cm rim tabs inwards as well and glue them flat – this hides the cut edge and stiffens the rim.",
         warn_clip: "⚠ The top part is {w} cm wide, A4 only 21.0 cm: about {mm} mm of the left and right spine flaps are cut off when printing.",
         fit_note: "Lid and base scaled to {pct} % so the net fits the A4 width.",
         warn_clip_print: "⚠ {part}: net {w} cm is wider than A4 (21.0 cm) – {mm} mm per side are cut off.",
@@ -434,12 +439,13 @@
         btn_donation: "Spende",
         opt_cut_lines: "Schnitt- & Faltlinien drucken",
         opt_fit_a4: "Beide Teile prozentual auf A4 verkleinern (ca. 1,4 %)",
+        opt_rim_tabs: "Verstärkungslaschen am oberen / unteren Rand (1,5 cm, nutzt die freie A4-Höhe)",
         btn_print: "🖨️ Bastelbögen generieren & drucken",
         btn_print_now: "Jetzt drucken / Als PDF speichern",
         btn_close: "Schließen",
         prev_top: "Layout-Vorschau: Oberteil (Deckel)",
         prev_bottom: "Layout-Vorschau: Unterteil (Boden)",
-        print_hint: "A4 hoch, Skalierung 100 %, Ränder „Keine“. Entlang der durchgezogenen Linien schneiden (auch die 4 kurzen Schnitte an den Ecken), an den gestrichelten falten. Eckquadrate nach innen einschlagen und innen an die obere / untere Wand kleben.",
+        print_hint: "A4 hoch, Skalierung 100 %, Ränder „Keine“. Entlang der durchgezogenen Linien schneiden (auch die 4 kurzen Schnitte an den Ecken), an den gestrichelten falten. Eckquadrate nach innen einschlagen und innen an die obere / untere Wand kleben. Die 1,5-cm-Laschen am Rand ebenfalls nach innen falten und flach festkleben – das verdeckt die Schnittkante und versteift den Rand.",
         warn_clip: "⚠ Das Oberteil ist {w} cm breit, A4 nur 21,0 cm: Beim Druck werden links und rechts ca. {mm} mm der Spine-Laschen abgeschnitten.",
         fit_note: "Deckel und Boden auf {pct} % verkleinert, damit das Netz auf die A4-Breite passt.",
         warn_clip_print: "⚠ {part}: Netz {w} cm ist breiter als A4 (21,0 cm) – pro Seite gehen {mm} mm verloren.",
@@ -459,7 +465,7 @@
     const POS = ['center', 'spineTop', 'spineBottom', 'spineLeft', 'spineRight'];
     const keys = ['top', 'bottom'].flatMap(p => POS.map(s => `${p}_${s}`));
     const PX_PER_CM = 20;                            // preview scale: 16.3 / 21.3 / 16.0 / 21.0 / 2.5 cm are all whole pixels
-    const PAGE_W_CM = 21.0;
+    const PAGE_W_CM = 21.0, PAGE_H_CM = 29.6, TAB_CM = 1.5;   // TAB_CM: rim reinforcement tab on the top / bottom wall (uses the spare A4 height)
 
     function dimsOf(key) {
       const [part, pos] = key.split('_');
@@ -742,10 +748,12 @@
     // Net = one full rectangle (w + 2d) x (h + 2d). The four corner squares belong to the LEFT / RIGHT walls:
     // they are cut free from the top / bottom walls (solid), folded in along the dashed line and glued on the inside.
     // One common factor for lid AND base, so the clearance between the two parts stays proportional
+    function tabCm() { const e = document.getElementById('rimTabs'); return e && e.checked ? TAB_CM : 0; }
     function netScale() {
       if (!document.getElementById('fitA4').checked) return 1;
       const widest = Math.max(netSize('top').w, netSize('bottom').w);
-      return widest > PAGE_W_CM ? PAGE_W_CM / widest : 1;
+      const tallest = Math.max(netSize('top').h, netSize('bottom').h) + 2 * tabCm();
+      return Math.min(1, PAGE_W_CM / widest, PAGE_H_CM / tallest);
     }
 
     function drawFullNet(canvasId, part, lines) {
@@ -758,7 +766,8 @@
       const P = PARTS[part];
       const w = P.w * PX_CM, h = P.h * PX_CM, d = SPINE * PX_CM;
       const startX = (canvas.width - (w + 2 * d)) / 2;      // negative when the net is wider than the page (centred, clipped evenly)
-      const startY = (canvas.height - (h + 2 * d)) / 2;
+      const T = tabCm() * PX_CM;
+      const startY = (canvas.height - (h + 2 * d + 2 * T)) / 2 + T;
       const xL = startX, xC = startX + d, xR = xC + w, xE = xR + d;
       const yT = startY, yC = startY + d, yB = yC + h, yE = yB + d;
 
@@ -802,6 +811,21 @@
         ctx.moveTo(xR, yC); ctx.lineTo(xE, yC);               // right wall | corner squares
         ctx.moveTo(xR, yB); ctx.lineTo(xE, yB);
         ctx.stroke();
+
+        // rim reinforcement tabs on the free edge of the top / bottom wall (trapezoid, fold inwards and glue)
+        if (T > 0) {
+          const bv = Math.min(0.3 * PX_CM, T);
+          ctx.lineWidth = 3; ctx.setLineDash([]);
+          ctx.beginPath();
+          ctx.moveTo(xC, yT); ctx.lineTo(xC + bv, yT - T); ctx.lineTo(xR - bv, yT - T); ctx.lineTo(xR, yT);
+          ctx.moveTo(xC, yE); ctx.lineTo(xC + bv, yE + T); ctx.lineTo(xR - bv, yE + T); ctx.lineTo(xR, yE);
+          ctx.stroke();
+          ctx.lineWidth = 1.5; ctx.setLineDash([8, 6]);
+          ctx.beginPath();
+          ctx.moveTo(xC, yT); ctx.lineTo(xR, yT);
+          ctx.moveTo(xC, yE); ctx.lineTo(xR, yE);
+          ctx.stroke();
+        }
       }
       ctx.restore();
     }
