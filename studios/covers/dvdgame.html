@@ -356,6 +356,7 @@
     }
 
     /* 20 px per cm: 27.6 x 18.3 cm -> 552 x 366 px (content-box, so clientWidth/clientHeight are exact) */
+    :root { --fh: 366px; --bkw: 254px; --frl: 282px; --frw: 270px; }   /* back 12.7 cm | spine 1.4 | front 13.5 cm */
     .frame-dvd, .frame-inside { box-sizing: content-box; width: 552px; height: 366px; }
 
     /* Optional separate spine overlay: 1.4 cm wide, x = 12.7 … 14.1 cm */
@@ -377,6 +378,25 @@
     .frame-spine.empty { pointer-events: none; }
     .frame-spine.has-img { background: var(--bg); outline-color: transparent; }
     .frame-container.frame-spine.active-target { box-shadow: none; outline: 2px solid var(--brand); outline-offset: -2px; }
+    /* Optional separate back / front parts (same mechanics as the spine overlay) */
+    .frame-part {
+      display: none;
+      position: absolute;
+      top: 0;
+      height: var(--fh);
+      border: 0;
+      border-radius: 0;
+      background: rgba(56, 189, 248, 0.10);
+      outline: 1px dashed #38bdf8;
+      outline-offset: -1px;
+      z-index: 1;
+    }
+    .frame-part.on { display: block; }
+    .frame-part.empty { pointer-events: none; }
+    .frame-part.has-img { background: var(--bg); outline-color: transparent; }
+    .frame-container.frame-part.active-target { box-shadow: none; outline: 2px solid var(--brand); outline-offset: -2px; }
+    .frame-back { left: 0; width: var(--bkw); }
+    .frame-front { left: var(--frl); width: var(--frw); }
     .spine-ph { writing-mode: vertical-rl; font-size: 0.65rem; letter-spacing: 0.15em; white-space: nowrap; }
 
     .frame-container.active-target {
@@ -570,6 +590,22 @@
         </div>
       </div>
 
+      <!-- Optional: back -->
+      <div class="upload-card" id="card-back" onclick="selectTab('back')" style="display: none;">
+        <label for="file-back" data-i18n="back_label">📷 Back cover</label>
+        <input type="file" id="file-back" accept="image/*" onchange="loadFile(event, 'back')">
+
+        <div id="dpi-container-back" class="dpi-container">
+          <div id="dpi-badge-back" class="dpi-badge"></div>
+          <div class="dpi-scale-wrapper">
+            <div class="scale-segment scale-red"></div>
+            <div class="scale-segment scale-yellow"></div>
+            <div class="scale-segment scale-green"></div>
+            <div id="dpi-marker-back" class="scale-marker" style="left: 0%;"></div>
+          </div>
+        </div>
+      </div>
+
       <!-- Optional: Spine (Mitte) separat -->
       <div class="upload-card" id="card-spine" onclick="selectTab('spine')" style="display: none;">
         <label for="file-spine" data-i18n="spine_label">📷 Spine (1.4 × 18.3 cm)</label>
@@ -582,6 +618,22 @@
             <div class="scale-segment scale-yellow"></div>
             <div class="scale-segment scale-green"></div>
             <div id="dpi-marker-spine" class="scale-marker" style="left: 0%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Optional: front -->
+      <div class="upload-card" id="card-front" onclick="selectTab('front')" style="display: none;">
+        <label for="file-front" data-i18n="front_label">📷 Front cover</label>
+        <input type="file" id="file-front" accept="image/*" onchange="loadFile(event, 'front')">
+
+        <div id="dpi-container-front" class="dpi-container">
+          <div id="dpi-badge-front" class="dpi-badge"></div>
+          <div class="dpi-scale-wrapper">
+            <div class="scale-segment scale-red"></div>
+            <div class="scale-segment scale-yellow"></div>
+            <div class="scale-segment scale-green"></div>
+            <div id="dpi-marker-front" class="scale-marker" style="left: 0%;"></div>
           </div>
         </div>
       </div>
@@ -605,7 +657,9 @@
 
     <div class="tabs">
       <button class="tab-btn active" id="tab-dvd" onclick="selectTab('dvd')" data-i18n="tab_edit_dvd">Edit: Inlay (Außen)</button>
+      <button class="tab-btn" id="tab-back" onclick="selectTab('back')" style="display: none;" data-i18n="tab_edit_back">Edit: Back</button>
       <button class="tab-btn" id="tab-spine" onclick="selectTab('spine')" style="display: none;" data-i18n="tab_edit_spine">Edit: Spine</button>
+      <button class="tab-btn" id="tab-front" onclick="selectTab('front')" style="display: none;" data-i18n="tab_edit_front">Edit: Front</button>
       <button class="tab-btn" id="tab-inside" onclick="selectTab('inside')" style="display: none;" data-i18n="tab_edit_inside">Edit: Inlay (Innen)</button>
     </div>
 
@@ -697,7 +751,7 @@
           </div>
           <label style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; cursor: pointer; color: #fbbf24;">
             <input type="checkbox" id="enableSpine" onchange="toggleSplitSpine(this.checked)">
-            <span data-i18n="opt_split_spine">Upload spine separately (center)</span>
+            <span data-i18n="opt_split_spine">Upload back, spine & front separately</span>
           </label>
         </div>
       </div>
@@ -712,6 +766,15 @@
       <div class="frame-container frame-dvd active-target" id="frame-dvd" onclick="selectTab('dvd')">
         <div class="placeholder" id="ph-dvd" data-i18n="ph_select_dvd">Select file above</div>
         <img id="img-dvd" class="cover-img" style="display:none;" alt="DVD Outside">
+        <!-- Optional back / front overlays -->
+        <div class="frame-container frame-part frame-back empty" id="frame-back" onclick="event.stopPropagation(); selectTab('back')">
+          <div class="placeholder" id="ph-back">BACK</div>
+          <img id="img-back" class="cover-img" style="display:none;" alt="Back">
+        </div>
+        <div class="frame-container frame-part frame-front empty" id="frame-front" onclick="event.stopPropagation(); selectTab('front')">
+          <div class="placeholder" id="ph-front">FRONT</div>
+          <img id="img-front" class="cover-img" style="display:none;" alt="Front">
+        </div>
         <!-- Optional spine overlay (center, 1.4 cm) -->
         <div class="frame-container frame-spine empty" id="frame-spine" onclick="event.stopPropagation(); selectTab('spine')">
           <div class="placeholder spine-ph" id="ph-spine">SPINE</div>
@@ -779,9 +842,13 @@
         opt_crop_marks: "Print crop marks / guidelines",
         opt_inside_cover: "DVD Inside Cover (Duplex / Transparent)",
         opt_mirror_inside: "Mirror inside image (if text is mirrored after printing)",
-        opt_split_spine: "Upload spine separately (center)",
+        opt_split_spine: "Upload back, spine & front separately",
         spine_label: "📷 Spine (1.4 × 18.3 cm)",
         tab_edit_spine: "Edit: Spine",
+        back_label: "📷 Back cover (12.7 × 18.3 cm)",
+        front_label: "📷 Front cover (13.5 × 18.3 cm)",
+        tab_edit_back: "Edit: Back",
+        tab_edit_front: "Edit: Front",
         opt_overscan: "Inside overscan (slight bleed, hides duplex offset)",
         opt_manual_shift: "Shift inside image manually (X / Y)",
         dx_hint: "+X = right, +Y = down (as you look at page 2). Saved in this browser.",
@@ -808,9 +875,13 @@
         opt_crop_marks: "Schnittmarken drucken",
         opt_inside_cover: "DVD Innenseite (Duplex / Transparent)",
         opt_mirror_inside: "Innenseite spiegeln (falls Schrift nach dem Druck spiegelverkehrt ist)",
-        opt_split_spine: "Spine separat hochladen (Mitte)",
+        opt_split_spine: "Back, Spine & Front separat hochladen",
         spine_label: "📷 Spine (1,4 × 18,3 cm)",
         tab_edit_spine: "Bearbeiten: Spine",
+        back_label: "📷 Back Cover (12,7 × 18,3 cm)",
+        front_label: "📷 Front Cover (13,5 × 18,3 cm)",
+        tab_edit_back: "Bearbeiten: Back",
+        tab_edit_front: "Bearbeiten: Front",
         opt_overscan: "Innenseite mit leichtem Überstand (gleicht Duplex-Versatz aus)",
         opt_manual_shift: "Innenseite manuell verschieben (X / Y)",
         dx_hint: "+X = nach rechts, +Y = nach unten (so wie du Seite 2 ansiehst). Wird in diesem Browser gespeichert.",
@@ -856,7 +927,9 @@
     const state = {
       dvd: { x: 0, y: 0, scale: 1, baseFitScale: 1, userZoom: 1, rotation: 0, flipX: 1, loaded: false, targetCmW: 27.6, targetCmH: 18.3 },
       inside: { x: 0, y: 0, scale: 1, baseFitScale: 1, userZoom: 1, rotation: 0, flipX: 1, loaded: false, targetCmW: 27.6, targetCmH: 18.3 },
-      spine: { x: 0, y: 0, scale: 1, baseFitScale: 1, userZoom: 1, rotation: 0, flipX: 1, loaded: false, targetCmW: 1.4, targetCmH: 18.3 }
+      spine: { x: 0, y: 0, scale: 1, baseFitScale: 1, userZoom: 1, rotation: 0, flipX: 1, loaded: false, targetCmW: 1.4, targetCmH: 18.3 },
+      back: { x: 0, y: 0, scale: 1, baseFitScale: 1, userZoom: 1, rotation: 0, flipX: 1, loaded: false, targetCmW: 12.7, targetCmH: 18.3 },
+      front: { x: 0, y: 0, scale: 1, baseFitScale: 1, userZoom: 1, rotation: 0, flipX: 1, loaded: false, targetCmW: 13.5, targetCmH: 18.3 }
     };
 
     function toggleInsideCover(show) {
@@ -882,15 +955,17 @@
 
     // Optional: separate spine, laid over the center (1.4 cm, x = 12.7 … 14.1 cm) of the outside inlay
     function toggleSplitSpine(on) {
-      document.getElementById('card-spine').style.display = on ? 'block' : 'none';
-      document.getElementById('tab-spine').style.display = on ? 'block' : 'none';
-      document.getElementById('frame-spine').classList.toggle('on', on);
-      if (!on && activeTarget === 'spine') selectTab('dvd');
+      ['back', 'spine', 'front'].forEach(k => {
+        document.getElementById('card-' + k).style.display = on ? 'block' : 'none';
+        document.getElementById('tab-' + k).style.display = on ? 'block' : 'none';
+        document.getElementById('frame-' + k).classList.toggle('on', on);
+      });
+      if (!on && ['back', 'spine', 'front'].includes(activeTarget)) selectTab('dvd');
     }
 
     function selectTab(target) {
       activeTarget = target;
-      ['dvd', 'inside', 'spine'].forEach(t => {
+      ['dvd', 'inside', 'back', 'spine', 'front'].forEach(t => {
         const tab = document.getElementById(`tab-${t}`);
         const card = document.getElementById(`card-${t}`);
         const frame = document.getElementById(`frame-${t}`);
@@ -1068,7 +1143,7 @@
       calculateAndDisplayDPI(activeTarget);
     }
 
-    ['dvd', 'inside', 'spine'].forEach(key => {
+    ['dvd', 'inside', 'back', 'spine', 'front'].forEach(key => {
       const frame = document.getElementById(`frame-${key}`);
       if (!frame) return;
       let startX, startY, isDragging = false;
@@ -1076,7 +1151,7 @@
       const handleStart = (e) => {
         if (!state[key].loaded) return;
         // The spine overlay sits inside the main frame: don't let the main frame start a drag too
-        if (key === 'spine') e.stopPropagation();
+        if (key === 'back' || key === 'spine' || key === 'front') e.stopPropagation();
         selectTab(key);
         isDragging = true;
         const touch = e.touches ? e.touches[0] : e;
@@ -1104,7 +1179,7 @@
 
     function preparePrint() {
       const split = document.getElementById('enableSpine').checked;
-      const hasDvd = state.dvd.loaded || (split && state.spine.loaded);
+      const hasDvd = state.dvd.loaded || (split && (state.spine.loaded || state.back.loaded || state.front.loaded));
       const enableInside = document.getElementById('enableInside').checked;
       const hasInside = enableInside && state.inside.loaded;
 
@@ -1121,10 +1196,14 @@
         const spX0 = Math.round((12.7 / 27.6) * targetW);
         const spX1 = Math.round((14.1 / 27.6) * targetW);
 
-        // Parts: main image, plus (outside only, split mode) the spine on top of the center
+        // Parts: main image, plus (outside only, split mode) back / front / spine on top
         const parts = [];
         if (state[key].loaded) parts.push({ k: key, x0: 0, w: targetW });
-        if (key === 'dvd' && split && state.spine.loaded) parts.push({ k: 'spine', x0: spX0, w: spX1 - spX0 });
+        if (key === 'dvd' && split) {
+          if (state.back.loaded) parts.push({ k: 'back', x0: 0, w: spX0 });
+          if (state.front.loaded) parts.push({ k: 'front', x0: spX1, w: targetW - spX1 });
+          if (state.spine.loaded) parts.push({ k: 'spine', x0: spX0, w: spX1 - spX0 });
+        }
         if (!parts.length) return null;
 
         const canvas = document.getElementById(`canvas-${key}`);
