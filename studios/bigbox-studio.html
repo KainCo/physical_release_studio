@@ -326,6 +326,10 @@
           <input type="checkbox" id="rimTabs" checked onchange="updateSizeNote()">
           <span data-i18n="opt_rim_tabs">Reinforcement tabs on the top / bottom rim (1.5 cm)</span>
         </label>
+        <label style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; cursor: pointer; text-transform: none; letter-spacing: 0; margin-top: 6px;">
+          <input type="checkbox" id="cornerTabs" checked onchange="updateSizeNote()">
+          <span data-i18n="opt_corner_tabs">Extra tabs over the corner squares (double hold)</span>
+        </label>
       </div>
     </div>
 
@@ -397,13 +401,14 @@
         btn_donation: "Donation",
         opt_cut_lines: "Print cut & fold lines",
         opt_fit_a4: "Scale both parts proportionally to fit A4 (~1.4 %)",
+        opt_corner_tabs: "Extra tabs over the corner squares (double hold, fold over the folded corner)",
         opt_rim_tabs: "Reinforcement tabs on the top / bottom rim (1.5 cm, uses the spare A4 height)",
         btn_print: "🖨️ Generate cut-out sheets & print",
         btn_print_now: "Print Now / Save PDF",
         btn_close: "Close",
         prev_top: "Layout preview: top part (lid)",
         prev_bottom: "Layout preview: bottom part (base)",
-        print_hint: "A4 portrait, scale 100 %, margins \"None\". Cut along the solid lines (incl. the 4 short cuts at the corners), fold along the dashed lines. Fold the corner squares inwards and glue them to the inside of the top / bottom wall. Fold the 1.5 cm rim tabs inwards as well and glue them flat – this hides the cut edge and stiffens the rim.",
+        print_hint: "A4 portrait, scale 100 %, margins \"None\". Cut along the solid lines (incl. the 4 short cuts at the corners), fold along the dashed lines. Fold the corner squares inwards and glue them to the inside of the top / bottom wall. Fold the 1.5 cm rim tabs inwards as well and glue them flat – this hides the cut edge and stiffens the rim. At the corners: fold the square in first, then fold its extra tab over it.",
         warn_clip: "⚠ The top part is {w} cm wide, A4 only 21.0 cm: about {mm} mm of the left and right spine flaps are cut off when printing.",
         fit_note: "Lid and base scaled to {pct} % so the net fits the A4 width.",
         warn_clip_print: "⚠ {part}: net {w} cm is wider than A4 (21.0 cm) – {mm} mm per side are cut off.",
@@ -439,13 +444,14 @@
         btn_donation: "Spende",
         opt_cut_lines: "Schnitt- & Faltlinien drucken",
         opt_fit_a4: "Beide Teile prozentual auf A4 verkleinern (ca. 1,4 %)",
+        opt_corner_tabs: "Zusatzlaschen über den Eckquadraten (doppelter Halt, über die eingeschlagene Ecke falten)",
         opt_rim_tabs: "Verstärkungslaschen am oberen / unteren Rand (1,5 cm, nutzt die freie A4-Höhe)",
         btn_print: "🖨️ Bastelbögen generieren & drucken",
         btn_print_now: "Jetzt drucken / Als PDF speichern",
         btn_close: "Schließen",
         prev_top: "Layout-Vorschau: Oberteil (Deckel)",
         prev_bottom: "Layout-Vorschau: Unterteil (Boden)",
-        print_hint: "A4 hoch, Skalierung 100 %, Ränder „Keine“. Entlang der durchgezogenen Linien schneiden (auch die 4 kurzen Schnitte an den Ecken), an den gestrichelten falten. Eckquadrate nach innen einschlagen und innen an die obere / untere Wand kleben. Die 1,5-cm-Laschen am Rand ebenfalls nach innen falten und flach festkleben – das verdeckt die Schnittkante und versteift den Rand.",
+        print_hint: "A4 hoch, Skalierung 100 %, Ränder „Keine“. Entlang der durchgezogenen Linien schneiden (auch die 4 kurzen Schnitte an den Ecken), an den gestrichelten falten. Eckquadrate nach innen einschlagen und innen an die obere / untere Wand kleben. Die 1,5-cm-Laschen am Rand ebenfalls nach innen falten und flach festkleben – das verdeckt die Schnittkante und versteift den Rand. An den Ecken: erst das Quadrat einschlagen, dann dessen Zusatzlasche darüber falten.",
         warn_clip: "⚠ Das Oberteil ist {w} cm breit, A4 nur 21,0 cm: Beim Druck werden links und rechts ca. {mm} mm der Spine-Laschen abgeschnitten.",
         fit_note: "Deckel und Boden auf {pct} % verkleinert, damit das Netz auf die A4-Breite passt.",
         warn_clip_print: "⚠ {part}: Netz {w} cm ist breiter als A4 (21,0 cm) – pro Seite gehen {mm} mm verloren.",
@@ -820,10 +826,26 @@
           ctx.moveTo(xC, yT); ctx.lineTo(xC + bv, yT - T); ctx.lineTo(xR - bv, yT - T); ctx.lineTo(xR, yT);
           ctx.moveTo(xC, yE); ctx.lineTo(xC + bv, yE + T); ctx.lineTo(xR - bv, yE + T); ctx.lineTo(xR, yE);
           ctx.stroke();
+          // extra tabs above / below the corner squares: fold the corner in first, then fold this tab over it (double hold)
+          if (document.getElementById('cornerTabs').checked) {
+            ctx.beginPath();
+            [[xL, xC, -1], [xR, xE, 1]].forEach(([xa, xb, side]) => {
+              const outer = side < 0 ? xa : xb, inner = side < 0 ? xb : xa;
+              [[yT, -1], [yE, 1]].forEach(([y, dir]) => {
+                ctx.moveTo(outer, y); ctx.lineTo(outer, y + dir * T);
+                ctx.lineTo(inner - side * -bv, y + dir * T); ctx.lineTo(inner, y);
+              });
+            });
+            ctx.stroke();
+          }
           ctx.lineWidth = 1.5; ctx.setLineDash([8, 6]);
           ctx.beginPath();
           ctx.moveTo(xC, yT); ctx.lineTo(xR, yT);
           ctx.moveTo(xC, yE); ctx.lineTo(xR, yE);
+          if (document.getElementById('cornerTabs').checked) {
+            ctx.moveTo(xL, yT); ctx.lineTo(xC, yT); ctx.moveTo(xR, yT); ctx.lineTo(xE, yT);
+            ctx.moveTo(xL, yE); ctx.lineTo(xC, yE); ctx.moveTo(xR, yE); ctx.lineTo(xE, yE);
+          }
           ctx.stroke();
         }
       }
