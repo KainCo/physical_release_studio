@@ -448,6 +448,17 @@
     .pp-back, .pp-inside { left: 30mm; top: 20mm; width: 150mm; height: 117.5mm; }
     .pp-front { left: 45mm; top: 145.5mm; width: 120mm; height: 120mm; }
 
+    /* Printer-specific duplex correction: only the inside page (page 2) is shifted */
+    #page-2 img {
+      left: calc(30mm + var(--dx, 0mm));
+      top: calc(20mm + var(--dy, 0mm));
+    }
+    /* Overscan: the inside image is enlarged around its center so it reaches past the cut line */
+    #page-2.overscan img {
+      transform: scale(var(--os, 1));
+      transform-origin: center center;
+    }
+
     @media print {
       @page {
         size: A4 portrait;
@@ -698,6 +709,21 @@
             <input type="checkbox" id="mirrorInside">
             <span data-i18n="opt_mirror_inside">Mirror inside image</span>
           </label>
+          <div id="insideAdvWrap" style="display: none; flex-direction: column; gap: 6px; padding-left: 20px;">
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; cursor: pointer; color: #38bdf8;">
+              <input type="checkbox" id="overscanInside" onchange="applyDuplexOffset()">
+              <span data-i18n="opt_overscan">Inside overscan (slight bleed, hides duplex offset)</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; cursor: pointer; color: #38bdf8;">
+              <input type="checkbox" id="manualShift" onchange="applyDuplexOffset()">
+              <span data-i18n="opt_manual_shift">Shift inside image manually (X / Y)</span>
+            </label>
+            <div id="shiftFields" style="display: none; align-items: center; gap: 8px; font-size: 0.75rem; flex-wrap: wrap;">
+              <label>X <input type="number" id="dupX" step="0.5" min="-10" max="10" value="0" style="width: 60px; padding: 3px;" oninput="applyDuplexOffset()"> mm</label>
+              <label>Y <input type="number" id="dupY" step="0.5" min="-10" max="10" value="0" style="width: 60px; padding: 3px;" oninput="applyDuplexOffset()"> mm</label>
+              <span data-i18n="dx_hint" style="flex-basis: 100%; color: #94a3b8;">+X = right, +Y = down (as you look at page 2). Saved in this browser.</span>
+            </div>
+          </div>
           <label style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; cursor: pointer; color: #fbbf24;">
             <input type="checkbox" id="enableSpines" onchange="toggleSplitSpines(this.checked)">
             <span data-i18n="opt_split_spines">Upload spines separately (left / right)</span>
@@ -798,6 +824,9 @@
         opt_crop_marks: "Print crop marks / guidelines",
         opt_inside_cover: "Back Cover Inside (Duplex / NTSC)",
         opt_mirror_inside: "Mirror inside image (if text is mirrored after printing)",
+        opt_overscan: "Inside overscan (slight bleed, hides duplex offset)",
+        opt_manual_shift: "Shift inside image manually (X / Y)",
+        dx_hint: "+X = right, +Y = down (as you look at page 2). Saved in this browser.",
         opt_split_spines: "Upload spines separately (left / right)",
         cd_back_center_label: "📷 Back Cover – Center (without spines, 13.8 × 11.75 cm)",
         cd_spineL_label: "📷 Spine left (0.6 × 11.75 cm)",
@@ -832,6 +861,9 @@
         opt_crop_marks: "Schnittmarken drucken",
         opt_inside_cover: "Backcover Innenseite (Duplex / NTSC)",
         opt_mirror_inside: "Innenseite spiegeln (falls Schrift nach dem Druck spiegelverkehrt ist)",
+        opt_overscan: "Innenseite mit leichtem Überstand (gleicht Duplex-Versatz aus)",
+        opt_manual_shift: "Innenseite manuell verschieben (X / Y)",
+        dx_hint: "+X = nach rechts, +Y = nach unten (so wie du Seite 2 ansiehst). Wird in diesem Browser gespeichert.",
         opt_split_spines: "Spines separat hochladen (links / rechts)",
         cd_back_center_label: "📷 Rückseite – Mitte (ohne Spines, 13,8 × 11,75 cm)",
         cd_spineL_label: "📷 Spine links (0,6 × 11,75 cm)",
@@ -894,6 +926,7 @@
       const tabInside = document.getElementById('tab-inside');
       const prevInside = document.getElementById('preview-container-inside');
       const mirrorWrap = document.getElementById('mirrorInsideWrap');
+      document.getElementById('insideAdvWrap').style.display = show ? 'flex' : 'none';
 
       if (show) {
         cardInside.style.display = 'block';
@@ -1163,7 +1196,7 @@
         return;
       }
 
-      const drawGuidelines = document.getElementById('showGuidelines').checked;
+      let drawGuidelines = document.getElementById('showGuidelines').checked;
 
       // mirror = -1 mirrors the whole finished canvas horizontally (position, rotation and flip included)
       function renderCanvas(key, targetW, targetH, mirror = 1) {
@@ -1230,6 +1263,7 @@
       const backData = renderCanvas('back', 1772, 1388, 1);
       const frontData = renderCanvas('front', 1417, 1417, 1);
       const mirrorInside = document.getElementById('mirrorInside').checked ? -1 : 1;
+      if (document.getElementById('overscanInside').checked) drawGuidelines = false;   // no frame / fold lines on an enlarged inside page
       const insideData = hasInside ? renderCanvas('inside', 1772, 1388, mirrorInside) : null;
 
       const printBack = document.getElementById('print-img-back');
@@ -1256,12 +1290,44 @@
       document.getElementById('printScreen').style.display = 'block';
     }
 
+    // Inside page tweaks for printers with a duplex offset: optional overscan (bleed) and manual X/Y shift
+    const OVERSCAN_MM = 3.5;   // bleed on the left/right side; top/bottom gets proportionally less (uniform zoom)
+    function applyDuplexOffset(save) {
+      const manual = document.getElementById('manualShift').checked;
+      const over = document.getElementById('overscanInside').checked;
+      document.getElementById('shiftFields').style.display = manual ? 'flex' : 'none';
+      const x = manual ? (parseFloat(document.getElementById('dupX').value) || 0) : 0;
+      const y = manual ? (parseFloat(document.getElementById('dupY').value) || 0) : 0;
+      const wMm = 150;                                   // width of the back cover on paper
+      const os = (wMm + 2 * OVERSCAN_MM) / wMm;
+      const root = document.documentElement.style;
+      root.setProperty('--dx', `${x}mm`);
+      root.setProperty('--dy', `${y}mm`);
+      root.setProperty('--os', String(os));
+      document.getElementById('page-2').classList.toggle('overscan', over);
+      if (save !== false) try {
+        localStorage.setItem('prs_cd_dup', JSON.stringify({
+          x: parseFloat(document.getElementById('dupX').value) || 0,
+          y: parseFloat(document.getElementById('dupY').value) || 0, manual, over }));
+      } catch (e) {}
+    }
+
     function closePrint() {
       document.getElementById('printScreen').style.display = 'none';
     }
 
     window.addEventListener('DOMContentLoaded', () => {
       setLanguage(currentLang);
+      try {
+        const d = JSON.parse(localStorage.getItem('prs_cd_dup') || 'null');
+        if (d) {
+          document.getElementById('dupX').value = d.x || 0;
+          document.getElementById('dupY').value = d.y || 0;
+          document.getElementById('manualShift').checked = !!d.manual;
+          document.getElementById('overscanInside').checked = !!d.over;
+        }
+      } catch (e) {}
+      applyDuplexOffset();
       // Browsers may restore checkbox state after a reload – sync the UI with it
       toggleInsideCover(document.getElementById('enableInside').checked);
       toggleSplitSpines(document.getElementById('enableSpines').checked);
