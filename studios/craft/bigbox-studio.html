@@ -1111,6 +1111,9 @@
       const todo = ['top', 'bottom'].filter(used);
       if (!todo.length) { alert(t('alert_none')); return; }
       const lines = document.getElementById('showGuidelines').checked;
+      // the preview is hidden outside step 3 (clientWidth = 0) - show it briefly so the print geometry can be measured
+      const pw = document.getElementById('previewWrap'), pwDisp = pw.style.display;
+      pw.style.display = 'flex';
 
       ['top', 'bottom'].forEach(part => {
         const page = document.getElementById(`page-${part}`);
@@ -1119,6 +1122,7 @@
         page.classList.toggle('is-last', on && part === todo[todo.length - 1]);
         if (on) drawFullNet(part === 'top' ? 'printCanvasTop' : 'printCanvasBottom', part, lines);
       });
+      pw.style.display = pwDisp;
 
       const k = netScale();
       const warns = k < 1 ? [t('fit_note').replace('{pct}', fmtNum(Math.round(k * 1000) / 10))] : [];
