@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Physical Release Studio — Inlay Craft Studio</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #090d16; --card-bg: #111726; --border: #1f293d; --hover: #1a2336;
+      --brand: #2563eb; --brand-accent: #a855f7; --text: #f1f5f9; --text-muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+    body { background-color: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 16px; }
+
+    header {
+      width: 100%; max-width: 1100px; display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 20px; background: rgba(9, 13, 22, 0.9); border: 1px solid var(--border); border-radius: 12px;
+      margin-bottom: 20px; flex-wrap: wrap; gap: 12px;
+    }
+    .brand-title { display: flex; align-items: center; gap: 12px; text-decoration: none; color: white; }
+    .brand-title i { font-size: 1.5rem; color: #f97316; }
+    .header-actions { display: flex; align-items: center; gap: 12px; }
+    .lang-switcher { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 2px; display: flex; }
+    .lang-btn { background: transparent; border: none; color: var(--text-muted); padding: 4px 10px; font-size: 0.75rem; font-weight: bold; font-family: 'JetBrains Mono', monospace; cursor: pointer; border-radius: 6px; }
+    .lang-btn.active { background: var(--brand); color: white; }
+    .btn-index { background: var(--card-bg); color: var(--text); border: 1px solid var(--border); padding: 6px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: bold; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-index:hover { border-color: var(--brand); }
+
+    .ui-container { width: 100%; max-width: 1100px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); margin-bottom: 24px; }
+    .header-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 4px; }
+    .sub-title { font-size: 0.8rem; font-family: 'JetBrains Mono', monospace; color: var(--text-muted); margin-bottom: 16px; }
+
+    .layout { display: grid; grid-template-columns: minmax(280px, 380px) 1fr; gap: 24px; align-items: start; }
+    @media (max-width: 860px) { .layout { grid-template-columns: 1fr; } }
+
+    .part-section-title { font-size: 0.95rem; font-weight: 700; color: var(--brand); margin: 14px 0 8px 0; border-bottom: 1px solid var(--border); padding-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+    .part-section-title:first-child { margin-top: 0; }
+    .field { display: grid; grid-template-columns: 1fr 92px; gap: 8px; align-items: center; margin-bottom: 8px; font-size: 0.78rem; }
+    .field span.l { color: var(--text-muted); }
+    .field input[type=number], .field select {
+      width: 100%; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 5px 7px; font-size: 0.8rem; font-family: 'JetBrains Mono', monospace;
+    }
+    .field.wide { grid-template-columns: 1fr; }
+    .check { display: flex; align-items: center; gap: 6px; font-size: 0.78rem; margin-bottom: 8px; cursor: pointer; }
+    .note { font-size: 0.72rem; color: var(--text-muted); margin: 4px 0 8px 0; line-height: 1.4; }
+    .warn { font-size: 0.75rem; color: #fbbf24; background: rgba(245, 158, 11, 0.10); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 8px; padding: 8px 12px; margin-bottom: 8px; }
+    .info { font-size: 0.75rem; color: #86efac; background: rgba(16, 185, 129, 0.10); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 8px 12px; margin-bottom: 8px; }
+
+    .nudge { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+    .nudge button { background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 5px 10px; font-size: 0.75rem; cursor: pointer; }
+    .nudge button:hover { border-color: var(--brand); }
+    .btn-print { width: 100%; margin-top: 12px; padding: 12px; background: var(--brand); color: white; border: none; border-radius: 10px; font-weight: 700; font-size: 0.9rem; cursor: pointer; }
+    .btn-print:hover { background: #1d4ed8; }
+
+    .sheet-wrap { background: #1a2336; border-radius: 12px; padding: 14px; display: flex; justify-content: center; }
+    #sheet { background: white; width: 100%; max-width: 560px; aspect-ratio: 210 / 296; box-shadow: 0 6px 20px rgba(0,0,0,0.5); }
+    #sheet svg { width: 100%; height: 100%; display: block; }
+    .legend { font-size: 0.72rem; color: var(--text-muted); margin-top: 10px; display: flex; gap: 14px; flex-wrap: wrap; }
+    .steps { margin-top: 16px; font-size: 0.78rem; color: var(--text-muted); line-height: 1.55; }
+    .steps b { color: var(--text); }
+    .steps ol { padding-left: 18px; }
+
+
+    /* ---- Wizard ---- */
+    .wiz-steps { display: flex; gap: 6px; margin-bottom: 14px; }
+    .wiz-pill { flex: 1; text-align: center; padding: 7px 4px; border-radius: 10px; background: var(--bg); border: 1px solid var(--border); color: var(--text-muted); font-size: 0.7rem; font-weight: bold; cursor: pointer; }
+    .wiz-pill.active { background: var(--brand); border-color: var(--brand); color: #fff; }
+    .wiz-pill.done { color: var(--text); border-color: var(--brand); }
+    .wiz-step { display: none; }
+    .wiz-step.active { display: block; }
+    .wiz-h { font-size: 1.05rem; font-weight: 800; margin-bottom: 4px; }
+    .wiz-s { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.4; }
+    .wiz-sub { font-size: 0.8rem; font-weight: 700; margin: 10px 0 8px; }
+    .choice-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 10px; }
+    .choice-grid.small { grid-template-columns: repeat(2, 1fr); }
+    .choice { background: var(--bg); border: 2px solid var(--border); border-radius: 12px; padding: 10px; cursor: pointer; text-align: center; }
+    .choice:hover { border-color: var(--text-muted); }
+    .choice.on { border-color: var(--brand); box-shadow: 0 0 0 1px var(--brand) inset; }
+    .choice svg { display: block; margin: 0 auto 6px; max-width: 100%; }
+    .choice .c-name { font-weight: 800; font-size: 0.85rem; }
+    .choice .c-dim { font-size: 0.68rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; margin-top: 2px; }
+    .choice .c-note { font-size: 0.68rem; color: var(--text-muted); margin-top: 5px; }
+    .wiz-nav { display: flex; justify-content: space-between; gap: 10px; margin: 14px 0; }
+    .wiz-nav .btn-small { padding: 9px 18px; font-size: 0.8rem; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 8px; cursor: pointer; font-family: 'JetBrains Mono', monospace; }
+    .wiz-nav .btn-small.on { background: var(--brand); border-color: var(--brand); color: #fff; }
+    details.adv { margin: 12px 0; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; }
+    details.adv summary { cursor: pointer; font-size: 0.8rem; font-weight: bold; color: var(--text-muted); }
+    .adv-body { margin-top: 10px; }
+
+    #printSheet { display: none; }
+    @media print {
+      @page { size: A4 portrait; margin: 0 !important; }
+      html, body { display: block !important; width: var(--pw, 210mm) !important; height: auto !important; margin: 0 !important; padding: 0 !important; background: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      header, .ui-container { display: none !important; }
+      #printSheet { display: block !important; width: var(--pw, 210mm); height: var(--ph, 296mm); }
+      #printSheet svg { width: var(--pw, 210mm); height: var(--ph, 296mm); display: block; }
+    }
+  </style>
+  <style id="pageStyle"></style>
+</head>
+<body>
+
+  <header>
+    <a href="../../index.html" class="btn-index">
+      <i class="fa-solid fa-arrow-left"></i>
+      <span data-i18n="nav_index">Back to Overview</span>
+    </a>
+    <a href="#" class="brand-title">
+      <i class="fa-solid fa-box-open"></i>
+      <div>
+        <div style="font-weight: 800; font-size: 1rem;">PHYSICAL RELEASE</div>
+        <div style="font-size: 0.7rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">Inlay Craft Studio <p>&copy; 2026 KainCo. All rights reserved.</p></div>
+      </div>
+    </a>
+    <div class="header-actions">
+      <div class="lang-switcher">
+        <button id="lang-en" onclick="setLanguage('en')" class="lang-btn active">EN</button>
+        <button id="lang-de" onclick="setLanguage('de')" class="lang-btn">DE</button>
+      </div>
+      <a href="https://paypal.me/kainco" target="_blank" rel="noopener noreferrer"
+         style="background: #0070ba; color: white; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
+        <i class="fa-brands fa-paypal"></i> <span data-i18n="btn_donation">Donation</span>
+      </a>
+      <a href="https://ko-fi.com/kainco" target="_blank" rel="noopener noreferrer"
+         style="background: #ff5e5b; color: white; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
+        <i class="fa-solid fa-mug-hot"></i> Support
+      </a>
+    </div>
+  </header>
+
+  <div class="ui-container">
+    <div class="header-title" data-i18n="studio_title">Inlay Craft Studio</div>
+    <div class="sub-title" data-i18n="studio_sub">CD case holder for the base of the box – plate with window + wall strips on one sheet.</div>
+
+    <div class="layout">
+      <div>
+        <div class="wiz-steps" id="wizSteps"></div>
+
+        <div class="wiz-step" id="step-1">
+          <div class="wiz-h" data-i18n="wiz_h1">Which box is the inlay for?</div>
+          <div class="wiz-s" data-i18n="wiz_s1"></div>
+          <div class="choice-grid" id="boxCards"></div>
+          <div class="wiz-sub" data-i18n="wiz_paper">Paper size</div>
+          <div class="choice-grid small" id="paperCards"></div>
+        </div>
+
+        <div class="wiz-step" id="step-2">
+          <div class="wiz-h" data-i18n="wiz_h2">Which CD case should it hold?</div>
+          <div class="wiz-s" data-i18n="wiz_s2"></div>
+          <div class="choice-grid" id="caseCards"></div>
+        </div>
+
+        <div class="wiz-step" id="step-3">
+          <div class="wiz-h" data-i18n="wiz_h3">What do you build it from?</div>
+          <div class="wiz-s" data-i18n="wiz_s3"></div>
+          <div class="choice-grid" id="matCards"></div>
+        </div>
+
+        <div class="wiz-step" id="step-4">
+          <div class="wiz-h" data-i18n="wiz_h4">Ready to print</div>
+          <div class="wiz-s" data-i18n="wiz_s4"></div>
+          <details class="adv">
+            <summary data-i18n="adv_title">Advanced options</summary>
+            <div class="adv-body">
+        <label class="field"><span class="l" data-i18n="f_boxW">Inner width (short side)</span><input type="number" id="boxW" step="0.5" min="50" max="260"></label>
+        <label class="field"><span class="l" data-i18n="f_boxL">Inner length (long side)</span><input type="number" id="boxL" step="0.5" min="50" max="290"></label>
+        <label class="field"><span class="l" data-i18n="f_H">Inner height (wall)</span><input type="number" id="H" step="0.5" min="5" max="60"></label>
+        <label class="field"><span class="l" data-i18n="f_air">Air per side (inlay ↔ box)</span><input type="number" id="air" step="0.1" min="0" max="5"></label>
+
+        <label class="field"><span class="l" data-i18n="f_caseW">Case short side</span><input type="number" id="caseW" step="0.1" min="50" max="200"></label>
+        <label class="field"><span class="l" data-i18n="f_caseL">Case long side</span><input type="number" id="caseL" step="0.1" min="50" max="200"></label>
+        <label class="field"><span class="l" data-i18n="f_caseT">Case thickness</span><input type="number" id="caseT" step="0.1" min="3" max="60"></label>
+        <label class="field"><span class="l" data-i18n="f_play">Play per side (case ↔ wall)</span><input type="number" id="play" step="0.1" min="0" max="5"></label>
+
+        <label class="field"><span class="l" data-i18n="f_t">Material thickness</span><input type="number" id="t" step="0.1" min="0.05" max="2"></label>
+        <label class="field"><span class="l" data-i18n="f_flange">Glue flange (target)</span><input type="number" id="flange" step="0.5" min="3" max="20"></label>
+        <label class="check"><input type="checkbox" id="grip"> <span data-i18n="f_grip">Square finger notches at both ends</span></label>
+        <label class="field"><span class="l" data-i18n="f_gripW">Notch width</span><input type="number" id="gripW" step="1" min="10" max="80"></label>
+        <label class="field"><span class="l" data-i18n="f_gripD">Notch depth</span><input type="number" id="gripD" step="1" min="4" max="30"></label>
+        <label class="check"><input type="checkbox" id="cornerTab"> <span data-i18n="f_cornerTab">Corner tabs on the short wall strips (stiffen the corners)</span></label>
+        <label class="field"><span class="l" data-i18n="f_cornerLen">Corner tab length</span><input type="number" id="cornerLen" step="1" min="4" max="30"></label>
+
+        <label class="check"><input type="checkbox" id="guides"> <span data-i18n="f_guides">Show guides on the plate (glue guide, W1–W6, label)</span></label>
+        <label class="check"><input type="checkbox" id="cutlines"> <span data-i18n="f_cutlines">Show cut lines on the plate (edge + window)</span></label>
+
+            </div>
+          </details>
+          <button class="btn-print" onclick="window.print()" data-i18n="btn_print">🖨️ Print inlay</button>
+          <div class="note" style="margin-top: 8px;" data-i18n="print_hint"></div>
+        </div>
+
+        <div class="wiz-nav">
+          <button class="btn-small" id="wizBack" onclick="wizGo(-1)" data-i18n="btn_back">Back</button>
+          <button class="btn-small on" id="wizNext" onclick="wizGo(1)" data-i18n="btn_next">Next</button>
+        </div>
+
+        <div id="msgs" style="margin-top: 12px;"></div>
+      </div>
+
+      <div>
+        <div class="sheet-wrap"><div id="sheet"></div></div>
+        <div class="legend">
+          <span><b style="color:#fff">━</b> <span data-i18n="lg_cut">cut</span></span>
+          <span><b style="color:#fff">╌</b> <span data-i18n="lg_fold">fold</span></span>
+          <span><b style="color:#fff">┄</b> <span data-i18n="lg_glue">glue guide</span></span>
+        </div>
+        <div class="steps" id="steps"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="printSheet"></div>
+
+  <script>
+    const i18n = {
+      en: {
+        wiz_1: "Box", wiz_2: "CD case", wiz_3: "Material", wiz_4: "Print",
+        wiz_h1: "Which box is the inlay for?", wiz_s1: "The inlay sits in the base of the box. Pick the same box and paper size you used for the box itself.",
+        wiz_paper: "Paper size",
+        wiz_h2: "Which CD case should it hold?", wiz_s2: "The window of the inlay is cut to the case size plus a little play.",
+        wiz_h3: "What do you build it from?", wiz_s3: "The material thickness changes the wall height. Thin card folds easily, 1 mm board needs scoring along the fold lines.",
+        wiz_h4: "Ready to print", wiz_s4: "Check the preview on the right. Solid line = cut, dashed = fold, dotted = glue guide.",
+        adv_title: "Advanced options", btn_back: "← Back", btn_next: "Next →",
+        preset_classic: "Big Box Classic", preset_standard: "Big Box Standard", preset_small: "Small Box", preset_smallDeep: "Small Box Deep",
+        paper_orig: "original size", paper_scaled: "scaled to {pct} %",
+        case_double: "Double CD case", case_double_n: "up to 4 CDs, 23.9 mm thick (measured)",
+        case_single: "Single CD case", case_single_n: "standard jewel case, 10.4 mm thick",
+        mat_paper: "Paper 200 g", mat_paper_n: "about 0.3 mm – easy to fold, a bit soft",
+        mat_board: "Cardboard 1 mm", mat_board_n: "stable, score the fold lines first",
+        nav_index: "Back to Overview", btn_donation: "Donation",
+        studio_title: "Inlay Craft Studio",
+        studio_sub: "CD case holder for the base of the box – plate with window + wall strips on one sheet.",
+        sec_box: "Box (inside of the base)", sec_case: "CD case", sec_build: "Construction",
+        f_boxW: "Inner width (short side)", f_boxL: "Inner length (long side)", f_H: "Inner height (wall)", f_air: "Air per side (inlay ↔ box)",
+        n_box: "All values in mm. Default = your Big Box at 98 % (base 16.0 × 21.0 cm). Measure the finished box and adjust.",
+        f_caseW: "Case short side", f_caseL: "Case long side", f_caseT: "Case thickness", f_play: "Play per side (case ↔ wall)",
+        f_orient: "Case orientation", o_along: "Long side along the box", o_across: "Long side across the box",
+        f_t: "Material thickness", f_flange: "Glue flange (target)", f_grip: "Square finger notches at both ends", f_gripW: "Notch width", f_gripD: "Notch depth",
+        f_cornerTab: "Corner tabs on the short wall strips (stiffen the corners)", f_cornerLen: "Corner tab length",
+        sec_motif: "Motif (visible top side)",
+        n_motif: "Optional. The image is printed on the plate. What stays visible is mainly the ring around the window. Without an image the plate stays white.",
+        f_zoom: "Zoom", btn_reset: "Reset", btn_remove: "Remove image",
+        f_guides: "Show guides on the plate (glue guide, W1–W6, label)", f_cutlines: "Show cut lines on the plate (edge + window)",
+        dpi_note: "Effective resolution: {dpi} dpi",
+        btn_print: "🖨️ Print inlay",
+        print_hint: "Portrait, scale 100 %, margins \"None\". Solid line = cut, dashed = fold, dotted = glue guide.",
+        lg_cut: "cut", lg_fold: "fold", lg_glue: "glue guide",
+        steps_title: "Assembly",
+        steps: [
+          "Cut out the <b>plate</b> and cut out the <b>window</b> (inside the solid line, including the square notches).",
+          "Cut out the <b>wall strips</b>. Fold each one along the dashed line by 90° (narrow flange / tall wall). The short strips W3–W6 have <b>corner tabs</b>: fold them 90° as well.",
+          "Glue the <b>flanges to the plate</b> (underside facing up): the wall must be exactly on the window edge, the flange lies flat on the plate ring outside the window (dotted guide). W1/W2 = long sides, W3–W6 = short ends; the names are printed next to the window. Glue each corner tab <b>around the corner onto the outside of the long wall</b> (W1/W2).",
+          "Put the inlay into the base of the box (plate on top, flush with the rim) and place the CD case into the window."
+        ],
+        p_plate: "Inlay plate", p_wall: "Wall", p_glue: "glue guide",
+        m_ok: "Window {ww} × {wl} mm, plate {pw} × {pl} mm, wall height {hc} mm.",
+        m_ring_thin: "The ring beside the window is only {r} mm wide – the inlay will be fragile and hard to glue. Pick a bigger box format or print the box on A3.",
+        m_ring_end: "The ring at the notch ends is only {r} mm wide.",
+        m_nofit: "The window does not fit into the plate. Check the measurements.",
+        m_case_thick: "The case ({c} mm) is thicker than the wall height ({h} mm) – it will not fit into this box. Pick a deeper box (2.7 cm) or the single case.",
+        m_case_loose: "The wall is {d} mm higher than the case – the case sits deep inside.",
+        m_a4: "Not everything fits on one sheet ({n} strip(s) missing). Pick a smaller case or a bigger paper size.",
+        m_tabs_dropped: "The corner tabs were left out: with these measurements the strips would not fit on one A4 sheet. With the finger notches switched on the strips are shorter and the tabs fit.",
+        m_flange: "Glue flange reduced to {f} mm (ring too narrow)."
+      },
+      de: {
+        wiz_1: "Box", wiz_2: "CD-Case", wiz_3: "Material", wiz_4: "Drucken",
+        wiz_h1: "Für welche Box ist das Inlay?", wiz_s1: "Das Inlay liegt im Boden der Box. Wähle dieselbe Box und dasselbe Papierformat wie für die Box selbst.",
+        wiz_paper: "Papierformat",
+        wiz_h2: "Welches CD-Case soll es halten?", wiz_s2: "Das Fenster im Inlay wird auf die Case-Größe plus etwas Spiel zugeschnitten.",
+        wiz_h3: "Woraus baust du es?", wiz_s3: "Die Materialstärke ändert die Wandhöhe. Dünner Karton lässt sich leicht falten, 1 mm Pappe muss an den Falzlinien geritzt werden.",
+        wiz_h4: "Bereit zum Drucken", wiz_s4: "Prüfe die Vorschau rechts. Durchgezogen = schneiden, gestrichelt = falten, gepunktet = Klebehilfe.",
+        adv_title: "Erweiterte Optionen", btn_back: "← Zurück", btn_next: "Weiter →",
+        preset_classic: "Big Box Klassisch", preset_standard: "Big Box Standard", preset_small: "Small Box", preset_smallDeep: "Small Box Tief",
+        paper_orig: "Originalgröße", paper_scaled: "auf {pct} % verkleinert",
+        case_double: "Doppel-CD-Case", case_double_n: "bis zu 4 CDs, 23,9 mm dick (gemessen)",
+        case_single: "Einzel-CD-Case", case_single_n: "Standard-Jewel-Case, 10,4 mm dick",
+        mat_paper: "Papier 200 g", mat_paper_n: "ca. 0,3 mm – leicht zu falten, etwas weich",
+        mat_board: "Pappe 1 mm", mat_board_n: "stabil, Falzlinien vorher ritzen",
+        nav_index: "Zurück zur Übersicht", btn_donation: "Spenden",
+        studio_title: "Inlay Craft Studio",
+        studio_sub: "CD-Halter für den Boden der Schachtel – Platte mit Fenster + Wandstreifen auf einem Blatt.",
+        sec_box: "Schachtel (Innenseite des Bodens)", sec_case: "CD-Case", sec_build: "Bauweise",
+        f_boxW: "Innenbreite (kurze Seite)", f_boxL: "Innenlänge (lange Seite)", f_H: "Innenhöhe (Wand)", f_air: "Luft pro Seite (Inlay ↔ Box)",
+        n_box: "Alle Werte in mm. Standard = deine Big Box mit 98 % (Boden 16,0 × 21,0 cm). Miss die fertige Box nach und passe die Werte an.",
+        f_caseW: "Case kurze Seite", f_caseL: "Case lange Seite", f_caseT: "Case Dicke", f_play: "Spiel pro Seite (Case ↔ Wand)",
+        f_orient: "Ausrichtung des Cases", o_along: "Lange Seite längs in der Box", o_across: "Lange Seite quer in der Box",
+        f_t: "Materialstärke", f_flange: "Klebelasche (Ziel)", f_grip: "Quadratische Griffmulden an beiden Enden", f_gripW: "Mulden-Breite", f_gripD: "Mulden-Tiefe",
+        f_cornerTab: "Eck-Laschen an den kurzen Wandstreifen (versteifen die Ecken)", f_cornerLen: "Länge der Eck-Lasche",
+        sec_motif: "Motiv (sichtbare Oberseite)",
+        n_motif: "Optional. Das Bild wird auf die Platte gedruckt. Sichtbar bleibt vor allem der Rand um das Fenster. Ohne Bild bleibt die Platte weiß.",
+        f_zoom: "Zoom", btn_reset: "Zurücksetzen", btn_remove: "Bild entfernen",
+        f_guides: "Hilfslinien auf der Platte zeigen (Klebehilfe, W1–W6, Beschriftung)", f_cutlines: "Schnittlinien auf der Platte zeigen (Rand + Fenster)",
+        dpi_note: "Effektive Auflösung: {dpi} dpi",
+        btn_print: "🖨️ Inlay drucken",
+        print_hint: "Hochkant, Skalierung 100 %, Ränder „Keine“. Durchgezogen = schneiden, gestrichelt = falten, gepunktet = Klebehilfe.",
+        lg_cut: "schneiden", lg_fold: "falten", lg_glue: "Klebehilfe",
+        steps_title: "Aufbau",
+        steps: [
+          "<b>Platte</b> ausschneiden und das <b>Fenster</b> innerhalb der durchgezogenen Linie ausschneiden (inkl. der quadratischen Mulden).",
+          "<b>Wandstreifen</b> ausschneiden und jeden an der gestrichelten Linie um 90° falten (schmale Lasche / hohe Wand). Die kurzen Streifen W3–W6 haben <b>Eck-Laschen</b>: ebenfalls um 90° falten.",
+          "<b>Laschen an die Platte kleben</b> (Unterseite nach oben): die Wand sitzt genau auf der Fensterkante, die Lasche liegt flach auf dem Plattenrand außerhalb des Fensters (gepunktete Klebehilfe). W1/W2 = lange Seiten, W3–W6 = kurze Enden; die Namen stehen neben dem Fenster. Jede Eck-Lasche <b>um die Ecke herum von außen an die lange Wand</b> (W1/W2) kleben.",
+          "Inlay in den Boden der Schachtel legen (Platte oben, bündig mit dem Rand) und das CD-Case ins Fenster setzen."
+        ],
+        p_plate: "Inlay-Platte", p_wall: "Wand", p_glue: "Klebehilfe",
+        m_ok: "Fenster {ww} × {wl} mm, Platte {pw} × {pl} mm, Wandhöhe {hc} mm.",
+        m_ring_thin: "Der Rand neben dem Fenster ist nur {r} mm breit – das Inlay wird empfindlich und schwer zu kleben. Wähle ein größeres Boxformat oder drucke die Box auf A3.",
+        m_ring_end: "Der Rand an den Mulden-Enden ist nur {r} mm breit.",
+        m_nofit: "Das Fenster passt nicht in die Platte. Bitte die Maße prüfen.",
+        m_case_thick: "Das Case ({c} mm) ist dicker als die Wandhöhe ({h} mm) – es passt nicht in diese Box. Wähle eine tiefere Box (2,7 cm) oder das Einzel-Case.",
+        m_case_loose: "Die Wand ist {d} mm höher als das Case – das Case sitzt tief drin.",
+        m_a4: "Nicht alles passt auf ein Blatt ({n} Streifen fehlen). Wähle ein kleineres Case oder ein größeres Papierformat.",
+        m_tabs_dropped: "Die Eck-Laschen wurden weggelassen: mit diesen Maßen würden die Streifen nicht auf ein A4-Blatt passen. Mit eingeschalteten Griffmulden sind die Streifen kürzer und die Laschen passen.",
+        m_flange: "Klebelasche auf {f} mm verkleinert (Rand zu schmal)."
+      }
+    };
+
+    let currentLang = 'en';
+    try { currentLang = localStorage.getItem('prs_lang') || 'en'; } catch (e) {}
+    const t = (k) => (i18n[currentLang] && i18n[currentLang][k] !== undefined) ? i18n[currentLang][k] : i18n.en[k];
+    const fmt = (n, d = 1) => { const s = (Math.round(n * Math.pow(10, d)) / Math.pow(10, d)).toString(); return currentLang === 'de' ? s.replace('.', ',') : s; };
+
+    // Defaults: Big Box base 160 x 210 mm at 98 % -> ~156.5 x 205.5 mm inside; McPain 2 double case 142 x 125 x 23.9 mm
+    const DEFAULTS = { boxW: 142.5, boxL: 190.5, H: 24, air: 1, caseW: 125, caseL: 142, caseT: 23.9, play: 1, orient: 'along', t: 1, flange: 8, grip: true, gripW: 25, gripD: 12, cornerTab: true, cornerLen: 10, guides: true, cutlines: true };
+    const NUM = ['boxW', 'boxL', 'H', 'air', 'caseW', 'caseL', 'caseT', 'play', 't', 'flange', 'gripW', 'gripD', 'cornerLen'];
+    const CHECKS = ['grip', 'cornerTab', 'guides', 'cutlines'];
+    const STORE = 'prs_inlay6';
+
+    function loadState() {
+      let s = {};
+      try { s = JSON.parse(localStorage.getItem(STORE) || '{}'); } catch (e) {}
+      return Object.assign({}, DEFAULTS, s);
+    }
+    function saveState(s) { try { localStorage.setItem(STORE, JSON.stringify(s)); } catch (e) {} }
+    function readState() {
+      const s = {};
+      NUM.forEach(k => { const v = parseFloat(document.getElementById(k).value); s[k] = isFinite(v) ? v : DEFAULTS[k]; });
+      s.orient = 'along';                              // the case always lies with its long side along the box
+      CHECKS.forEach(k => s[k] = document.getElementById(k).checked);
+      return s;
+    }
+    function writeState(s) {
+      NUM.forEach(k => document.getElementById(k).value = s[k]);
+      CHECKS.forEach(k => document.getElementById(k).checked = !!s[k]);
+    }
+
+    // ---- Geometry (all mm) ----------------------------------------------------
+    let SHEET_W = 210, SHEET_H = 296;
+    const M = 6;
+
+    function compute(s) {
+      const g = {};
+      g.pw = s.boxW - 2 * s.air;                      // plate width (short side of the box)
+      g.pl = s.boxL - 2 * s.air;                      // plate length
+      const cw = s.orient === 'along' ? s.caseW : s.caseL;   // case size across the box
+      const cl = s.orient === 'along' ? s.caseL : s.caseW;   // case size along the box
+      g.ww = cw + 2 * s.play; g.wl = cl + 2 * s.play;        // window
+      g.wx = (g.pw - g.ww) / 2; g.wy = (g.pl - g.wl) / 2;
+      g.hc = s.H - s.t;                                      // wall height after subtracting the plate
+      g.fits = g.wx > 1 && g.wy > 1;
+      g.grip = s.grip && g.fits;
+      g.gD = Math.min(s.gripD, Math.max(0, g.wy - 6));
+      g.gW = Math.min(s.gripW, g.ww - 20);
+      if (g.gD < 4 || g.gW < 8) g.grip = false;
+      // glue flange limited by the ring beside the window
+      g.f = Math.max(3, Math.min(s.flange, g.wx - 2));
+      return g;
+    }
+
+    // Wall strips. Local coordinates: u along the strip, v across it (flange v 0..f, wall v f..f+hc).
+    // tl / tr = corner tab length on the left / right end (only the short strips W3–W6 get them).
+    function strips(s, g, withTabs) {
+      const list = [];
+      const ct = (s.cornerTab && withTabs) ? Math.max(0, s.cornerLen) : 0;
+      const add = (len, name, tl, tr) => list.push({ len, name, tl: tl || 0, tr: tr || 0, bw: len + (tl || 0) + (tr || 0), bh: g.f + g.hc });
+      add(g.wl, 'W1'); add(g.wl, 'W2');
+      if (g.grip) {
+        const piece = (g.ww - g.gW) / 2;
+        add(piece, 'W3', ct, 0); add(piece, 'W4', 0, ct); add(piece, 'W5', ct, 0); add(piece, 'W6', 0, ct);
+      } else { add(g.ww, 'W3', ct, ct); add(g.ww, 'W4', ct, ct); }
+      return list;
+    }
+
+    // Guillotine-friendly placement: vertical strips are all flush with the right edge (one common column),
+    // horizontal strips sit in aligned rows starting from the left. Positions snap to the edges of what is already placed,
+    // so the paper-cutter can run straight through the sheet.
+    function layoutStrips(g, list) {
+      const GAP = 3, placed = [], missing = [];
+      const obstacles = [{ x: M, y: M, w: g.pw, h: g.pl }];
+      const free = (x, y, w, h) => !obstacles.some(o => x < o.x + o.w + GAP - 0.01 && x + w + GAP > o.x + 0.01 && y < o.y + o.h + GAP - 0.01 && y + h + GAP > o.y + 0.01);
+      const uniq = (arr) => Array.from(new Set(arr.map(v => Math.round(v * 100) / 100))).sort((a, b) => a - b);
+      const find = (w, h, xsPref) => {
+        const ys = uniq([M, ...obstacles.map(o => o.y + o.h + GAP)]);
+        const xs = xsPref || uniq([M, ...obstacles.map(o => o.x + o.w + GAP)]);
+        for (const y of ys) for (const x of xs)
+          if (x >= M - 0.01 && x + w <= SHEET_W - M + 0.01 && y + h <= SHEET_H - M + 0.01 && free(x, y, w, h)) return { x, y };
+        return null;
+      };
+      list.slice().sort((a, b) => b.bw - a.bw).forEach(st => {
+        const hz = find(st.bw, st.bh);
+        const vt = find(st.bh, st.bw, [SHEET_W - M - st.bh]) || find(st.bh, st.bw);
+        let pick = null;
+        if (hz && vt) pick = (vt.y < hz.y - 0.01 || (Math.abs(vt.y - hz.y) < 0.01 && vt.x > hz.x)) ? { ...vt, vertical: true } : { ...hz, vertical: false };
+        else if (hz) pick = { ...hz, vertical: false };
+        else if (vt) pick = { ...vt, vertical: true };
+        if (!pick) { missing.push(st); return; }
+        obstacles.push({ x: pick.x, y: pick.y, w: pick.vertical ? st.bh : st.bw, h: pick.vertical ? st.bw : st.bh });
+        placed.push({ st, ...pick });
+      });
+      return { placed, missing };
+    }
+
+    function svgFor(s) {
+      const g = compute(s);
+      let lay = layoutStrips(g, strips(s, g, true)), tabsDropped = false;
+      if (lay.missing.length && s.cornerTab) {          // not enough room: leave the corner tabs out rather than a strip
+        const alt = layoutStrips(g, strips(s, g, false));
+        if (alt.missing.length <= lay.missing.length) { lay = alt; tabsDropped = true; }
+      }
+      const { placed, missing } = lay;
+      const px = M, py = M;
+      const L = [];
+      const cut = 'fill="none" stroke="#000" stroke-width="0.3"';
+      const fold = 'fill="none" stroke="#000" stroke-width="0.25" stroke-dasharray="2 1.2"';
+      const glue = 'fill="none" stroke="#7a7a7a" stroke-width="0.2" stroke-dasharray="0.6 1"';
+      const txt = 'font-family="Arial, Helvetica, sans-serif" fill="#777"';
+
+      L.push(`<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 ${SHEET_W} ${SHEET_H}" preserveAspectRatio="xMidYMid meet"><rect width="${SHEET_W}" height="${SHEET_H}" fill="#fff"/>`);
+      // plate outline
+      if (s.cutlines) L.push(`<rect x="${px}" y="${py}" width="${g.pw}" height="${g.pl}" ${cut}/>`);
+      if (g.fits) {
+        const wx = px + g.wx, wy = py + g.wy, ww = g.ww, wl = g.wl;
+        let d;
+        if (g.grip) {
+          const gx0 = px + (g.pw - g.gW) / 2, gx1 = gx0 + g.gW;
+          d = `M${wx} ${wy} H${gx0} V${wy - g.gD} H${gx1} V${wy} H${wx + ww} V${wy + wl} H${gx1} V${wy + wl + g.gD} H${gx0} V${wy + wl} H${wx} Z`;
+        } else d = `M${wx} ${wy} H${wx + ww} V${wy + wl} H${wx} Z`;
+        if (s.cutlines) L.push(`<path d="${d}" ${cut}/>`);
+        if (s.guides) {
+          // glue guide: where the flanges sit (outside the window edge)
+          L.push(`<rect x="${wx - g.f}" y="${wy - g.f}" width="${ww + 2 * g.f}" height="${wl + 2 * g.f}" ${glue}/>`);
+          L.push(`<text x="${px + g.pw / 2}" y="${py + g.pl - 4}" font-size="3" text-anchor="middle" ${txt}>${t('p_plate')} ${fmt(g.pw)} × ${fmt(g.pl)} mm</text>`);
+          L.push(`<text x="${wx - g.f + 1}" y="${wy - g.f - 1}" font-size="2.2" ${txt}>${t('p_glue')}</text>`);
+          // where each wall strip goes: label inside the glue zone, next to the window edge
+          const lab = (name, x, y, rot) => L.push(`<text x="${x}" y="${y}" font-size="3.4" font-weight="bold" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" fill="#444"${rot ? ` transform="rotate(-90 ${x} ${y})"` : ''}>${name}</text>`);
+          const mx = wx + ww / 2, my = wy + wl / 2, yTop = wy - g.f / 2 + 1.2, yBot = wy + wl + g.f / 2 + 1.2;
+          lab('W1', wx - g.f / 2 + 1.2, my, true);
+          lab('W2', wx + ww + g.f / 2 + 1.2, my, true);
+          if (g.grip) {
+            const gx0 = px + (g.pw - g.gW) / 2, gx1 = gx0 + g.gW;
+            const cl = (wx + gx0) / 2, cr = (gx1 + wx + ww) / 2;
+            lab('W3', cl, yTop); lab('W4', cr, yTop); lab('W5', cl, yBot); lab('W6', cr, yBot);
+          } else { lab('W3', mx, yTop); lab('W4', mx, yBot); }
+        }
+      }
+      // wall strips (drawn in local coords, then rotated into place)
+      placed.forEach(p => {
+        const { st } = p, f = g.f, hc = g.hc, tl = st.tl, tr = st.tr, len = st.len, bh = st.bh;
+        const c = 3;                                      // chamfer of the tab corners
+        const pts = [[tl, 0], [tl + len, 0]];
+        if (tr > 0) pts.push([tl + len, f + 1], [tl + len + tr - c, f + 1], [tl + len + tr, f + 1 + c], [tl + len + tr, f + hc - 1 - c], [tl + len + tr - c, f + hc - 1], [tl + len, f + hc - 1]);
+        pts.push([tl + len, bh], [tl, bh]);
+        if (tl > 0) pts.push([tl, f + hc - 1], [c, f + hc - 1], [0, f + hc - 1 - c], [0, f + 1 + c], [c, f + 1], [tl, f + 1]);
+        let inner = `<polygon points="${pts.map(q => q.join(',')).join(' ')}" ${cut}/>`;
+        inner += `<line x1="${tl}" y1="${f}" x2="${tl + len}" y2="${f}" ${fold}/>`;
+        if (tl > 0) inner += `<line x1="${tl}" y1="${f + 1}" x2="${tl}" y2="${f + hc - 1}" ${fold}/>`;
+        if (tr > 0) inner += `<line x1="${tl + len}" y1="${f + 1}" x2="${tl + len}" y2="${f + hc - 1}" ${fold}/>`;
+        inner += `<text x="${tl + len / 2}" y="${f + hc / 2 + 1}" font-size="3" text-anchor="middle" ${txt}>${st.name} · ${fmt(st.len)} mm</text>`;
+        const tf = p.vertical ? `translate(${p.x} ${p.y + st.bw}) rotate(-90)` : `translate(${p.x} ${p.y})`;
+        L.push(`<g transform="${tf}">${inner}</g>`);
+      });
+      L.push('</svg>');
+      return { svg: L.join(''), g, missing, tabsDropped };
+    }
+
+    // ---- UI ------------------------------------------------------------------
+    function render() {
+      const s = readState();
+      saveState(s);
+      const { svg, g, missing, tabsDropped } = svgFor(s);
+      document.getElementById('sheet').innerHTML = svg;
+      document.getElementById('printSheet').innerHTML = svg;
+
+      const msgs = [];
+      const W = (c, txt) => msgs.push(`<div class="${c}">${txt}</div>`);
+      if (!g.fits) W('warn', t('m_nofit'));
+      else {
+        if (g.wx < 8) W('warn', t('m_ring_thin').replace('{r}', fmt(g.wx)));
+        if (g.grip && g.wy - g.gD < 8) W('warn', t('m_ring_end').replace('{r}', fmt(g.wy - g.gD)));
+        if (g.f < s.flange - 0.01) W('warn', t('m_flange').replace('{f}', fmt(g.f)));
+        if (s.caseT > s.H + 0.01) W('warn', t('m_case_thick').replace('{c}', fmt(s.caseT)).replace('{h}', fmt(s.H)));
+        else if (s.H - s.caseT > 3) W('warn', t('m_case_loose').replace('{d}', fmt(s.H - s.caseT)));
+        if (tabsDropped) W('warn', t('m_tabs_dropped'));
+        if (missing.length) W('warn', t('m_a4').replace('{n}', missing.length));
+        W('info', t('m_ok').replace('{ww}', fmt(g.ww)).replace('{wl}', fmt(g.wl)).replace('{pw}', fmt(g.pw)).replace('{pl}', fmt(g.pl)).replace('{hc}', fmt(g.hc)));
+      }
+      document.getElementById('msgs').innerHTML = msgs.join('');
+
+      const st = t('steps');
+      renderChoices();
+      document.getElementById('steps').innerHTML = `<b>${t('steps_title')}</b><ol>${st.map(x => `<li>${x}</li>`).join('')}</ol>`;
+    }
+
+
+    // ---- Wizard: box / case / material -------------------------------------------
+    // Same box formats and A4/A3 fitting as the PC Big Box Craft Studio (lid face w x h, wall d, in cm)
+    const PRESETS = { classic: { w: 18.0, h: 23.0, d: 4.0 }, standard: { w: 18.0, h: 23.0, d: 2.7 }, small: { w: 16.3, h: 21.3, d: 2.5 }, smallDeep: { w: 16.3, h: 21.3, d: 2.7 } };
+    const PAPERS = { a4: { w: 21.0, h: 29.6 }, a3: { w: 29.7, h: 41.8 } };
+    const CASES = { double: { w: 125, l: 142, t: 23.9 }, single: { w: 125, l: 142, t: 10.4 } };
+    const MATS = { paper: 0.3, board: 1.0 };
+    const CLEARANCE_CM = 0.3, MIN_WALL_CM = 2.7, BOX_WALL_MM = 1.2, FLOOR_MM = 1.2;
+    const r1 = (x) => Math.round(x * 10) / 10;
+    let boxSel = { preset: 'standard', paper: 'a4' }, wizStep = 1;
+
+    function fitPreset(id, paperKey) {
+      const p = PRESETS[id], pp = PAPERS[paperKey];
+      const targetW = pp.w - 1.0, targetH = (pp.h + 0.1 - 0.4 - 1.1) - 2.0;
+      const dMin = Math.min(p.d, MIN_WALL_CM);
+      let sc = Math.min(1, targetW / (p.w + 2 * p.d), targetH / (p.h + 2 * p.d));
+      let d = p.d * sc;
+      if (d < dMin) { d = dMin; sc = Math.min(1, (targetW - 2 * d) / p.w, (targetH - 2 * d) / p.h); }
+      const lid = { w: r1(p.w * sc), h: r1(p.h * sc) };
+      return { sc, d: r1(d), base: { w: r1(lid.w - CLEARANCE_CM), h: r1(lid.h - CLEARANCE_CM) } };
+    }
+    // inner size of the base in mm (outer size minus the walls of the box)
+    function innerOf(id, paperKey) {
+      const f = fitPreset(id, paperKey);
+      return { w: Math.round(f.base.w * 10 - 2 * BOX_WALL_MM), l: Math.round(f.base.h * 10 - 2 * BOX_WALL_MM), depth: Math.round((f.d * 10 - FLOOR_MM) * 10) / 10, sc: f.sc };
+    }
+    const val = (id) => parseFloat(document.getElementById(id).value);
+    const setVal = (id, v) => { document.getElementById(id).value = v; };
+    const near = (a, b, e = 0.06) => Math.abs(a - b) < e;
+
+    // The inlay is printed on the same paper size as the box (A3 box -> A3 sheet)
+    function applySheet(paperKey) {
+      const a3 = paperKey === 'a3';
+      SHEET_W = a3 ? 297 : 210; SHEET_H = a3 ? 418 : 296;
+      const root = document.documentElement.style;
+      root.setProperty('--pw', SHEET_W + 'mm'); root.setProperty('--ph', SHEET_H + 'mm');
+      document.getElementById('sheet').style.aspectRatio = SHEET_W + ' / ' + SHEET_H;
+      document.getElementById('pageStyle').textContent = `@media print { @page { size: ${a3 ? 'A3' : 'A4'} portrait; margin: 0 !important; } }`;
+    }
+    function applyBox() {
+      applySheet(boxSel.paper);
+      const f = innerOf(boxSel.preset, boxSel.paper);
+      setVal('boxW', f.w); setVal('boxL', f.l);
+      const caseT = val('caseT') || CASES.double.t, tt = val('t') || 1;
+      setVal('H', Math.round(Math.min(f.depth, caseT + 2.9) * 10) / 10);
+      try { localStorage.setItem('prs_inlay_box', JSON.stringify(boxSel)); } catch (e) {}
+      render();
+    }
+    function setBox(id) { boxSel.preset = id; applyBox(); }
+    function setBoxPaper(id) { boxSel.paper = id; applyBox(); }
+    function setCase(id) {
+      const c = CASES[id]; setVal('caseW', c.w); setVal('caseL', c.l); setVal('caseT', c.t);
+      applyBox();
+    }
+    function setMat(id) { setVal('t', MATS[id]); render(); }
+
+    function netSketch(id) {
+      const p = PRESETS[id], W = p.w + 2 * p.d, H = p.h + 2 * p.d, sc = 70 / Math.max(W, H);
+      const w = W * sc, h = H * sc, d = p.d * sc, x0 = (90 - w) / 2, y0 = (80 - h) / 2;
+      return `<svg width="90" height="80" viewBox="0 0 90 80" style="color:#94a3b8"><rect x="${x0}" y="${y0}" width="${w}" height="${h}" fill="none" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+        <rect x="${x0 + d}" y="${y0 + d}" width="${w - 2 * d}" height="${h - 2 * d}" fill="rgba(37,99,235,0.25)" stroke="#2563eb" stroke-width="1.2"/></svg>`;
+    }
+    function caseSketch(id) {
+      const c = CASES[id], th = Math.max(6, c.t * 1.6);
+      return `<svg width="90" height="60" viewBox="0 0 90 60"><rect x="${(90 - 62) / 2}" y="${(60 - th) / 2}" width="62" height="${th}" rx="2" fill="rgba(168,85,247,0.25)" stroke="#a855f7" stroke-width="1.2"/></svg>`;
+    }
+    function choice(on, onclick, svg, name, dim, note) {
+      return `<div class="choice${on ? ' on' : ''}" onclick="${onclick}">${svg || ''}<div class="c-name">${name}</div>${dim ? `<div class="c-dim">${dim}</div>` : ''}${note ? `<div class="c-note">${note}</div>` : ''}</div>`;
+    }
+    function renderChoices() {
+      const bw = val('boxW'), bl = val('boxL');
+      const cur = innerOf(boxSel.preset, boxSel.paper);
+      const boxIsPreset = near(bw, cur.w, 0.6) && near(bl, cur.l, 0.6);
+      document.getElementById('boxCards').innerHTML = Object.keys(PRESETS).map(id => {
+        const p = PRESETS[id];
+        return choice(boxIsPreset && id === boxSel.preset, `setBox('${id}')`, netSketch(id), t('preset_' + id), `${fmt(p.w)} × ${fmt(p.h)} × ${fmt(p.d)} cm`, '');
+      }).join('');
+      document.getElementById('paperCards').innerHTML = Object.keys(PAPERS).map(id => {
+        const f = fitPreset(boxSel.preset, id);
+        return choice(boxIsPreset && id === boxSel.paper, `setBoxPaper('${id}')`, '', id.toUpperCase(), '', f.sc >= 0.995 ? t('paper_orig') : t('paper_scaled').replace('{pct}', Math.round(f.sc * 100)));
+      }).join('');
+      const cw = val('caseW'), cl = val('caseL'), ct = val('caseT');
+      document.getElementById('caseCards').innerHTML = Object.keys(CASES).map(id => {
+        const c = CASES[id];
+        return choice(near(cw, c.w) && near(cl, c.l) && near(ct, c.t), `setCase('${id}')`, caseSketch(id), t('case_' + id), `${fmt(c.w)} × ${fmt(c.l)} × ${fmt(c.t)} mm`, t('case_' + id + '_n'));
+      }).join('');
+      const tv = val('t');
+      document.getElementById('matCards').innerHTML = Object.keys(MATS).map(id =>
+        choice(near(tv, MATS[id], 0.02), `setMat('${id}')`, '', t('mat_' + id), `${fmt(MATS[id])} mm`, t('mat_' + id + '_n'))).join('');
+    }
+    function showStep(n) {
+      wizStep = Math.max(1, Math.min(4, n));
+      for (let i = 1; i <= 4; i++) document.getElementById('step-' + i).classList.toggle('active', i === wizStep);
+      document.getElementById('wizBack').style.visibility = wizStep === 1 ? 'hidden' : 'visible';
+      document.getElementById('wizNext').style.display = wizStep === 4 ? 'none' : '';
+      document.getElementById('wizSteps').innerHTML = [1, 2, 3, 4].map(i =>
+        `<div class="wiz-pill${i === wizStep ? ' active' : (i < wizStep ? ' done' : '')}" onclick="showStep(${i})">${i} · ${t('wiz_' + i)}</div>`).join('');
+    }
+    function wizGo(d) { showStep(wizStep + d); }
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      try { localStorage.setItem('prs_lang', lang); } catch (e) {}
+      document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+      document.getElementById('lang-de').classList.toggle('active', lang === 'de');
+      document.documentElement.lang = lang;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const k = el.getAttribute('data-i18n');
+        const v = i18n[lang][k];
+        if (typeof v === 'string') el.textContent = v;
+      });
+      render();
+      showStep(wizStep);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      writeState(loadState());
+      try { if (!localStorage.getItem(STORE)) applyBox(); } catch (e) {}
+      applySheet(boxSel.paper);
+      try { const sb = JSON.parse(localStorage.getItem('prs_inlay_box') || 'null'); if (sb && PRESETS[sb.preset] && PAPERS[sb.paper]) boxSel = sb; } catch (e) {}
+      try {   // box handed over from the PC Big Box Craft Studio (?box=standard&paper=a4)
+        const q = new URLSearchParams(location.search);
+        if (PRESETS[q.get('box')] && PAPERS[q.get('paper') || 'a4']) { boxSel = { preset: q.get('box'), paper: q.get('paper') || 'a4' }; applyBox(); }
+      } catch (e) {}
+      document.querySelectorAll('.ui-container input, .ui-container select').forEach(el => { if (true) el.addEventListener('input', render); });
+      document.querySelectorAll('.ui-container select').forEach(el => el.addEventListener('change', render));
+      setLanguage(currentLang);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Physical Release Studio — PC Big Box Craft Studio</title>
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: #111726;
+      --border: #1f293d;
+      --hover: #1a2336;
+      --brand: #2563eb;
+      --brand-accent: #a855f7;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px;
+    }
+
+    header {
+      width: 100%;
+      max-width: 1100px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 20px;
+      background: rgba(9, 13, 22, 0.9);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .brand-title { display: flex; align-items: center; gap: 12px; text-decoration: none; color: white; }
+    .brand-title i { font-size: 1.5rem; color: #f97316; }
+    .header-actions { display: flex; align-items: center; gap: 12px; }
+
+    .lang-switcher { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 2px; display: flex; }
+    .lang-btn {
+      background: transparent; border: none; color: var(--text-muted); padding: 4px 10px;
+      font-size: 0.75rem; font-weight: bold; font-family: 'JetBrains Mono', monospace; cursor: pointer; border-radius: 6px;
+    }
+    .lang-btn.active { background: var(--brand); color: white; }
+
+    .btn-index {
+      background: var(--card-bg); color: var(--text); border: 1px solid var(--border); padding: 6px 12px;
+      border-radius: 8px; font-size: 0.8rem; font-weight: bold; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .btn-index:hover { border-color: var(--brand); }
+
+    .ui-container {
+      width: 100%;
+      max-width: 1100px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      margin-bottom: 24px;
+    }
+
+    .header-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 4px; }
+    .sub-title { font-size: 0.8rem; font-family: 'JetBrains Mono', monospace; color: var(--text-muted); margin-bottom: 12px; }
+    .size-note {
+      font-size: 0.75rem; color: #fbbf24; background: rgba(245, 158, 11, 0.10);
+      border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 8px; padding: 8px 12px; margin-bottom: 16px;
+    }
+
+    .part-section-title {
+      font-size: 0.95rem; font-weight: 700; color: var(--brand); margin: 16px 0 10px 0;
+      border-bottom: 1px solid var(--border); padding-bottom: 6px; display: flex; align-items: center; gap: 8px;
+    }
+    .part-section-title.bottom { color: var(--brand-accent); }
+
+    .upload-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; margin-bottom: 20px; }
+    .upload-card {
+      background: var(--bg); border: 2px dashed var(--border); border-radius: 12px; padding: 12px;
+      cursor: pointer; transition: border-color 0.2s;
+    }
+    .upload-card.active { border-color: var(--brand); }
+    .upload-card label { display: block; font-weight: bold; font-size: 0.8rem; margin-bottom: 6px; cursor: pointer; }
+    .upload-card input[type="file"] { width: 100%; font-size: 0.7rem; color: var(--text-muted); }
+
+    /* DPI Quality Scale */
+    .dpi-container { display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+    .dpi-badge { padding: 5px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: bold; text-align: center; margin-bottom: 6px; }
+    .dpi-badge.green { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .dpi-badge.yellow { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .dpi-badge.red { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+    .dpi-scale-wrapper { position: relative; width: 100%; background: #1f293d; height: 8px; border-radius: 4px; overflow: hidden; display: flex; }
+    .scale-segment { height: 100%; }
+    .scale-red { width: 37.5%; background: #ef4444; }
+    .scale-yellow { width: 37.5%; background: #f59e0b; }
+    .scale-green { width: 25%; background: #10b981; }
+    .scale-marker { position: absolute; top: 0; bottom: 0; width: 4px; background: #fff; transform: translateX(-50%); transition: left 0.3s ease; }
+
+    .tabs {
+      display: flex; gap: 6px; margin-bottom: 16px; background: var(--bg); padding: 4px;
+      border-radius: 10px; border: 1px solid var(--border); overflow-x: auto;
+    }
+    .tab-btn {
+      flex: 1; min-width: 92px; padding: 8px 10px; border: none; background: transparent; color: var(--text-muted);
+      border-radius: 8px; font-weight: bold; font-size: 0.75rem; cursor: pointer; white-space: nowrap;
+    }
+    .tab-btn.active { background: var(--brand); color: white; }
+
+    .controls-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;
+      background: var(--bg); padding: 16px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 20px;
+    }
+    .control-group label {
+      font-size: 0.75rem; font-weight: bold; color: var(--text-muted); text-transform: uppercase;
+      letter-spacing: 0.05em; display: block; margin-bottom: 8px;
+    }
+    .btn-row { display: flex; gap: 4px; flex-wrap: wrap; }
+    .btn-small {
+      padding: 6px 10px; font-size: 0.75rem; font-family: 'JetBrains Mono', monospace; border-radius: 6px;
+      border: 1px solid var(--border); background: var(--card-bg); color: var(--text); cursor: pointer;
+    }
+    .btn-small:hover { border-color: var(--brand); }
+    .btn-small.on { background: var(--brand); color: #fff; border-color: var(--brand); }
+
+    .nudge-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; width: 110px; margin: 0 auto; }
+    .nudge-grid button {
+      padding: 6px; font-size: 0.75rem; background: var(--card-bg); border: 1px solid var(--border);
+      color: white; border-radius: 6px; cursor: pointer;
+    }
+    .nudge-grid button:hover { border-color: var(--brand); }
+
+    .btn-print { width: 100%; background: #10b981; color: white; padding: 14px; border: none; border-radius: 10px; font-size: 1rem; font-weight: bold; cursor: pointer; }
+    .btn-print:hover { background: #059669; }
+
+    /* ---- Preview: exact proportions, 20 px per cm (content-box via outline, so clientWidth/clientHeight are exact) ---- */
+    .preview-wrapper {
+      display: flex; gap: 32px; justify-content: center; align-items: flex-start; flex-wrap: wrap;
+      width: 100%; max-width: 1100px; background: var(--card-bg); border: 1px solid var(--border);
+      padding: 32px 16px; border-radius: 16px;
+    }
+    .box-net { display: grid; gap: 0; justify-content: center; align-content: center; }
+    .frame-container {
+      position: relative; background: var(--bg); outline: 1px solid var(--border); outline-offset: -1px;
+      overflow: hidden; cursor: pointer; touch-action: none;
+    }
+    .frame-container.active-target { outline: 2px solid var(--brand); outline-offset: -2px; z-index: 2; box-shadow: 0 0 12px rgba(37, 99, 235, 0.45); }
+    .cover-img { position: absolute; top: 50%; left: 50%; transform-origin: center center; pointer-events: none; max-width: none; max-height: none; }
+    .placeholder {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 0.65rem;
+      color: var(--text-muted); text-align: center; pointer-events: none; white-space: nowrap;
+    }
+    /* corner flaps (not uploadable): belong to the left / right wall, folded inside and glued */
+    .corner-flap {
+      outline: 1px dashed var(--border); outline-offset: -1px;
+      background: repeating-linear-gradient(45deg, transparent 0 4px, rgba(148, 163, 184, 0.14) 4px 5px);
+    }
+    .placeholder.vert { writing-mode: vertical-rl; letter-spacing: 0.1em; }
+
+
+    /* ---- Wizard ---- */
+    .wiz-steps { display: flex; gap: 6px; margin-bottom: 18px; }
+    .wiz-pill { flex: 1; text-align: center; padding: 8px 6px; border-radius: 10px; background: var(--bg); border: 1px solid var(--border); color: var(--text-muted); font-size: 0.75rem; font-weight: bold; cursor: pointer; }
+    .wiz-pill.active { background: var(--brand); border-color: var(--brand); color: #fff; }
+    .wiz-pill.done { color: var(--text); border-color: var(--brand); }
+    .wiz-step { display: none; }
+    .wiz-step.active { display: block; }
+    .wiz-h { font-size: 1.1rem; font-weight: 800; margin-bottom: 4px; }
+    .wiz-s { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 14px; }
+    .choice-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; margin-bottom: 14px; }
+    .choice { background: var(--bg); border: 2px solid var(--border); border-radius: 12px; padding: 12px; cursor: pointer; text-align: center; }
+    .choice:hover { border-color: var(--text-muted); }
+    .choice.on { border-color: var(--brand); box-shadow: 0 0 0 1px var(--brand) inset; }
+    .choice svg { display: block; margin: 0 auto 8px; max-width: 100%; }
+    .choice .c-name { font-weight: 800; font-size: 0.9rem; }
+    .choice .c-dim { font-size: 0.72rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; margin-top: 2px; }
+    .choice .c-note { font-size: 0.7rem; color: var(--text-muted); margin-top: 6px; }
+    .size-note.ok { color: #34d399; background: rgba(16, 185, 129, 0.10); border-color: rgba(16, 185, 129, 0.3); }
+    .wiz-nav { display: flex; justify-content: space-between; gap: 10px; margin-top: 18px; }
+    .wiz-nav .btn-small { padding: 10px 22px; font-size: 0.85rem; }
+    .inlay-link { display: block; text-align: center; font-size: 0.8rem; color: var(--brand); margin-bottom: 12px; text-decoration: none; }
+    .inlay-link:hover { text-decoration: underline; }
+    details.adv { margin: 14px 0; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; }
+    details.adv summary { cursor: pointer; font-size: 0.8rem; font-weight: bold; color: var(--text-muted); }
+    .adv-body { margin-top: 10px; display: flex; flex-direction: column; }
+    #wizNav[hidden], .wiz-nav[hidden] { display: none; }
+
+    /* ---- Print ---- */
+    #printScreen {
+      display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: white; z-index: 9999; padding: 10px; overflow: auto; color: black;
+    }
+    .print-pages { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+    .print-page { position: relative; flex: none; width: var(--pw, 210mm); height: var(--ph, 296mm); background: #fff; box-shadow: 0 2px 12px rgba(0,0,0,0.35); overflow: hidden; }
+    .print-page[hidden] { display: none !important; }
+    .print-page canvas { position: absolute; left: 0; top: 0; width: var(--pw, 210mm); height: var(--ph, 296mm); display: block; }
+    @media screen { .print-pages { zoom: 0.6; } }
+
+    @media print {
+      @page { size: A4 portrait; margin: 0mm !important; }
+      html, body {
+        display: block !important; width: var(--pw, 210mm) !important; height: auto !important; min-height: 0 !important;
+        margin: 0 !important; padding: 0 !important; overflow: visible !important; background: white !important;
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+      }
+      header, .ui-container, .preview-wrapper, .no-print { display: none !important; }
+      #printScreen {
+        display: block !important; position: static !important; width: var(--pw, 210mm) !important; height: auto !important;
+        margin: 0 !important; padding: 0 !important; overflow: visible !important; background: white !important;
+      }
+      .print-pages { display: block !important; zoom: 1 !important; }
+      .print-page { box-shadow: none !important; margin: 0 !important; break-after: page; page-break-after: always; }
+      .print-page.is-last { break-after: auto; page-break-after: auto; }
+    }
+  </style>
+  <style id="pageStyle"></style>
+</head>
+<body>
+
+  <header>
+    <a href="../../index.html" class="btn-index">
+      <i class="fa-solid fa-arrow-left"></i>
+      <span data-i18n="nav_index">Back to Overview</span>
+    </a>
+
+    <a href="#" class="brand-title">
+      <i class="fa-solid fa-box-open"></i>
+      <div>
+        <div style="font-weight: 800; font-size: 1rem;">PHYSICAL RELEASE</div>
+        <div style="font-size: 0.7rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">PC Big Box Craft Studio <p>&copy; 2026 KainCo. All rights reserved.</p></div>
+      </div>
+    </a>
+
+    <div class="header-actions">
+      <div class="lang-switcher">
+        <button id="lang-en" onclick="setLanguage('en')" class="lang-btn active">EN</button>
+        <button id="lang-de" onclick="setLanguage('de')" class="lang-btn">DE</button>
+      </div>
+
+      <a href="https://paypal.me/kainco" target="_blank" rel="noopener noreferrer"
+         style="background: #0070ba; color: white; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
+        <i class="fa-brands fa-paypal"></i> <span data-i18n="btn_donation">Donation</span>
+      </a>
+      <a href="https://ko-fi.com/kainco" target="_blank" rel="noopener noreferrer"
+         style="background: #ff5e5b; color: white; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
+        <i class="fa-solid fa-mug-hot"></i> Support
+      </a>
+    </div>
+  </header>
+
+  <div class="ui-container">
+    <div class="header-title" data-i18n="studio_title">PC Big Box Craft Studio</div>
+    <div class="sub-title" data-i18n="studio_sub">One image per segment: main area + the four spines (lid and base).</div>
+
+    <div class="wiz-steps" id="wizSteps"></div>
+
+    <!-- Step 1: box -->
+    <div class="wiz-step" id="step-1">
+      <div class="wiz-h" data-i18n="wiz_h1">Which box do you want to build?</div>
+      <div class="wiz-s" data-i18n="wiz_s1"></div>
+      <div class="choice-grid" id="presetCards"></div>
+    </div>
+
+    <!-- Step 2: paper -->
+    <div class="wiz-step" id="step-2">
+      <div class="wiz-h" data-i18n="wiz_h2">Which paper do you print on?</div>
+      <div class="wiz-s" data-i18n="wiz_s2"></div>
+      <div class="choice-grid" id="paperCards"></div>
+      <div class="size-note ok" id="sumNote"></div>
+    </div>
+
+    <!-- Step 3: images -->
+    <div class="wiz-step" id="step-3">
+      <div class="wiz-h" data-i18n="wiz_h3">Add your images</div>
+      <div class="wiz-s" data-i18n="wiz_s3"></div>
+    <div class="part-section-title"><i class="fa-solid fa-square-caret-up"></i> <span data-i18n="sec_top">Top part (lid / box outside)</span></div>
+    <div class="upload-cards" id="cards-top"></div>
+
+    <div class="part-section-title bottom"><i class="fa-solid fa-square-caret-down"></i> <span data-i18n="sec_bottom">Bottom part (base / inner tray)</span></div>
+    <div class="upload-cards" id="cards-bottom"></div>
+
+      <div class="tabs" id="tabBar"></div>
+    <div class="controls-grid">
+      <!-- Rotation & Flip -->
+      <div class="control-group">
+        <label data-i18n="lbl_rotation">Rotation & Flip</label>
+        <div class="btn-row">
+          <button class="btn-small" onclick="rotate(0)">0°</button>
+          <button class="btn-small" onclick="rotate(-90)">-90°</button>
+          <button class="btn-small" onclick="rotate(90)">+90°</button>
+          <button class="btn-small" onclick="rotate(180)">180°</button>
+          <button class="btn-small" onclick="toggleFlip()">↔️ Flip</button>
+        </div>
+      </div>
+
+      <!-- Granular Zoom -->
+      <div class="control-group">
+        <label for="zoomInput" data-i18n="lbl_zoom">Granular Zoom (%)</label>
+        <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 6px;">
+          <input type="range" id="zoomSlider" min="10" max="300" step="0.1" value="100" style="flex: 1;" oninput="updateZoom(this.value)">
+          <input type="number" id="zoomInput" min="10" max="300" step="0.1" value="100" style="width: 60px; padding: 4px; background: var(--bg); border: 1px solid var(--border); color: white; border-radius: 4px; text-align: center; font-family: 'JetBrains Mono';" oninput="updateZoom(this.value)">
+        </div>
+        <div class="btn-row">
+          <button class="btn-small" style="flex: 1;" onclick="stepZoom(-1)">-1%</button>
+          <button class="btn-small" style="flex: 1;" onclick="stepZoom(-0.1)">-0.1%</button>
+          <button class="btn-small" style="flex: 1;" onclick="stepZoom(0.1)">+0.1%</button>
+          <button class="btn-small" style="flex: 1;" onclick="stepZoom(1)">+1%</button>
+        </div>
+      </div>
+
+      <!-- Position Nudge Pad -->
+      <div class="control-group">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <label style="margin: 0;" data-i18n="lbl_nudge">Nudge Position</label>
+          <div class="btn-row" style="gap: 2px;">
+            <button id="step-1" class="btn-small on" style="padding: 2px 6px;" onclick="setNudgeStep(1)">1px</button>
+            <button id="step-5" class="btn-small" style="padding: 2px 6px;" onclick="setNudgeStep(5)">5px</button>
+            <button id="step-10" class="btn-small" style="padding: 2px 6px;" onclick="setNudgeStep(10)">10px</button>
+          </div>
+        </div>
+        <div class="nudge-grid">
+          <div></div>
+          <button onclick="nudge(0, -1)"><i class="fa-solid fa-arrow-up"></i></button>
+          <div></div>
+          <button onclick="nudge(-1, 0)"><i class="fa-solid fa-arrow-left"></i></button>
+          <button style="color: var(--brand); font-weight: bold;" onclick="resetPos()">•</button>
+          <button onclick="nudge(1, 0)"><i class="fa-solid fa-arrow-right"></i></button>
+          <div></div>
+          <button onclick="nudge(0, 1)"><i class="fa-solid fa-arrow-down"></i></button>
+          <div></div>
+        </div>
+      </div>
+
+      <!-- Alignment & Options -->
+      <div class="control-group">
+        <label data-i18n="lbl_alignment">Alignment & Print</label>
+        <div class="btn-row" style="margin-bottom: 8px;">
+          <button class="btn-small" style="flex: 1;" onclick="fitImage()" data-i18n="btn_fit">Fit</button>
+          <button class="btn-small" style="flex: 1;" onclick="resetTransforms()" data-i18n="btn_reset">Reset</button>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <!-- Step 4: print -->
+    <div class="wiz-step" id="step-4">
+      <div class="wiz-h" data-i18n="wiz_h4">Ready to print</div>
+      <div class="wiz-s" data-i18n="wiz_s4"></div>
+      <div class="size-note ok" id="sumNote2"></div>
+      <details class="adv">
+        <summary data-i18n="adv_title">Advanced options</summary>
+        <div class="adv-body">
+        <label style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; cursor: pointer; text-transform: none; letter-spacing: 0;">
+          <input type="checkbox" id="showGuidelines" checked>
+          <span data-i18n="opt_cut_lines">Print cut & fold lines</span>
+        </label>
+        <label style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; cursor: pointer; text-transform: none; letter-spacing: 0; margin-top: 6px;">
+          <input type="checkbox" id="rimTabs" checked onchange="updateSizeNote()">
+          <span data-i18n="opt_rim_tabs">Reinforcement tabs on the top / bottom rim (up to 1.5 cm)</span>
+        </label>
+        <label style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; cursor: pointer; text-transform: none; letter-spacing: 0; margin-top: 6px;">
+          <input type="checkbox" id="sideTabs" checked>
+          <span data-i18n="opt_side_tabs">Side tabs</span>
+        </label>
+        <label style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; cursor: pointer; text-transform: none; letter-spacing: 0; margin-top: 6px;">
+          <input type="checkbox" id="cornerTabs" checked onchange="updateSizeNote()">
+          <span data-i18n="opt_corner_tabs">Extra tabs over the corner squares (double hold)</span>
+        </label>
+        <label style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; text-transform: none; letter-spacing: 0; margin-top: 6px;">
+          <span data-i18n="opt_fold_mode">Fold lines on the artwork</span>
+          <select id="foldMode">
+            <option value="soft" data-i18n="fold_soft">Subtle</option>
+            <option value="off" data-i18n="fold_off">Off</option>
+            <option value="full" data-i18n="fold_full">Full</option>
+          </select>
+        </label>
+        </div>
+      </details>
+      <a class="inlay-link" id="inlayLink" href="bigbox-inlay.html" target="_blank" data-i18n="btn_inlay">CD case holder (inlay) for this box →</a>
+    <button class="btn-print" onclick="preparePrint()" data-i18n="btn_print">🖨️ Generate cut-out sheets & print</button>
+    </div>
+
+    <div class="wiz-nav">
+      <button class="btn-small" id="wizBack" onclick="wizGo(-1)" data-i18n="btn_back">Back</button>
+      <button class="btn-small on" id="wizNext" onclick="wizGo(1)" data-i18n="btn_next">Next</button>
+    </div>
+  </div>
+
+  <div class="preview-wrapper" id="previewWrap">
+    <div style="text-align: center;">
+      <div style="font-size: 0.85rem; font-weight: bold; margin-bottom: 10px; color: var(--brand);" data-i18n="prev_top">Layout preview: top part (lid)</div>
+      <div class="box-net" id="net-top"></div>
+    </div>
+    <div style="text-align: center;">
+      <div style="font-size: 0.85rem; font-weight: bold; margin-bottom: 10px; color: var(--brand-accent);" data-i18n="prev_bottom">Layout preview: bottom part (base)</div>
+      <div class="box-net" id="net-bottom"></div>
+    </div>
+  </div>
+
+  <!-- Print window -->
+  <div id="printScreen">
+    <div style="padding: 10px; text-align: center; background: #f3f4f6; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap;" class="no-print">
+      <button onclick="window.print()" style="padding: 10px 20px; background: #10b981; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;" data-i18n="btn_print_now">Print Now / Save PDF</button>
+
+      <a href="https://paypal.me/kainco" target="_blank" rel="noopener noreferrer"
+         style="background: #0070ba; color: white; padding: 8px 14px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
+        <i class="fa-brands fa-paypal"></i> <span data-i18n="btn_donation">Donation</span>
+      </a>
+      <a href="https://ko-fi.com/kainco" target="_blank" rel="noopener noreferrer"
+         style="background: #ff5e5b; color: white; padding: 8px 14px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
+        <i class="fa-solid fa-mug-hot"></i> Support
+      </a>
+
+      <button onclick="closePrint()" style="padding: 10px 20px; background: #6b7280; color: white; border: none; border-radius: 6px; cursor: pointer;" data-i18n="btn_close">Close</button>
+      <div data-i18n="print_hint" style="flex-basis: 100%; font-size: 0.75rem; color: #4b5563;"></div>
+      <div id="printWarn" style="flex-basis: 100%; font-size: 0.75rem; color: #b45309; display: none;"></div>
+    </div>
+    <div class="print-pages">
+      <div class="print-page" id="page-top" hidden><canvas id="printCanvasTop" class="print-canvas"></canvas></div>
+      <div class="print-page" id="page-bottom" hidden><canvas id="printCanvasBottom" class="print-canvas"></canvas></div>
+    </div>
+  </div>
+
+  <script>
+    const i18n = {
+      en: {
+        wiz_1: "Box", wiz_2: "Paper", wiz_3: "Images", wiz_4: "Print",
+        wiz_h1: "Which box do you want to build?", wiz_s1: "Pick the closest format. The size shown is lid face × height × wall thickness of the real box.",
+        wiz_h2: "Which paper do you print on?", wiz_s2: "A4 fits almost every home printer: the box is scaled down proportionally, so your covers fit 1:1. On A3 the box is printed in original size.",
+        wiz_h3: "Add your images", wiz_s3: "One image per segment. Front and back keep the proportions of the box, so existing covers fit 1:1.",
+        wiz_h4: "Ready to print", wiz_s4: "You need: 1 mm cardboard, paper (150–200 g) and glue. Print at 100 %, margins “None”, no borderless printing.",
+        btn_inlay: "CD case holder (inlay) for this box →", adv_title: "Advanced options", btn_back: "← Back", btn_next: "Next →",
+        preset_classic: "Big Box Classic", preset_classic_n: "thick box, deep walls",
+        preset_standard: "Big Box Standard", preset_standard_n: "flat box, the common size",
+        preset_small: "Small Box", preset_small_n: "compact format",
+        preset_smallDeep: "Small Box Deep", preset_smallDeep_n: "compact, 2 mm deeper – more room for a double case",
+        paper_orig: "original size (100 %)", paper_scaled: "scaled to {pct} %",
+        paper_a4_n: "fits almost every home printer", paper_a3_n: "needs an A3 printer",
+        sum: "Lid {lw} × {lh} cm · base {bw} × {bh} cm · wall {d} cm · scale {pct} %",
+        nav_index: "Back to Overview",
+        studio_title: "PC Big Box Craft Studio",
+        studio_sub: "Print-and-build templates for a physical PC big box.",
+        sec_top: "Top part (lid / box outside)",
+        sec_bottom: "Bottom part (base / inner tray)",
+        seg_top_center: "📷 Lid front",
+        seg_top_spineTop: "📷 Spine top",
+        seg_top_spineBottom: "📷 Spine bottom",
+        seg_top_spineLeft: "📷 Spine left",
+        seg_top_spineRight: "📷 Spine right",
+        seg_bottom_center: "📷 Base back",
+        seg_bottom_spineTop: "📷 Edge top",
+        seg_bottom_spineBottom: "📷 Edge bottom",
+        seg_bottom_spineLeft: "📷 Edge left",
+        seg_bottom_spineRight: "📷 Edge right",
+        short_center: "Front/Back", short_spineTop: "Top", short_spineBottom: "Bottom", short_spineLeft: "Left", short_spineRight: "Right",
+        ph_top_center: "Lid front", ph_top_spineTop: "Spine top", ph_top_spineBottom: "Spine bottom", ph_top_spineLeft: "Spine L", ph_top_spineRight: "Spine R",
+        ph_bottom_center: "Base back", ph_bottom_spineTop: "Edge top", ph_bottom_spineBottom: "Edge bottom", ph_bottom_spineLeft: "Edge L", ph_bottom_spineRight: "Edge R",
+        lbl_rotation: "Rotation & Flip",
+        lbl_zoom: "Granular Zoom (%)",
+        lbl_nudge: "Nudge Position",
+        lbl_alignment: "Alignment & Print",
+        btn_fit: "Fit",
+        btn_reset: "Reset",
+        btn_donation: "Donation",
+        opt_cut_lines: "Print cut & fold lines",
+        opt_safe: "Edge-safe printing: lid and base scaled down proportionally (same cover aspect ratio, covers fit 1:1) so nothing lands in the printer's non-printable edge",
+        opt_fit_a4: "Scale both parts proportionally into the printable area of A4 (~2 %)",
+        opt_fold_mode: "Fold lines on the artwork",
+        opt_side_tabs: "Side tabs in the white paper margin (fold over the board edge, ~4–5 mm)",
+        opt_wall: "Side wall height", wall_25: "2.5 cm (original)", wall_27: "2.7 cm (more room for a double case)",
+        fold_soft: "Subtle", fold_off: "Off", fold_full: "Full",
+        opt_corner_tabs: "Extra tabs over the corner squares (double hold, fold over the folded corner)",
+        opt_rim_tabs: "Reinforcement tabs on the top / bottom rim (up to 1.5 cm, uses the spare A4 height)",
+        btn_print: "🖨️ Generate cut-out sheets & print",
+        btn_print_now: "Print Now / Save PDF",
+        btn_close: "Close",
+        prev_top: "Layout preview: top part (lid)",
+        prev_bottom: "Layout preview: bottom part (base)",
+        print_hint: "Chosen paper size, portrait, scale 100 %, margins \"None\", no borderless printing. Cut along the solid lines (incl. the 4 short cuts at the corners), fold along the dashed lines. Fold the corner squares inwards and glue them to the inside of the top / bottom wall. Fold the rim tabs inwards as well and glue them flat – this hides the cut edge and stiffens the rim. At the corners: fold the square in first, then fold its extra tab over it.",
+        warn_clip: "⚠ The top part is {w} cm wide, A4 only 21.0 cm: about {mm} mm of the left and right spine flaps are cut off when printing.",
+        fit_note: "Lid and base scaled to {pct} % so the net (incl. tabs) stays inside the printable area of A4.",
+        warn_clip_print: "⚠ {part}: net {w} cm is wider than A4 (21.0 cm) – {mm} mm per side are cut off.",
+        part_top: "Top part", part_bottom: "Bottom part",
+        alert_none: "Please select at least one image!",
+        dpi_excellent: "Excellent", dpi_good: "Good", dpi_low: "Low quality"
+      },
+      de: {
+        wiz_1: "Box", wiz_2: "Papier", wiz_3: "Bilder", wiz_4: "Drucken",
+        wiz_h1: "Welche Box möchtest du bauen?", wiz_s1: "Wähle das nächstliegende Format. Die Maße sind Deckelfläche × Höhe × Wandstärke der echten Box.",
+        wiz_h2: "Auf welchem Papier druckst du?", wiz_s2: "A4 passt auf fast jeden Heimdrucker: Die Box wird proportional verkleinert, deine Covers passen also 1:1. Auf A3 wird die Box in Originalgröße gedruckt.",
+        wiz_h3: "Bilder hinzufügen", wiz_s3: "Ein Bild pro Segment. Front und Rückseite behalten die Proportionen der Box, bestehende Covers passen also 1:1.",
+        wiz_h4: "Bereit zum Drucken", wiz_s4: "Du brauchst: 1 mm Pappe, Papier (150–200 g) und Kleber. Druck mit 100 %, Ränder „Keine“, nicht randlos drucken.",
+        btn_inlay: "CD-Halter (Inlay) für diese Box →", adv_title: "Erweiterte Optionen", btn_back: "← Zurück", btn_next: "Weiter →",
+        preset_classic: "Big Box Klassisch", preset_classic_n: "dicke Box, tiefe Wände",
+        preset_standard: "Big Box Standard", preset_standard_n: "flache Box, das gängige Maß",
+        preset_small: "Small Box", preset_small_n: "kompaktes Format",
+        preset_smallDeep: "Small Box Tief", preset_smallDeep_n: "kompakt, 2 mm tiefer – mehr Platz fürs Doppelcase",
+        paper_orig: "Originalgröße (100 %)", paper_scaled: "auf {pct} % verkleinert",
+        paper_a4_n: "passt auf fast jeden Heimdrucker", paper_a3_n: "braucht einen A3-Drucker",
+        sum: "Deckel {lw} × {lh} cm · Boden {bw} × {bh} cm · Wand {d} cm · Maßstab {pct} %",
+        nav_index: "Zurück zur Übersicht",
+        studio_title: "PC Big Box Craft Studio",
+        studio_sub: "Druck- und Bastelvorlagen für eine physische PC-Big-Box.",
+        sec_top: "Oberteil (Deckel / Box-Außenseite)",
+        sec_bottom: "Unterteil (Boden / innerer Schuber)",
+        seg_top_center: "📷 Deckel Front",
+        seg_top_spineTop: "📷 Spine Oben",
+        seg_top_spineBottom: "📷 Spine Unten",
+        seg_top_spineLeft: "📷 Spine Links",
+        seg_top_spineRight: "📷 Spine Rechts",
+        seg_bottom_center: "📷 Boden Back",
+        seg_bottom_spineTop: "📷 Rand Oben",
+        seg_bottom_spineBottom: "📷 Rand Unten",
+        seg_bottom_spineLeft: "📷 Rand Links",
+        seg_bottom_spineRight: "📷 Rand Rechts",
+        short_center: "Front/Back", short_spineTop: "Oben", short_spineBottom: "Unten", short_spineLeft: "Links", short_spineRight: "Rechts",
+        ph_top_center: "Deckel Front", ph_top_spineTop: "Spine Oben", ph_top_spineBottom: "Spine Unten", ph_top_spineLeft: "Spine L", ph_top_spineRight: "Spine R",
+        ph_bottom_center: "Boden Back", ph_bottom_spineTop: "Rand Oben", ph_bottom_spineBottom: "Rand Unten", ph_bottom_spineLeft: "Rand L", ph_bottom_spineRight: "Rand R",
+        lbl_rotation: "Drehung & Spiegeln",
+        lbl_zoom: "Granularer Zoom (%)",
+        lbl_nudge: "Position verschieben",
+        lbl_alignment: "Ausrichtung & Druck",
+        btn_fit: "Einpassen",
+        btn_reset: "Zurücksetzen",
+        btn_donation: "Spende",
+        opt_cut_lines: "Schnitt- & Faltlinien drucken",
+        opt_safe: "Randsicher drucken: Deckel und Boden proportional verkleinert (gleiches Seitenverhältnis, Covers passen 1:1), damit nichts im nicht bedruckbaren Druckerrand landet",
+        opt_fit_a4: "Beide Teile prozentual in den bedruckbaren A4-Bereich verkleinern (ca. 2 %)",
+        opt_fold_mode: "Falzlinien im Motiv",
+        opt_side_tabs: "Seitenlaschen im weißen Papierrand (über die Pappkante falten, ca. 4–5 mm)",
+        opt_wall: "Seitenwand-Höhe", wall_25: "2,5 cm (Original)", wall_27: "2,7 cm (mehr Platz fürs Doppelcase)",
+        fold_soft: "Dezent", fold_off: "Aus", fold_full: "Voll",
+        opt_corner_tabs: "Zusatzlaschen über den Eckquadraten (doppelter Halt, über die eingeschlagene Ecke falten)",
+        opt_rim_tabs: "Verstärkungslaschen am oberen / unteren Rand (bis 1,5 cm, nutzt die freie A4-Höhe)",
+        btn_print: "🖨️ Bastelbögen generieren & drucken",
+        btn_print_now: "Jetzt drucken / Als PDF speichern",
+        btn_close: "Schließen",
+        prev_top: "Layout-Vorschau: Oberteil (Deckel)",
+        prev_bottom: "Layout-Vorschau: Unterteil (Boden)",
+        print_hint: "Gewähltes Papierformat, hochkant, Skalierung 100 %, Ränder „Keine“, nicht randlos drucken. Entlang der durchgezogenen Linien schneiden (auch die 4 kurzen Schnitte an den Ecken), an den gestrichelten falten. Eckquadrate nach innen einschlagen und innen an die obere / untere Wand kleben. Die Laschen am Rand ebenfalls nach innen falten und flach festkleben – das verdeckt die Schnittkante und versteift den Rand. An den Ecken: erst das Quadrat einschlagen, dann dessen Zusatzlasche darüber falten.",
+        warn_clip: "⚠ Das Oberteil ist {w} cm breit, A4 nur 21,0 cm: Beim Druck werden links und rechts ca. {mm} mm der Spine-Laschen abgeschnitten.",
+        fit_note: "Deckel und Boden auf {pct} % verkleinert, damit das Netz (mit Laschen) im bedruckbaren A4-Bereich bleibt.",
+        warn_clip_print: "⚠ {part}: Netz {w} cm ist breiter als A4 (21,0 cm) – pro Seite gehen {mm} mm verloren.",
+        part_top: "Oberteil", part_bottom: "Unterteil",
+        alert_none: "Bitte mindestens ein Bild auswählen!",
+        dpi_excellent: "Ausgezeichnet", dpi_good: "Gut", dpi_low: "Niedrige Qualität"
+      }
+    };
+
+    let currentLang = localStorage.getItem('prs_lang') || 'en';
+    const t = (k) => (i18n[currentLang] && i18n[currentLang][k]) || i18n.en[k] || k;
+    const fmtNum = (n) => (currentLang === 'de' ? String(n).replace('.', ',') : String(n));
+
+    // ---- Geometry (cm) -------------------------------------------------------
+    let SPINE = 2.5;                                 // wall height (cm) – set by the chosen box
+    const PARTS = { top: { w: 15.0, h: 19.6 }, bottom: { w: 14.7, h: 19.3 } };
+    const POS = ['center', 'spineTop', 'spineBottom', 'spineLeft', 'spineRight'];
+    const keys = ['top', 'bottom'].flatMap(p => POS.map(s => `${p}_${s}`));
+    const PX_PER_CM = 20;                            // preview scale
+    const TAB_CM = 1.5, SAFE_MARGIN_SIDE_CM = 0.45, MARGIN_TOP_CM = 0.4, MARGIN_BOTTOM_CM = 1.1;   // TAB_CM: rim reinforcement tab on the top / bottom wall (uses the spare height)
+    const CLEARANCE_CM = 0.3;                        // base is 3 mm smaller than the lid (about 0.25 mm air per side with 1 mm board + paper)
+    const MIN_WALL_CM = 2.7;                         // a double jewel case (2.4 cm) needs at least this wall height
+
+    // Boxes: lid face width x height and wall thickness of the real box (cm)
+    const PRESETS = {
+      classic:  { w: 18.0, h: 23.0, d: 4.0 },
+      standard: { w: 18.0, h: 23.0, d: 2.7 },
+      small:    { w: 16.3, h: 21.3, d: 2.5 },
+      smallDeep:{ w: 16.3, h: 21.3, d: 2.7 }
+    };
+    const PAPERS = { a4: { w: 21.0, h: 29.6, mmW: 210, mmH: 296, css: 'A4' }, a3: { w: 29.7, h: 41.8, mmW: 297, mmH: 418, css: 'A3' } };
+    let presetId = 'standard', paperId = 'a4';
+    let PAGE_W_CM = 21.0, PAGE_H_CM = 29.6;
+    const r1 = (x) => Math.round(x * 10) / 10;
+
+    // Fit a box onto a paper size: faces keep the aspect ratio of the real box (covers fit 1:1);
+    // the wall keeps at least MIN_WALL_CM (or the real wall if lower) so a double case still fits.
+    function fitPreset(id, paperKey) {
+      const p = PRESETS[id], pp = PAPERS[paperKey];
+      const targetW = pp.w - 1.0;                                          // ~5 mm white on each side
+      const targetH = (pp.h + 0.1 - MARGIN_TOP_CM - MARGIN_BOTTOM_CM) - 2.0;   // leaves room for the rim tabs
+      const dMin = Math.min(p.d, MIN_WALL_CM);
+      let s = Math.min(1, targetW / (p.w + 2 * p.d), targetH / (p.h + 2 * p.d));
+      let d = p.d * s;
+      if (d < dMin) { d = dMin; s = Math.min(1, (targetW - 2 * d) / p.w, (targetH - 2 * d) / p.h); }
+      const lid = { w: r1(p.w * s), h: r1(p.h * s) };
+      return { s, d: r1(d), lid, base: { w: r1(lid.w - CLEARANCE_CM), h: r1(lid.h - CLEARANCE_CM) } };
+    }
+    const fmt1 = (n) => fmtNum((Math.round(n * 10) / 10).toFixed(1));
+
+    function applyGeometry() {
+      const pp = PAPERS[paperId], f = fitPreset(presetId, paperId);
+      PAGE_W_CM = pp.w; PAGE_H_CM = pp.h;
+      PX_PAGE_W = Math.round(pp.mmW / 25.4 * 300); PX_PAGE_H = Math.round(pp.mmH / 25.4 * 300);
+      document.documentElement.style.setProperty('--pw', pp.mmW + 'mm');
+      document.documentElement.style.setProperty('--ph', pp.mmH + 'mm');
+      const ps = document.getElementById('pageStyle');
+      if (ps) ps.textContent = `@media print { @page { size: ${pp.css} portrait; margin: 0mm !important; } }`;
+      SPINE = f.d;
+      PARTS.top.w = f.lid.w; PARTS.top.h = f.lid.h; PARTS.bottom.w = f.base.w; PARTS.bottom.h = f.base.h;
+      ['top', 'bottom'].forEach(part => {
+        const P = PARTS[part];
+        const net = document.getElementById(`net-${part}`);
+        if (!net) return;
+        net.style.gridTemplateColumns = `${SPINE * PX_PER_CM}px ${P.w * PX_PER_CM}px ${SPINE * PX_PER_CM}px`;
+        net.style.gridTemplateRows = `${SPINE * PX_PER_CM}px ${P.h * PX_PER_CM}px ${SPINE * PX_PER_CM}px`;
+        net.querySelectorAll('.corner-flap').forEach(fl => { fl.style.width = fl.style.height = SPINE * PX_PER_CM + 'px'; });
+        POS.forEach(pos => {
+          const k = `${part}_${pos}`, d = dimsOf(k), fr = document.getElementById(`frame-${k}`);
+          state[k].wCm = d.w; state[k].hCm = d.h;
+          if (!fr) return;
+          fr.style.width = d.w * PX_PER_CM + 'px'; fr.style.height = d.h * PX_PER_CM + 'px';
+          if (state[k].loaded) { state[k].baseFitScale = coverScale(k); applyTransform(k); }
+        });
+      });
+      updateSizeNote();
+      const lk = document.getElementById('inlayLink');
+      if (lk) lk.href = `bigbox-inlay.html?box=${presetId}&paper=${paperId}`;
+    }
+
+    function dimsOf(key) {
+      const [part, pos] = key.split('_');
+      const P = PARTS[part];
+      if (pos === 'center') return { w: P.w, h: P.h };
+      if (pos === 'spineTop' || pos === 'spineBottom') return { w: P.w, h: SPINE };
+      return { w: SPINE, h: P.h };
+    }
+
+    let activeTarget = 'top_center';
+    let currentNudgeStep = 1;
+    const state = {};
+    keys.forEach(k => {
+      const d = dimsOf(k);
+      state[k] = { x: 0, y: 0, userZoom: 1, baseFitScale: 1, rotation: 0, flipX: 1, loaded: false, wCm: d.w, hCm: d.h };
+    });
+
+    // ---- UI construction -------------------------------------------------------
+    function buildUI() {
+      ['top', 'bottom'].forEach(part => {
+        const cards = document.getElementById(`cards-${part}`);
+        cards.innerHTML = POS.map(pos => {
+          const k = `${part}_${pos}`;
+          return `
+        <div class="upload-card${k === activeTarget ? ' active' : ''}" id="card-${k}" onclick="selectTab('${k}')">
+          <label for="file-${k}" data-i18n="seg_${k}"></label>
+          <input type="file" id="file-${k}" accept="image/*" onchange="loadFile(event, '${k}')">
+          <div id="dpi-container-${k}" class="dpi-container">
+            <div id="dpi-badge-${k}" class="dpi-badge"></div>
+            <div class="dpi-scale-wrapper">
+              <div class="scale-segment scale-red"></div>
+              <div class="scale-segment scale-yellow"></div>
+              <div class="scale-segment scale-green"></div>
+              <div id="dpi-marker-${k}" class="scale-marker" style="left: 0%;"></div>
+            </div>
+          </div>
+        </div>`;
+        }).join('');
+
+        // Preview net with exact proportions
+        const P = PARTS[part];
+        const net = document.getElementById(`net-${part}`);
+        net.style.gridTemplateColumns = `${SPINE * PX_PER_CM}px ${P.w * PX_PER_CM}px ${SPINE * PX_PER_CM}px`;
+        net.style.gridTemplateRows = `${SPINE * PX_PER_CM}px ${P.h * PX_PER_CM}px ${SPINE * PX_PER_CM}px`;
+        const cell = { spineTop: [1, 2], spineLeft: [2, 1], center: [2, 2], spineRight: [2, 3], spineBottom: [3, 2] };
+        const flaps = [[1, 1], [1, 3], [3, 1], [3, 3]].map(([r, c]) =>
+          `<div class="corner-flap" style="grid-row:${r};grid-column:${c};width:${SPINE * PX_PER_CM}px;height:${SPINE * PX_PER_CM}px;"></div>`).join('');
+        net.innerHTML = flaps + POS.map(pos => {
+          const k = `${part}_${pos}`, d = dimsOf(k), [row, col] = cell[pos];
+          const vert = (pos === 'spineLeft' || pos === 'spineRight');
+          return `<div class="frame-container${k === activeTarget ? ' active-target' : ''}" id="frame-${k}" data-key="${k}"
+                   style="grid-row:${row};grid-column:${col};width:${d.w * PX_PER_CM}px;height:${d.h * PX_PER_CM}px;">
+                   <div class="placeholder${vert ? ' vert' : ''}" id="ph-${k}" data-i18n="ph_${k}"></div>
+                   <img id="img-${k}" class="cover-img" style="display:none;" alt="${k}">
+                 </div>`;
+        }).join('');
+      });
+
+      applyGeometry();
+      document.getElementById('tabBar').innerHTML = keys.map(k => {
+        const [part, pos] = k.split('_');
+        return `<button class="tab-btn${k === activeTarget ? ' active' : ''}" id="tab-${k}" onclick="selectTab('${k}')"><span>${part === 'top' ? 'T' : 'B'}: </span><span data-i18n="short_${pos}"></span></button>`;
+      }).join('');
+    }
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem('prs_lang', lang);
+      document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+      document.getElementById('lang-de').classList.toggle('active', lang === 'de');
+      document.documentElement.lang = lang;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (i18n[lang][key]) el.textContent = i18n[lang][key];
+      });
+      updateSizeNote();
+      showStep(wizStep);
+      keys.forEach(k => { if (state[k].loaded) updateDPI(k); });
+    }
+
+    function netSize(part) { return { w: PARTS[part].w + 2 * SPINE, h: PARTS[part].h + 2 * SPINE }; }
+    function summaryText() {
+      const f = fitPreset(presetId, paperId);
+      return t('sum').replace('{lw}', fmt1(f.lid.w)).replace('{lh}', fmt1(f.lid.h)).replace('{bw}', fmt1(f.base.w)).replace('{bh}', fmt1(f.base.h))
+        .replace('{d}', fmt1(f.d)).replace('{pct}', fmtNum(Math.round(f.s * 100)));
+    }
+    function updateSizeNote() {
+      ['sumNote', 'sumNote2'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = summaryText(); });
+      renderChoices();
+    }
+
+    // ---- Wizard -----------------------------------------------------------------
+    let wizStep = 1;
+    function netSketch(id) {
+      const p = PRESETS[id], W = p.w + 2 * p.d, H = p.h + 2 * p.d, sc = 84 / Math.max(W, H);
+      const w = W * sc, h = H * sc, d = p.d * sc, x0 = (110 - w) / 2, y0 = (96 - h) / 2;
+      const st = 'fill="none" stroke="currentColor" stroke-width="1"';
+      return `<svg width="110" height="96" viewBox="0 0 110 96" style="color:#94a3b8">
+        <rect x="${x0}" y="${y0}" width="${w}" height="${h}" ${st} opacity="0.5"/>
+        <rect x="${x0 + d}" y="${y0 + d}" width="${w - 2 * d}" height="${h - 2 * d}" fill="rgba(37,99,235,0.25)" stroke="#2563eb" stroke-width="1.2"/>
+        <rect x="${x0}" y="${y0}" width="${d}" height="${d}" ${st} stroke-dasharray="2 2"/><rect x="${x0 + w - d}" y="${y0}" width="${d}" height="${d}" ${st} stroke-dasharray="2 2"/>
+        <rect x="${x0}" y="${y0 + h - d}" width="${d}" height="${d}" ${st} stroke-dasharray="2 2"/><rect x="${x0 + w - d}" y="${y0 + h - d}" width="${d}" height="${d}" ${st} stroke-dasharray="2 2"/></svg>`;
+    }
+    function renderChoices() {
+      const pc = document.getElementById('presetCards'), pa = document.getElementById('paperCards');
+      if (!pc || !pa) return;
+      pc.innerHTML = Object.keys(PRESETS).map(id => {
+        const p = PRESETS[id], f = fitPreset(id, paperId);
+        return `<div class="choice${id === presetId ? ' on' : ''}" onclick="setPreset('${id}')">${netSketch(id)}
+          <div class="c-name">${t('preset_' + id)}</div>
+          <div class="c-dim">${fmt1(p.w)} × ${fmt1(p.h)} × ${fmt1(p.d)} cm</div>
+          <div class="c-note">${t('preset_' + id + '_n')}</div></div>`;
+      }).join('');
+      pa.innerHTML = Object.keys(PAPERS).map(id => {
+        const f = fitPreset(presetId, id);
+        return `<div class="choice${id === paperId ? ' on' : ''}" onclick="setPaper('${id}')">
+          <div class="c-name">${PAPERS[id].css}</div>
+          <div class="c-dim">${f.s >= 0.995 ? t('paper_orig') : t('paper_scaled').replace('{pct}', fmtNum(Math.round(f.s * 100)))}</div>
+          <div class="c-note">${t('paper_' + id + '_n')}</div></div>`;
+      }).join('');
+    }
+    function setPreset(id) { presetId = id; try { localStorage.setItem('prs_bb_preset', id); } catch (e) {} applyGeometry(); }
+    function setPaper(id) { paperId = id; try { localStorage.setItem('prs_bb_paper', id); } catch (e) {} applyGeometry(); }
+    function showStep(n) {
+      wizStep = Math.max(1, Math.min(4, n));
+      for (let i = 1; i <= 4; i++) document.getElementById('step-' + i).classList.toggle('active', i === wizStep);
+      document.getElementById('previewWrap').style.display = wizStep === 3 ? 'flex' : 'none';
+      document.getElementById('wizBack').style.visibility = wizStep === 1 ? 'hidden' : 'visible';
+      document.getElementById('wizNext').style.display = wizStep === 4 ? 'none' : '';
+      document.getElementById('wizSteps').innerHTML = [1, 2, 3, 4].map(i =>
+        `<div class="wiz-pill${i === wizStep ? ' active' : (i < wizStep ? ' done' : '')}" onclick="showStep(${i})">${i} · ${t('wiz_' + i)}</div>`).join('');
+      if (wizStep === 3) keys.forEach(k => { if (state[k].loaded) { state[k].baseFitScale = coverScale(k); applyTransform(k); } });
+    }
+    function wizGo(d) { showStep(wizStep + d); }
+
+    // ---- Selection / editing ---------------------------------------------------
+    function selectTab(target) {
+      activeTarget = target;
+      keys.forEach(k => {
+        document.getElementById(`tab-${k}`).classList.toggle('active', k === target);
+        document.getElementById(`card-${k}`).classList.toggle('active', k === target);
+        document.getElementById(`frame-${k}`).classList.toggle('active-target', k === target);
+      });
+      updateControls();
+    }
+
+    function dims(s, key) {
+      const img = document.getElementById(`img-${key}`);
+      const is90 = Math.abs(s.rotation % 180) === 90;
+      return { w: is90 ? img.naturalHeight : img.naturalWidth, h: is90 ? img.naturalWidth : img.naturalHeight };
+    }
+    function coverScale(key) {
+      const img = document.getElementById(`img-${key}`);
+      if (!img || !img.naturalWidth) return 1;
+      const fr = document.getElementById(`frame-${key}`);
+      const d = dims(state[key], key);
+      return Math.max(fr.clientWidth / d.w, fr.clientHeight / d.h);
+    }
+    const effScale = (key) => state[key].baseFitScale * state[key].userZoom;
+
+    function applyTransform(key) {
+      const img = document.getElementById(`img-${key}`);
+      const s = state[key];
+      if (!img || !s.loaded) return;
+      const sc = effScale(key);
+      img.style.transform = `translate(calc(-50% + ${s.x}px), calc(-50% + ${s.y}px)) rotate(${s.rotation}deg) scale(${sc * s.flipX}, ${sc})`;
+      updateDPI(key);
+      if (key === activeTarget) updateControls();
+    }
+
+    function updateControls() {
+      const s = state[activeTarget];
+      const val = parseFloat((s.userZoom * 100).toFixed(1));
+      document.getElementById('zoomSlider').value = val;
+      document.getElementById('zoomInput').value = val;
+    }
+
+    // Effective DPI of the segment as printed (includes zoom): image px per inch of the segment
+    function updateDPI(key) {
+      const s = state[key];
+      const container = document.getElementById(`dpi-container-${key}`);
+      const badge = document.getElementById(`dpi-badge-${key}`);
+      const marker = document.getElementById(`dpi-marker-${key}`);
+      const fr = document.getElementById(`frame-${key}`);
+      if (!s.loaded || !container || !fr || !fr.clientWidth) return;
+      container.style.display = 'block';
+
+      const dpi = Math.round(2.54 * fr.clientWidth / (effScale(key) * s.wCm));
+      let pos;
+      if (dpi <= 150) pos = (dpi / 150) * 37.5;
+      else if (dpi < 300) pos = 37.5 + ((dpi - 150) / 150) * 37.5;
+      else pos = 75 + (Math.min(dpi - 300, 100) / 100) * 25;
+      marker.style.left = `${Math.min(Math.max(pos, 2), 98)}%`;
+
+      badge.className = 'dpi-badge';
+      if (dpi >= 300) { badge.classList.add('green'); badge.innerHTML = `🟢 <b>${dpi} DPI</b> – ${t('dpi_excellent')}`; }
+      else if (dpi >= 150) { badge.classList.add('yellow'); badge.innerHTML = `🟡 <b>${dpi} DPI</b> – ${t('dpi_good')}`; }
+      else { badge.classList.add('red'); badge.innerHTML = `🔴 <b>${dpi} DPI</b> – ${t('dpi_low')}`; }
+    }
+
+    function loadFile(e, key) {
+      const file = e.target.files[0];
+      if (!file) return;
+      selectTab(key);
+      const img = document.getElementById(`img-${key}`);
+      const ph = document.getElementById(`ph-${key}`);
+      if (img.dataset.blob) URL.revokeObjectURL(img.dataset.blob);
+      const url = URL.createObjectURL(file);
+      img.dataset.blob = url;
+      img.onload = () => {
+        img.style.width = img.naturalWidth + 'px';
+        img.style.height = img.naturalHeight + 'px';
+        img.style.display = 'block';
+        if (ph) ph.style.display = 'none';
+        state[key].loaded = true;
+        fitKey(key);
+      };
+      img.src = url;
+    }
+
+    function fitKey(key) {
+      const s = state[key];
+      if (!s.loaded) return;
+      s.baseFitScale = coverScale(key);
+      s.userZoom = 1; s.x = 0; s.y = 0;
+      applyTransform(key);
+    }
+    const fitImage = () => fitKey(activeTarget);
+
+    function resetTransforms() {
+      const s = state[activeTarget];
+      s.rotation = 0; s.flipX = 1;
+      fitKey(activeTarget);
+      updateControls();
+    }
+
+    function rotate(deg) {
+      const s = state[activeTarget];
+      if (!s.loaded) return;
+      s.rotation = deg;
+      s.baseFitScale = coverScale(activeTarget);
+      applyTransform(activeTarget);
+    }
+
+    function toggleFlip() {
+      const s = state[activeTarget];
+      if (!s.loaded) return;
+      s.flipX *= -1;
+      applyTransform(activeTarget);
+    }
+
+    function updateZoom(val) {
+      const s = state[activeTarget];
+      const v = Math.min(300, Math.max(10, parseFloat(val) || 100));
+      s.userZoom = v / 100;
+      applyTransform(activeTarget);
+      updateControls();
+    }
+    function stepZoom(delta) { updateZoom(state[activeTarget].userZoom * 100 + delta); }
+
+    function setNudgeStep(n) {
+      currentNudgeStep = n;
+      [1, 5, 10].forEach(v => document.getElementById('step-' + v).classList.toggle('on', v === n));
+    }
+    function nudge(dx, dy) {
+      const s = state[activeTarget];
+      if (!s.loaded) return;
+      s.x += dx * currentNudgeStep;
+      s.y += dy * currentNudgeStep;
+      applyTransform(activeTarget);
+    }
+    function resetPos() {
+      const s = state[activeTarget];
+      s.x = 0; s.y = 0;
+      applyTransform(activeTarget);
+    }
+
+    // Dragging (pointer events, delegated)
+    let drag = null;
+    function initDrag() {
+      const wrap = document.querySelector('.preview-wrapper');
+      wrap.addEventListener('pointerdown', (e) => {
+        const fr = e.target.closest('.frame-container');
+        if (!fr) return;
+        const key = fr.dataset.key;
+        selectTab(key);
+        if (!state[key].loaded) return;
+        drag = { key, sx: e.clientX - state[key].x, sy: e.clientY - state[key].y };
+        fr.setPointerCapture(e.pointerId);
+        e.preventDefault();
+      });
+      wrap.addEventListener('pointermove', (e) => {
+        if (!drag) return;
+        state[drag.key].x = e.clientX - drag.sx;
+        state[drag.key].y = e.clientY - drag.sy;
+        applyTransform(drag.key);
+      });
+      const end = () => { drag = null; };
+      wrap.addEventListener('pointerup', end);
+      wrap.addEventListener('pointercancel', end);
+    }
+
+    // ---- Print -----------------------------------------------------------------
+    let PX_PAGE_W = 2480, PX_PAGE_H = 3496;          // paper size at 300 dpi (set by applyGeometry)
+    const PX_CM = 300 / 2.54;
+
+    function drawSegment(ctx, key, x, y, destW, destH) {
+      const s = state[key];
+      const img = document.getElementById(`img-${key}`);
+      const fr = document.getElementById(`frame-${key}`);
+      if (!s.loaded || !img.naturalWidth) return;
+      const f = destW / fr.clientWidth;               // preview px -> print px
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(x, y, destW, destH);
+      ctx.clip();
+      ctx.translate(x + destW / 2 + s.x * f, y + destH / 2 + s.y * f);
+      ctx.rotate(s.rotation * Math.PI / 180);
+      ctx.scale(effScale(key) * s.flipX * f, effScale(key) * f);
+      ctx.imageSmoothingQuality = 'high';
+      ctx.drawImage(img, -img.naturalWidth / 2, -img.naturalHeight / 2);
+      ctx.restore();
+    }
+
+    // Net = one full rectangle (w + 2d) x (h + 2d). The four corner squares belong to the LEFT / RIGHT walls:
+    // they are cut free from the top / bottom walls (solid), folded in along the dashed line and glued on the inside.
+    // One common factor for lid AND base, so the clearance between the two parts stays proportional
+    // Printers cannot print right up to the bottom edge (Canon: ~5 mm + paper feed tolerance), so everything
+    // (net + tabs) is kept inside a safe zone: 0.4 cm from the sides and the top, 1.1 cm from the bottom.
+    function layout() {
+      const usable = PAGE_H_CM + 0.1 - MARGIN_TOP_CM - MARGIN_BOTTOM_CM;
+      const widest = Math.max(netSize('top').w, netSize('bottom').w);
+      const tallest = Math.max(netSize('top').h, netSize('bottom').h);
+      const k = Math.min(1, (PAGE_W_CM - 2 * SAFE_MARGIN_SIDE_CM) / widest, usable / tallest);
+      const rim = document.getElementById('rimTabs');
+      let tab = rim && rim.checked ? Math.min(TAB_CM, (usable - tallest * k) / 2) : 0;   // final size on paper
+      if (tab < 0.3) tab = 0;
+      return { k, tab, zoneCy: MARGIN_TOP_CM + usable / 2 };
+    }
+    function netScale() { return layout().k; }
+
+    function drawFullNet(canvasId, part, lines) {
+      const canvas = document.getElementById(canvasId);
+      canvas.width = PX_PAGE_W; canvas.height = PX_PAGE_H;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      const P = PARTS[part];
+      const w = P.w * PX_CM, h = P.h * PX_CM, d = SPINE * PX_CM;
+      const startX = (canvas.width - (w + 2 * d)) / 2;      // negative when the net is wider than the page (centred, clipped evenly)
+      const L = layout();
+      const T = L.tab / L.k * PX_CM;                       // tab depth in unscaled net coordinates
+      const startY = (canvas.height - (h + 2 * d)) / 2;
+      const xL = startX, xC = startX + d, xR = xC + w, xE = xR + d;
+      const yT = startY, yC = startY + d, yB = yC + h, yE = yB + d;
+
+      ctx.save();
+      const k = L.k;                                     // optional: shrink to fit A4 (common factor)
+      ctx.translate(canvas.width / 2, L.zoneCy * PX_CM);   // centre the net (with tabs) in the safe zone
+      ctx.scale(k, k);
+      ctx.translate(-canvas.width / 2, -canvas.height / 2);
+
+      drawSegment(ctx, `${part}_center`, xC, yC, w, h);
+      drawSegment(ctx, `${part}_spineTop`, xC, yT, w, d);
+      drawSegment(ctx, `${part}_spineBottom`, xC, yB, w, d);
+      drawSegment(ctx, `${part}_spineLeft`, xL, yC, d, h);
+      drawSegment(ctx, `${part}_spineRight`, xR, yC, d, h);
+
+      if (lines) {
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 3;
+        ctx.setLineDash([]);
+        // cut lines: outer outline + the four cuts between corner square and top / bottom wall
+        const sideCb = document.getElementById('sideTabs');
+        const rimPx = ((PAGE_W_CM - (w + 2 * d) / PX_CM * L.k) / 2) / L.k * PX_CM;   // free paper beside the net (unscaled net units)
+        const SW = sideCb && sideCb.checked ? Math.min(1.5 * PX_CM, rimPx) : 0;      // side tab depth: the white margin up to the paper edge
+        if (SW >= 0.25 * PX_CM) {
+          // outline without the free long edges of the side walls (those become fold lines of the side tabs)
+          ctx.beginPath();
+          ctx.moveTo(xL, yC); ctx.lineTo(xL, yT); ctx.lineTo(xE, yT); ctx.lineTo(xE, yC);
+          ctx.moveTo(xE, yB); ctx.lineTo(xE, yE); ctx.lineTo(xL, yE); ctx.lineTo(xL, yB);
+          ctx.stroke();
+        } else {
+          ctx.strokeRect(xL, yT, xE - xL, yE - yT);
+        }
+        ctx.beginPath();
+        [xC, xR].forEach(x => {
+          ctx.moveTo(x, yT); ctx.lineTo(x, yC);
+          ctx.moveTo(x, yB); ctx.lineTo(x, yE);
+        });
+        ctx.stroke();
+
+        // fold lines (dashed): around the centre face and between wall and corner square
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([8, 6]);
+        // fold lines across the artwork: off / soft (semi-transparent grey) / full. The lines on the blank
+        // corner squares (below) always stay dark and continue the artwork folds, so the positions remain readable.
+        const fm = document.getElementById('foldMode').value;
+        if (fm !== 'off') {
+          ctx.strokeStyle = fm === 'soft' ? 'rgba(120,120,120,0.35)' : '#000';
+          ctx.beginPath();
+          ctx.moveTo(xC, yC); ctx.lineTo(xR, yC);
+          ctx.moveTo(xC, yB); ctx.lineTo(xR, yB);
+          ctx.moveTo(xC, yC); ctx.lineTo(xC, yB);
+          ctx.moveTo(xR, yC); ctx.lineTo(xR, yB);
+          ctx.stroke();
+          ctx.strokeStyle = '#000';
+        }
+        ctx.beginPath();
+        ctx.moveTo(xL, yC); ctx.lineTo(xC, yC);               // left wall | corner squares
+        ctx.moveTo(xL, yB); ctx.lineTo(xC, yB);
+        ctx.moveTo(xR, yC); ctx.lineTo(xE, yC);               // right wall | corner squares
+        ctx.moveTo(xR, yB); ctx.lineTo(xE, yB);
+        ctx.stroke();
+
+        // side tabs: use the unprintable white margin; fold over the board edge and glue inside (outer edge = paper edge, no cutting needed)
+        if (SW >= 0.25 * PX_CM) {
+          const bs = Math.min(0.3 * PX_CM, SW);
+          ctx.lineWidth = 3; ctx.setLineDash([]);
+          ctx.beginPath();
+          ctx.moveTo(xL, yC); ctx.lineTo(xL - SW, yC + bs); ctx.lineTo(xL - SW, yB - bs); ctx.lineTo(xL, yB);
+          ctx.moveTo(xE, yC); ctx.lineTo(xE + SW, yC + bs); ctx.lineTo(xE + SW, yB - bs); ctx.lineTo(xE, yB);
+          ctx.stroke();
+          ctx.lineWidth = 1.5; ctx.setLineDash([8, 6]);
+          ctx.beginPath();
+          ctx.moveTo(xL, yC); ctx.lineTo(xL, yB);
+          ctx.moveTo(xE, yC); ctx.lineTo(xE, yB);
+          ctx.stroke();
+        }
+
+        // rim reinforcement tabs on the free edge of the top / bottom wall (trapezoid, fold inwards and glue)
+        if (T > 0) {
+          const bv = Math.min(0.3 * PX_CM, T);
+          ctx.lineWidth = 3; ctx.setLineDash([]);
+          ctx.beginPath();
+          ctx.moveTo(xC, yT); ctx.lineTo(xC + bv, yT - T); ctx.lineTo(xR - bv, yT - T); ctx.lineTo(xR, yT);
+          ctx.moveTo(xC, yE); ctx.lineTo(xC + bv, yE + T); ctx.lineTo(xR - bv, yE + T); ctx.lineTo(xR, yE);
+          ctx.stroke();
+          // extra tabs above / below the corner squares: fold the corner in first, then fold this tab over it (double hold)
+          if (document.getElementById('cornerTabs').checked) {
+            ctx.beginPath();
+            [[xL, xC, -1], [xR, xE, 1]].forEach(([xa, xb, side]) => {
+              const outer = side < 0 ? xa : xb, inner = side < 0 ? xb : xa;
+              [[yT, -1], [yE, 1]].forEach(([y, dir]) => {
+                ctx.moveTo(outer, y); ctx.lineTo(outer, y + dir * T);
+                ctx.lineTo(inner - side * -bv, y + dir * T); ctx.lineTo(inner, y);
+              });
+            });
+            ctx.stroke();
+          }
+          ctx.lineWidth = 1.5; ctx.setLineDash([8, 6]);
+          ctx.beginPath();
+          ctx.moveTo(xC, yT); ctx.lineTo(xR, yT);
+          ctx.moveTo(xC, yE); ctx.lineTo(xR, yE);
+          if (document.getElementById('cornerTabs').checked) {
+            ctx.moveTo(xL, yT); ctx.lineTo(xC, yT); ctx.moveTo(xR, yT); ctx.lineTo(xE, yT);
+            ctx.moveTo(xL, yE); ctx.lineTo(xC, yE); ctx.moveTo(xR, yE); ctx.lineTo(xE, yE);
+          }
+          ctx.stroke();
+        }
+      }
+      ctx.restore();
+    }
+
+    function preparePrint() {
+      const used = (part) => POS.some(p => state[`${part}_${p}`].loaded);
+      const todo = ['top', 'bottom'].filter(used);
+      if (!todo.length) { alert(t('alert_none')); return; }
+      const lines = document.getElementById('showGuidelines').checked;
+
+      ['top', 'bottom'].forEach(part => {
+        const page = document.getElementById(`page-${part}`);
+        const on = todo.includes(part);                 // a part without any image is not printed (saves paper)
+        page.hidden = !on;
+        page.classList.toggle('is-last', on && part === todo[todo.length - 1]);
+        if (on) drawFullNet(part === 'top' ? 'printCanvasTop' : 'printCanvasBottom', part, lines);
+      });
+
+      const k = netScale();
+      const warns = k < 1 ? [t('fit_note').replace('{pct}', fmtNum(Math.round(k * 1000) / 10))] : [];
+      const w = document.getElementById('printWarn');
+      w.textContent = warns.join('  ');
+      w.style.display = warns.length ? 'block' : 'none';
+
+      document.getElementById('printScreen').style.display = 'block';
+    }
+
+    function closePrint() {
+      document.getElementById('printScreen').style.display = 'none';
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      try { const a = localStorage.getItem('prs_bb_preset'), b = localStorage.getItem('prs_bb_paper'); if (PRESETS[a]) presetId = a; if (PAPERS[b]) paperId = b; } catch (e) {}
+      buildUI();
+      initDrag();
+      setLanguage(currentLang);
+      selectTab(activeTarget);
+      applyGeometry();
+      showStep(1);
+    });
+  </script>
+</body>
+</html>
