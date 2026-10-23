@@ -371,9 +371,14 @@
       <div class="wiz-h" data-i18n="wiz_h4">Ready to print</div>
       <div class="wiz-s" data-i18n="wiz_s4"></div>
       <div class="size-note ok" id="sumNote2"></div>
-      <details class="adv">
+      <details class="adv" open>
         <summary data-i18n="adv_title">Advanced options</summary>
         <div class="adv-body">
+        <div data-i18n="adv_rec" style="font-size:0.75rem;color:var(--text-muted);margin-bottom:10px;"></div>
+        <label style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; cursor: pointer; text-transform: none; letter-spacing: 0; margin-bottom: 6px;">
+          <input type="checkbox" id="safeMode" checked onchange="applyGeometry()">
+          <span data-i18n="opt_safe">Edge-safe printing</span>
+        </label>
         <label style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; cursor: pointer; text-transform: none; letter-spacing: 0;">
           <input type="checkbox" id="showGuidelines" checked>
           <span data-i18n="opt_cut_lines">Print cut & fold lines</span>
@@ -452,7 +457,8 @@
         wiz_h1: "Which box do you want to build?", wiz_s1: "Pick the closest format. The size shown is lid face × height × wall thickness of the real box.",
         wiz_h2: "Which paper do you print on?", wiz_s2: "A4 fits almost every home printer: the box is scaled down proportionally, so your covers fit 1:1. On A3 the box is printed in original size.",
         wiz_h3: "Add your images", wiz_s3: "One image per segment. Front and back keep the proportions of the box, so existing covers fit 1:1.",
-        wiz_h4: "Ready to print", wiz_s4: "You need: 1 mm cardboard, paper (150–200 g) and glue. Print at 100 %, margins “None”, no borderless printing.",
+        wiz_h4: "Ready to print", wiz_s4: "You need: 1 mm cardboard, paper (150–200 g) and glue or self-adhesive vinyl film. Print at 100 %, margins “None”, no borderless printing. If “Edge-safe printing” is switched off, you can also try borderless printing in the printer driver so the whole sheet is printed.",
+        adv_rec: "Recommendation: leave everything as preset – this works for most printers.",
         btn_inlay: "CD case holder (inlay) for this box →", adv_title: "Advanced options", btn_back: "← Back", btn_next: "Next →",
         preset_classic: "Big Box Classic", preset_classic_n: "thick box, deep walls",
         preset_standard: "Big Box Standard", preset_standard_n: "flat box, the common size",
@@ -494,6 +500,8 @@
         opt_wall: "Side wall height", wall_25: "2.5 cm (original)", wall_27: "2.7 cm (more room for a double case)",
         fold_soft: "Subtle", fold_off: "Off", fold_full: "Full",
         opt_corner_tabs: "Extra tabs over the corner squares (double hold, fold over the folded corner)",
+        side_na: "Not available: the net fills the full paper width, there is no white margin for side tabs.",
+        opt_safe: "Edge-safe printing (scales the net so nothing lies in the printer's unprintable margin). Off = full paper width, print borderless in the driver",
         opt_rim_tabs: "Reinforcement tabs on the top / bottom rim (up to 1.5 cm, uses the spare A4 height)",
         btn_print: "🖨️ Generate cut-out sheets & print",
         btn_print_now: "Print Now / Save PDF",
@@ -513,7 +521,8 @@
         wiz_h1: "Welche Box möchtest du bauen?", wiz_s1: "Wähle das nächstliegende Format. Die Maße sind Deckelfläche × Höhe × Wandstärke der echten Box.",
         wiz_h2: "Auf welchem Papier druckst du?", wiz_s2: "A4 passt auf fast jeden Heimdrucker: Die Box wird proportional verkleinert, deine Covers passen also 1:1. Auf A3 wird die Box in Originalgröße gedruckt.",
         wiz_h3: "Bilder hinzufügen", wiz_s3: "Ein Bild pro Segment. Front und Rückseite behalten die Proportionen der Box, bestehende Covers passen also 1:1.",
-        wiz_h4: "Bereit zum Drucken", wiz_s4: "Du brauchst: 1 mm Pappe, Papier (150–200 g) und Kleber. Druck mit 100 %, Ränder „Keine“, nicht randlos drucken.",
+        wiz_h4: "Bereit zum Drucken", wiz_s4: "Du brauchst: 1 mm Pappe, Papier (150–200 g), Kleber oder eine selbstklebende Vinyl-Folie. Druck mit 100 %, Ränder „Keine“, nicht randlos drucken. Sollte „Randsicher drucken“ deaktiviert sein, kannst du im Druckertreiber versuchen, auf Randlos zu stellen, damit das ganze Blatt ausgefüllt wird.",
+        adv_rec: "Empfehlung: Lass alles wie voreingestellt – das passt für die meisten Drucker.",
         btn_inlay: "CD-Halter (Inlay) für diese Box →", adv_title: "Erweiterte Optionen", btn_back: "← Zurück", btn_next: "Weiter →",
         preset_classic: "Big Box Klassisch", preset_classic_n: "dicke Box, tiefe Wände",
         preset_standard: "Big Box Standard", preset_standard_n: "flache Box, das gängige Maß",
@@ -555,6 +564,8 @@
         opt_wall: "Seitenwand-Höhe", wall_25: "2,5 cm (Original)", wall_27: "2,7 cm (mehr Platz fürs Doppelcase)",
         fold_soft: "Dezent", fold_off: "Aus", fold_full: "Voll",
         opt_corner_tabs: "Zusatzlaschen über den Eckquadraten (doppelter Halt, über die eingeschlagene Ecke falten)",
+        side_na: "Nicht verfügbar: Das Netz füllt die volle Papierbreite, es gibt keinen weißen Rand für Seitenlaschen.",
+        opt_safe: "Randsicher drucken (verkleinert das Netz, damit nichts im Druckerrand liegt). Aus = volle Papierbreite, im Treiber randlos drucken",
         opt_rim_tabs: "Verstärkungslaschen am oberen / unteren Rand (bis 1,5 cm, nutzt die freie A4-Höhe)",
         btn_print: "🖨️ Bastelbögen generieren & drucken",
         btn_print_now: "Jetzt drucken / Als PDF speichern",
@@ -599,10 +610,11 @@
 
     // Fit a box onto a paper size: faces keep the aspect ratio of the real box (covers fit 1:1);
     // the wall keeps at least MIN_WALL_CM (or the real wall if lower) so a double case still fits.
+    const safeOn = () => { const c = document.getElementById('safeMode'); return !c || c.checked; };
     function fitPreset(id, paperKey) {
       const p = PRESETS[id], pp = PAPERS[paperKey];
-      const targetW = pp.w - 1.0;                                          // ~5 mm white on each side
-      const targetH = (pp.h + 0.1 - MARGIN_TOP_CM - MARGIN_BOTTOM_CM) - 2.0;   // leaves room for the rim tabs
+      const targetW = safeOn() ? pp.w - 1.0 : pp.w;                        // safe: ~5 mm white on each side; off: full paper width (borderless in the driver)
+      const targetH = safeOn() ? (pp.h + 0.1 - MARGIN_TOP_CM - MARGIN_BOTTOM_CM) - 2.0 : pp.h;   // safe: leaves room for the rim tabs
       const dMin = Math.min(p.d, MIN_WALL_CM);
       let s = Math.min(1, targetW / (p.w + 2 * p.d), targetH / (p.h + 2 * p.d));
       let d = p.d * s;
@@ -638,8 +650,21 @@
         });
       });
       updateSizeNote();
+      updateSideTabAvail();
       const lk = document.getElementById('inlayLink');
       if (lk) lk.href = `bigbox-inlay.html?box=${presetId}&paper=${paperId}`;
+    }
+
+    // Side tabs need free white paper beside the net; without it (e.g. edge-safe off on A4) the option is greyed out
+    function updateSideTabAvail() {
+      const cb = document.getElementById('sideTabs'); if (!cb) return;
+      const L = layout(), widest = Math.max(netSize('top').w, netSize('bottom').w);
+      const free = (PAGE_W_CM - widest * L.k) / 2;
+      const ok = free >= 0.25;
+      cb.disabled = !ok;
+      cb.parentElement.style.opacity = ok ? '' : '0.45';
+      cb.parentElement.style.cursor = ok ? 'pointer' : 'not-allowed';
+      cb.parentElement.title = ok ? '' : t('side_na');
     }
 
     function dimsOf(key) {
@@ -792,12 +817,13 @@
       const is90 = Math.abs(s.rotation % 180) === 90;
       return { w: is90 ? img.naturalHeight : img.naturalWidth, h: is90 ? img.naturalWidth : img.naturalHeight };
     }
+    const frW = (key) => dimsOf(key).w * PX_PER_CM, frH = (key) => dimsOf(key).h * PX_PER_CM;   // frame size from geometry (clientWidth is 0 while the preview is hidden)
     function coverScale(key) {
       const img = document.getElementById(`img-${key}`);
       if (!img || !img.naturalWidth) return 1;
       const fr = document.getElementById(`frame-${key}`);
       const d = dims(state[key], key);
-      return Math.max(fr.clientWidth / d.w, fr.clientHeight / d.h);
+      return Math.max(frW(key) / d.w, frH(key) / d.h);
     }
     const effScale = (key) => state[key].baseFitScale * state[key].userZoom;
 
@@ -825,10 +851,10 @@
       const badge = document.getElementById(`dpi-badge-${key}`);
       const marker = document.getElementById(`dpi-marker-${key}`);
       const fr = document.getElementById(`frame-${key}`);
-      if (!s.loaded || !container || !fr || !fr.clientWidth) return;
+      if (!s.loaded || !container || !fr) return;
       container.style.display = 'block';
 
-      const dpi = Math.round(2.54 * fr.clientWidth / (effScale(key) * s.wCm));
+      const dpi = Math.round(2.54 * frW(key) / (effScale(key) * s.wCm));
       let pos;
       if (dpi <= 150) pos = (dpi / 150) * 37.5;
       else if (dpi < 300) pos = 37.5 + ((dpi - 150) / 150) * 37.5;
@@ -952,7 +978,7 @@
       const img = document.getElementById(`img-${key}`);
       const fr = document.getElementById(`frame-${key}`);
       if (!s.loaded || !img.naturalWidth) return;
-      const f = destW / fr.clientWidth;               // preview px -> print px
+      const f = destW / frW(key);               // preview px -> print px
       ctx.save();
       ctx.beginPath();
       ctx.rect(x, y, destW, destH);
@@ -971,14 +997,16 @@
     // Printers cannot print right up to the bottom edge (Canon: ~5 mm + paper feed tolerance), so everything
     // (net + tabs) is kept inside a safe zone: 0.4 cm from the sides and the top, 1.1 cm from the bottom.
     function layout() {
-      const usable = PAGE_H_CM + 0.1 - MARGIN_TOP_CM - MARGIN_BOTTOM_CM;
+      const safe = safeOn();
+      const mTop = safe ? MARGIN_TOP_CM : 0, mBot = safe ? MARGIN_BOTTOM_CM : 0, mSide = safe ? SAFE_MARGIN_SIDE_CM : 0;
+      const usable = PAGE_H_CM + (safe ? 0.1 : 0) - mTop - mBot;
       const widest = Math.max(netSize('top').w, netSize('bottom').w);
       const tallest = Math.max(netSize('top').h, netSize('bottom').h);
-      const k = Math.min(1, (PAGE_W_CM - 2 * SAFE_MARGIN_SIDE_CM) / widest, usable / tallest);
+      const k = Math.min(1, (PAGE_W_CM - 2 * mSide) / widest, usable / tallest);
       const rim = document.getElementById('rimTabs');
       let tab = rim && rim.checked ? Math.min(TAB_CM, (usable - tallest * k) / 2) : 0;   // final size on paper
       if (tab < 0.3) tab = 0;
-      return { k, tab, zoneCy: MARGIN_TOP_CM + usable / 2 };
+      return { k, tab, zoneCy: mTop + usable / 2 };
     }
     function netScale() { return layout().k; }
 
