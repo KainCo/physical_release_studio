@@ -17,6 +17,7 @@ body{padding:22px 12px}
 .titlebar{height:34px;background:linear-gradient(90deg,#000080,#1084d0);color:#fff;display:flex;align-items:center;padding:4px 6px;font-weight:bold}
 .titlebar .appicon{width:22px;height:22px;margin-right:7px;background:#c0c0c0;border:2px solid;border-color:#fff #404040 #404040 #fff;display:grid;place-items:center;font-size:14px}
 .titlebar .buttons{margin-left:auto;display:flex;gap:3px}
+a.winbtn{text-decoration:none;cursor:pointer}a.winbtn:active{border-color:#404040 #fff #fff #404040}
 .winbtn{width:22px;height:21px;background:#c0c0c0;border:2px solid;border-color:#fff #404040 #404040 #fff;color:#000;font:bold 12px Arial;display:grid;place-items:center}
 .menu{min-height:28px;border-bottom:1px solid #808080;padding:3px 9px;font-size:12px;display:flex;align-items:center}
 .content{padding:14px}
@@ -63,7 +64,7 @@ kbd{font-family:"Courier New",monospace}
   <div class="titlebar">
     <div class="appicon">💿</div>
     <div>Physical Release Studio</div>
-    <div class="buttons"><div class="winbtn">_</div><div class="winbtn">□</div><div class="winbtn">×</div></div>
+    <div class="buttons"><a class="winbtn" href="../../index.html" title="Zurück zur Übersicht / Back to overview" aria-label="Back to overview">_</a><div class="winbtn">□</div><a class="winbtn" href="../../index.html" title="Zurück zur Übersicht / Back to overview" aria-label="Back to overview">×</a></div>
   </div>
   <div class="menu"><span data-i="menuInfo">Build a classic PC game CD/DVD edition</span><span class="lang"><button type="button" id="langDe" onclick="setLang('de')">Deutsch</button><button type="button" id="langEn" onclick="setLang('en')">English</button></span></div>
 
