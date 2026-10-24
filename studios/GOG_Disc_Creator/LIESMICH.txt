@@ -1,18 +1,25 @@
-Physical Release Studio - GOG Disc Creator (V5)
- 
-Dateien
-- Physical-Release-Studio-GOG-Disc-Creator.html  Das Tool fuer die Webseite (eine Datei, Launcher eingebettet, kein Upload von Spieldaten).
-- GOGAutoLauncher.exe                            Derselbe Launcher einzeln (zum Testen).
-- Quellcode-Launcher/                            Go-Quellcode. Build:
-    GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -H windowsgui" -o GOGAutoLauncher.exe .
-    python patch_pe.py GOGAutoLauncher.exe      (Disc-Wechsel-Schutz), danach EXE per Base64 in die HTML (EMBEDDED_GOG_LAUNCHER_B64) einsetzen.
-    Tests der Disc-Logik: go test ./core/
+Physical Release Studio - GOG Disc Creator (V7)
 
-Ablauf fuer Nutzer
-- Normalmodus: jede .bin bleibt ganz auf einer Disc. Start von Disc 1, das Setup fragt selbst nach der naechsten Disc.
-- Grosse .bin (groesser als das Medium, z.B. CD-R): der Creator zerlegt sie, der Launcher kopiert alle Discs nacheinander
-  (automatische Disc-Erkennung) auf die Festplatte und startet dann das Setup.
-- Optional bei mehreren Discs: "Erst auf die Festplatte kopieren", nur angeboten wenn genug freier Platz da ist.
+Inhalt
+- Physical-Release-Studio-GOG-Disc-Creator.html : Browser-Tool (Deutsch/Englisch umschaltbar), lokale Verarbeitung, keine Uploads.
+- GOGAutoLauncher.exe : Windows-10/11-x64-Launcher (mit Disc-Symbol, mehrsprachig).
+- launcher/ (im Repo-Hauptordner, nicht in diesem Ordner): Go-Quellcode, Core-Tests, Icon-Generator (tools/mkrsrc).
 
-Co-authored-by: Claude
-Co-authored-by: ChatGPT 
+Neu in V7
+- Seitensprache Deutsch/Englisch (Standard: Browsersprache, wird gemerkt). README_BURNING.txt kommt in der Seitensprache.
+- Launcher-Sprache folgt NUR der Windows-Sprache: Englisch, Deutsch, Polnisch, Französisch, Spanisch, Italienisch (sonst Englisch).
+  Die Übersetzungen pl/fr/es/it stammen von mir und sollten von Muttersprachlern geprüft werden.
+- Disc-Symbol in der EXE (Fenster, Taskleiste, Explorer). Ohne eigenes Icon wird dasselbe Symbol auch als autorun.ico auf ALLEN Discs genutzt.
+- Cover: Steam-Header-Banner (ca. 2,15:1), unverändert und ohne Zuschnitt, keine Regler mehr. Seite zeigt Empfehlung (920x430+, min. 764 px breit) und die echte Größe mit Warnungen.
+  Der Launcher passt die Bannerhöhe dem Bild an (begrenzt) und zeigt den ganzen Banner.
+- Spieltitel unter dem Banner: standardmäßig AN, per Checkbox abschaltbar (ShowTitle in der INI).
+- cover.jpg entfällt (wurde nicht benutzt), Hinweis-Box-Layoutfehler im HTML behoben.
+
+Build
+- cd launcher (Repo-Hauptordner); go run tools/mkrsrc/main.go (Icon + .syso neu erzeugen)
+- GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -H windowsgui" -o GOGAutoLauncher.exe .
+- python3 patch_pe.py GOGAutoLauncher.exe ; danach ggf. signieren ; danach in die HTML einbetten (EMBEDDED_GOG_LAUNCHER_B64).
+
+Wichtig
+- Das neue Launcher-Layout (dynamische Bannerhöhe, Icon, Sprachen) wurde unter Linux kompiliert und die Core-Logik getestet, aber NICHT auf echtem Windows ausprobiert. Bitte einmal mit einer gebrannten/gemounteten Disc testen.
+- Unsignierte EXE: SmartScreen/Virenscanner-Hinweise möglich. USB-AutoRun nicht zuverlässig.

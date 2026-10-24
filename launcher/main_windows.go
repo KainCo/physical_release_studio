@@ -51,6 +51,7 @@ const (
 	BIF_RETURNONLYFSDIRS    = 0x0001
 	BIF_NEWDIALOGSTYLE      = 0x0040
 	IMAGE_BITMAP            = 0
+	IMAGE_ICON              = 1
 	LR_LOADFROMFILE         = 0x0010
 	LR_CREATEDIBSECTION     = 0x2000
 	TRANSPARENT             = 1
@@ -68,7 +69,6 @@ const (
 	VK_ESCAPE               = 0x1B
 
 	clientW = 820
-	clientH = 710
 
 	btnInstall = 1
 	btnExtra0  = 10 // 10..14
@@ -357,6 +357,55 @@ func bevel(dc uintptr, x, y, w, h int32, pressed bool) {
 	line(dc, x+w-2, y+1, x+w-2, y+h-2, br2)
 }
 
+// G holds the vertical layout. It depends on the banner's aspect ratio, the title line and the number of extras.
+type geometry struct {
+	coverY, coverH, titleY, subY, installY, extrasHdrY, extrasY, footerY, clientH int32
+}
+
+var G geometry
+
+func showTitle() bool { return coverBmp == 0 || !cfg.HideTitle }
+
+func computeGeom() {
+	G.coverY, G.coverH = 44, 310
+	if coverBmp != 0 {
+		var bm BITMAP
+		pGetObj.Call(coverBmp, unsafe.Sizeof(bm), uintptr(unsafe.Pointer(&bm)))
+		if bm.Width > 0 && bm.Height > 0 {
+			h := int32(int64(764) * int64(bm.Height) / int64(bm.Width))
+			if h < 180 {
+				h = 180
+			}
+			if h > 380 {
+				h = 380
+			}
+			G.coverH = h
+		}
+	}
+	y := G.coverY + G.coverH + 10
+	if showTitle() {
+		G.titleY = y
+		y += 32
+	}
+	G.subY = y
+	G.installY = y + 30
+	G.extrasHdrY = G.installY + 56
+	G.extrasY = G.extrasHdrY + 28
+	rows := int32(len(cfg.Extras))
+	if rows > 5 {
+		rows = 5
+	}
+	if rows < 1 {
+		rows = 1
+	}
+	bottom := G.extrasY + rows*31 + 4
+	if pb := G.installY + 225; pb > bottom { // room for the copy/wait panel
+		bottom = pb
+	}
+	G.footerY = bottom
+	G.clientH = bottom + 36
+}
+
 type button struct {
 	id      int
 	x, y    int32
@@ -369,7 +418,7 @@ func layout(phase int) []button {
 	var out []button
 	switch phase {
 	case phaseMenu:
-		out = append(out, button{btnInstall, 210, 426, 400, 42, S.Install, true})
+		out = append(out, button{btnInstall, 210, G.installY, 400, 42, S.Install, true})
 		for i, e := range cfg.Extras {
 			if i >= 5 {
 				break
@@ -378,13 +427,13 @@ func layout(phase int) []button {
 			if l == "" {
 				l = filepath.Base(e.Path)
 			}
-			out = append(out, button{btnExtra0 + i, 28, int32(510 + i*31), 764, 27, l, false})
+			out = append(out, button{btnExtra0 + i, 28, G.extrasY + int32(i*31), 764, 27, l, false})
 		}
 	case phaseCopy:
-		out = append(out, button{btnCancel, 28, 545, 180, 30, S.Cancel, false})
+		out = append(out, button{btnCancel, 28, G.installY + 119, 180, 30, S.Cancel, false})
 	case phaseWait:
-		out = append(out, button{btnCancel, 28, 545, 180, 30, S.Cancel, false})
-		out = append(out, button{btnBrowse, 220, 545, 220, 30, S.Browse, false})
+		out = append(out, button{btnCancel, 28, G.installY + 119, 180, 30, S.Cancel, false})
+		out = append(out, button{btnBrowse, 220, G.installY + 119, 220, 30, S.Browse, false})
 	}
 	return out
 }
@@ -402,11 +451,11 @@ func drawButton(dc uintptr, b button, pressed bool) {
 	}
 }
 func drawCover(dc uintptr) {
-	x, y, w, h := int32(28), int32(44), int32(764), int32(310)
+	x, y, w, h := int32(28), G.coverY, int32(764), G.coverH
 	rect(dc, x-2, y-2, w+4, h+4, 0x00808080)
 	rect(dc, x, y, w, h, 0)
 	if coverBmp == 0 {
-		text(dc, "NO COVER ART", x+8, y+h/2-12, w-16, 24, 0x00C0C0C0, 11, true, DT_CENTER|DT_VCENTER|DT_SINGLELINE)
+		text(dc, S.NoCover, x+8, y+h/2-12, w-16, 24, 0x00C0C0C0, 11, true, DT_CENTER|DT_VCENTER|DT_SINGLELINE)
 		return
 	}
 	var bm BITMAP
@@ -429,25 +478,27 @@ func drawCover(dc uintptr) {
 }
 func draw(dc uintptr) {
 	sn := st.snap()
-	rect(dc, 0, 0, clientW, clientH, 0x00C0C0C0)
+	rect(dc, 0, 0, clientW, G.clientH, 0x00C0C0C0)
 	rect(dc, 0, 0, clientW, 30, 0x00800000)
 	text(dc, "Physical Release Studio", 8, 4, 620, 22, 0x00FFFFFF, 13, true, DT_LEFT|DT_VCENTER|DT_SINGLELINE)
 	drawCover(dc)
-	text(dc, cfg.Title, 28, 365, 764, 30, 0, 17, true, DT_CENTER|DT_VCENTER|DT_WORDBREAK)
+	if showTitle() {
+		text(dc, cfg.Title, 28, G.titleY, 764, 30, 0, 17, true, DT_CENTER|DT_VCENTER|DT_WORDBREAK)
+	}
 	sub := S.SubTitle
 	if cfg.MediaType != "" {
 		sub += "  |  " + cfg.MediaType
 	}
 	if cfg.MediaCount > 1 {
-		sub += fmt.Sprintf("  |  %d Discs", cfg.MediaCount)
+		sub += "  |  " + fmt.Sprintf(S.DiscsFmt, cfg.MediaCount)
 	}
-	text(dc, sub, 28, 397, 764, 18, 0x00404040, 9, false, DT_CENTER|DT_VCENTER|DT_SINGLELINE)
+	text(dc, sub, 28, G.subY, 764, 18, 0x00404040, 9, false, DT_CENTER|DT_VCENTER|DT_SINGLELINE)
 
 	if sn.phase == phaseMenu {
-		text(dc, S.Extras, 28, 482, 764, 18, 0, 10, true, DT_LEFT|DT_VCENTER|DT_SINGLELINE)
-		line(dc, 28, 502, 792, 502, 0x00808080)
+		text(dc, S.Extras, 28, G.extrasHdrY, 764, 18, 0, 10, true, DT_LEFT|DT_VCENTER|DT_SINGLELINE)
+		line(dc, 28, G.extrasHdrY+20, 792, G.extrasHdrY+20, 0x00808080)
 		if len(cfg.Extras) == 0 {
-			text(dc, S.NoExtras, 30, 510, 760, 22, 0x00404040, 10, false, DT_LEFT|DT_VCENTER|DT_SINGLELINE)
+			text(dc, S.NoExtras, 30, G.extrasY, 760, 22, 0x00404040, 10, false, DT_LEFT|DT_VCENTER|DT_SINGLELINE)
 		}
 	} else {
 		status, hint := sn.status, ""
@@ -461,26 +512,26 @@ func draw(dc uintptr) {
 			status = S.Running
 			hint = S.RunningHint
 		}
-		text(dc, status, 28, 430, 764, 26, 0, 13, true, DT_LEFT|DT_VCENTER|DT_SINGLELINE)
+		text(dc, status, 28, G.installY+4, 764, 26, 0, 13, true, DT_LEFT|DT_VCENTER|DT_SINGLELINE)
 		if sn.phase != phaseRunning {
-			text(dc, sn.detail, 28, 460, 764, 36, 0x00404040, 10, false, DT_LEFT|DT_WORDBREAK)
-			rect(dc, 28, 502, 764, 24, 0x00FFFFFF)
-			bevel(dc, 28, 502, 764, 24, true)
+			text(dc, sn.detail, 28, G.installY+34, 764, 36, 0x00404040, 10, false, DT_LEFT|DT_WORDBREAK)
+			rect(dc, 28, G.installY+76, 764, 24, 0x00FFFFFF)
+			bevel(dc, 28, G.installY+76, 764, 24, true)
 			if sn.permille > 0 {
-				rect(dc, 31, 505, int32(758*sn.permille/1000), 18, 0x00800000)
+				rect(dc, 31, G.installY+79, int32(758*sn.permille/1000), 18, 0x00800000)
 			}
-			text(dc, fmt.Sprintf("%d%%", sn.permille/10), 28, 502, 764, 24, 0x00808080, 10, true, DT_CENTER|DT_VCENTER|DT_SINGLELINE)
+			text(dc, fmt.Sprintf("%d%%", sn.permille/10), 28, G.installY+76, 764, 24, 0x00808080, 10, true, DT_CENTER|DT_VCENTER|DT_SINGLELINE)
 		}
 		if hint != "" {
-			text(dc, hint, 28, 590, 764, 60, 0x00404040, 10, false, DT_LEFT|DT_WORDBREAK)
+			text(dc, hint, 28, G.installY+164, 764, 60, 0x00404040, 10, false, DT_LEFT|DT_WORDBREAK)
 		}
 	}
 	for _, b := range layout(sn.phase) {
 		drawButton(dc, b, pressedID == b.id)
 	}
-	line(dc, 8, 674, 812, 674, 0x00808080)
-	text(dc, "PHYSICAL RELEASE STUDIO", 12, 681, 430, 18, 0x00404040, 8, true, DT_LEFT|DT_VCENTER|DT_SINGLELINE)
-	text(dc, "KAINCO  •  DEDICATED TO GAMES", 480, 681, 320, 18, 0x00404040, 8, false, DT_RIGHT|DT_VCENTER|DT_SINGLELINE)
+	line(dc, 8, G.footerY, 812, G.footerY, 0x00808080)
+	text(dc, "PHYSICAL RELEASE STUDIO", 12, G.footerY+7, 430, 18, 0x00404040, 8, true, DT_LEFT|DT_VCENTER|DT_SINGLELINE)
+	text(dc, "KAINCO  •  DEDICATED TO GAMES", 480, G.footerY+7, 320, 18, 0x00404040, 8, false, DT_RIGHT|DT_VCENTER|DT_SINGLELINE)
 }
 func paint(hwnd uintptr) {
 	var ps PAINTSTRUCT
@@ -490,10 +541,10 @@ func paint(hwnd uintptr) {
 		return
 	}
 	mem, _, _ := pCompDC.Call(dc)
-	bmp, _, _ := pCompBmp.Call(dc, clientW, clientH)
+	bmp, _, _ := pCompBmp.Call(dc, clientW, uintptr(G.clientH))
 	old, _, _ := pSelect.Call(mem, bmp)
 	draw(mem)
-	pBitBlt.Call(dc, 0, 0, clientW, clientH, mem, 0, 0, SRCCOPY)
+	pBitBlt.Call(dc, 0, 0, clientW, uintptr(G.clientH), mem, 0, 0, SRCCOPY)
 	pSelect.Call(mem, old)
 	pDelObj.Call(bmp)
 	pDelDC.Call(mem)
@@ -880,9 +931,7 @@ func main() {
 	baseDir = filepath.Dir(exe)
 	loadConfig()
 	lang, _, _ := pUILang.Call()
-	if cfg.Language == "de" || (cfg.Language == "" && lang&0x3FF == 0x07) {
-		S = &de
-	}
+	S = pickLanguage(cfg.Language, uint16(lang))
 	if cfg.Cover != "" {
 		p := cfg.Cover
 		if !filepath.IsAbs(p) {
@@ -890,15 +939,20 @@ func main() {
 		}
 		coverBmp, _, _ = pLoadImage.Call(0, uintptr(unsafe.Pointer(u(p))), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE|LR_CREATEDIBSECTION)
 	}
+	computeGeom()
 	inst, _, _ := pModule.Call(0)
+	cx, _, _ := pMetrics.Call(11)                                    // SM_CXICON
+	cs, _, _ := pMetrics.Call(49)                                    // SM_CXSMICON
+	bigIcon, _, _ := pLoadImage.Call(inst, 1, IMAGE_ICON, cx, cx, 0) // resource id 1 = disc icon (rsrc_windows_amd64.syso)
+	smallIcon, _, _ := pLoadImage.Call(inst, 1, IMAGE_ICON, cs, cs, 0)
 	cur, _, _ := pLoadCur.Call(0, 32512) // IDC_ARROW
 	class := u("PhysicalReleaseStudioLauncher")
-	wc := WNDCLASSEX{Size: uint32(unsafe.Sizeof(WNDCLASSEX{})), WndProc: syscall.NewCallback(wndProc), Instance: inst, Cursor: cur, Background: 16, ClassName: class}
+	wc := WNDCLASSEX{Size: uint32(unsafe.Sizeof(WNDCLASSEX{})), WndProc: syscall.NewCallback(wndProc), Instance: inst, Icon: bigIcon, IconSm: smallIcon, Cursor: cur, Background: 16, ClassName: class}
 	if r, _, _ := pRegister.Call(uintptr(unsafe.Pointer(&wc))); r == 0 {
 		return
 	}
 	style := uintptr(WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX)
-	rc := RECT{0, 0, clientW, clientH}
+	rc := RECT{0, 0, clientW, G.clientH}
 	pAdjust.Call(uintptr(unsafe.Pointer(&rc)), style, 0, 0)
 	ww, wh := rc.Right-rc.Left, rc.Bottom-rc.Top
 	sx, _, _ := pMetrics.Call(0)

@@ -26,6 +26,7 @@ type SplitFile struct {
 
 type Config struct {
 	Title, Installer, Cover, Language string
+	HideTitle                         bool // [Game] ShowTitle=0
 	MediaType, Label, PackageID       string
 	MediaCount                        int
 	CapacityBytes, StagingBytes       int64
@@ -66,6 +67,8 @@ func ParseINI(r io.Reader) Config {
 				c.Cover = v
 			case "language":
 				c.Language = strings.ToLower(v)
+			case "showtitle":
+				c.HideTitle = v == "0" || strings.EqualFold(v, "false") || strings.EqualFold(v, "no")
 			}
 		case "", "disc", "staging":
 			switch k {

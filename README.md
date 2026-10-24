@@ -120,6 +120,7 @@ Physical Release Studio is an open-source layout utility designed for game prese
 
 - This project does **not** host, distribute, or bundle any copyrighted game artwork, logos, or ROMs.
 - Users are solely responsible for ensuring they have the legal right or license to use any third-party image assets uploaded to the studio.
+- For private use only. These templates are not intended for selling or distributing protected works.
 - All trademarks and brand names belong to their respective owners.
 
 ---

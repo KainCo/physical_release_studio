@@ -4,8 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Datenschutzerklärung — Physical Release Studio</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/tailwind.css">
+  <link rel="stylesheet" href="vendor/fontawesome/css/all.min.css">
+  <link rel="stylesheet" href="fonts/fonts.css">
   <style>
     .glass-nav { background: rgba(9, 13, 22, 0.88); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
     ::-webkit-scrollbar { width: 8px; }
@@ -55,10 +56,21 @@
         </p>
       </section>
 
-      <!-- 2. Hosting -->
+      <!-- 2. Verantwortlicher -->
       <section class="space-y-3 bg-[#111726] border border-[#1f293d] p-6 rounded-2xl">
         <h2 class="text-lg font-bold text-white flex items-center gap-2">
-          <i class="fa-solid fa-server text-blue-500"></i> 2. Hosting (GitHub Pages)
+          <i class="fa-solid fa-user-shield text-blue-500"></i> 2. Verantwortlicher
+        </h2>
+        <p>
+          Verantwortlich für diese Website ist KainCo Productions. Anschrift und Kontaktmöglichkeiten findest du im
+          <a href="https://kainc0.github.io/Impressum/" target="_blank" rel="noopener noreferrer" class="text-blue-400 underline hover:text-blue-300">Impressum</a>.
+        </p>
+      </section>
+
+      <!-- 3. Hosting -->
+      <section class="space-y-3 bg-[#111726] border border-[#1f293d] p-6 rounded-2xl">
+        <h2 class="text-lg font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-server text-blue-500"></i> 3. Hosting (GitHub Pages)
         </h2>
         <p>
           Diese Website wird extern gehostet über den Dienst <strong>GitHub Pages</strong> (Anbieter: GitHub, Inc., 88 Colin P Kelly Jr St, San Francisco, CA 94107, USA).
@@ -71,17 +83,17 @@
       <!-- 3. Datenerfassung auf dieser Website -->
       <section class="space-y-3 bg-[#111726] border border-[#1f293d] p-6 rounded-2xl">
         <h2 class="text-lg font-bold text-white flex items-center gap-2">
-          <i class="fa-solid fa-cookie text-blue-500"></i> 3. Cookies & Lokaler Speicher (Local Storage)
+          <i class="fa-solid fa-cookie text-blue-500"></i> 4. Cookies & Lokaler Speicher (Local Storage)
         </h2>
         <p>
-          Unsere Website verwendet <strong>keine</strong> Tracking- oder Analyse-Cookies. Wir nutzen den lokalen Speicher Ihres Browsers (LocalStorage) lediglich dazu, Ihre gewählte Sprache (Deutsch/Englisch) sowie Ihre Entscheidung bezüglich des Cookie-Hinweises zu speichern.
+          Unsere Website verwendet <strong>keine</strong> Cookies und keine Tracking- oder Analyse-Dienste. Alle Schriften, Icons und Skripte werden von unserem eigenen Server (GitHub Pages) geladen, es werden keine Inhalte von Drittanbietern nachgeladen. Wir nutzen den lokalen Speicher Ihres Browsers (LocalStorage) lediglich dazu, Ihre gewählte Sprache (Deutsch/Englisch) zu speichern. Dieser Eintrag ist für die von Ihnen gewünschte Funktion erforderlich und bleibt auf Ihrem Gerät.
         </p>
       </section>
 
       <!-- 4. Affiliate-Links (Amazon PartnerNet) -->
       <section class="space-y-3 bg-[#111726] border border-[#1f293d] p-6 rounded-2xl">
         <h2 class="text-lg font-bold text-white flex items-center gap-2">
-          <i class="fa-solid fa-cart-shopping text-blue-500"></i> 4. Amazon-Affiliate-Links
+          <i class="fa-solid fa-cart-shopping text-blue-500"></i> 5. Amazon-Affiliate-Links
         </h2>
         <p>
           Auf dieser Website sind Empfehlungslinks („Affiliate-Links“) zum Online-Händler Amazon eingebunden. Wenn Sie auf einen solchen Link klicken und bei Amazon einkaufen, erhalten wir eine kleine Provision. Für Sie entstehen dabei keine Mehrkosten.
@@ -94,7 +106,7 @@
       <!-- 5. Spenden-Dienste -->
       <section class="space-y-3 bg-[#111726] border border-[#1f293d] p-6 rounded-2xl">
         <h2 class="text-lg font-bold text-white flex items-center gap-2">
-          <i class="fa-solid fa-mug-hot text-blue-500"></i> 5. Spenden (PayPal & Ko-fi)
+          <i class="fa-solid fa-mug-hot text-blue-500"></i> 6. Spenden (PayPal & Ko-fi)
         </h2>
         <p>
           Wir bieten auf unserer Seite die Möglichkeit an, unsere Arbeit freiwillig über PayPal oder Ko-fi zu unterstützen. Wenn Sie auf diese Spenden-Buttons klicken, werden Sie direkt zu den jeweiligen externen Zahlungsanbietern weitergeleitet. Es gelten die Datenschutzbestimmungen des jeweiligen Anbieters:
@@ -110,8 +122,10 @@
 
   <!-- Footer -->
   <footer class="border-t border-[#1f293d] bg-[#111726]/50 py-8 text-xs text-slate-500 text-center">
-    <p>&copy; 2026 Physical Release Studio — Alle Rechte vorbehalten.</p>
+    <p class="space-x-4"><a href="https://kainc0.github.io/Impressum/" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">Impressum</a><a href="../index.html" class="hover:text-white transition-colors">Startseite</a></p>
+    <p class="mt-2">&copy; 2026 Physical Release Studio — Alle Rechte vorbehalten.</p>
   </footer>
 
+  <script src="legal-note.js" defer></script>
 </body>
 </html>
