@@ -209,7 +209,8 @@ function applyLang(){
   document.getElementById('langEn').classList.toggle('on',LANG==='en');
   document.title=LANG==='de'?'Physical Release Studio — GOG Disc Creator (Deutsch)':'Physical Release Studio — GOG Disc Creator';
   document.querySelectorAll('.extra-label').forEach(el=>el.placeholder=LANG==='de'?'Name der Schaltfläche (z. B. Patch-Installer)':'Button name (e.g. Patch installer)');
-  document.querySelectorAll('.extra small').forEach(el=>el.textContent=LANG==='de'?'Datei oder ganzen Ordner wählen':'Select a file or an entire folder');
+  document.querySelectorAll('.extra small').forEach(el=>el.textContent=extraHint());
+  document.querySelectorAll('.extra').forEach(r=>{const sel=r.querySelector('.extra-start');if(sel&&!sel.hidden){const keep=sel.value;fillExtraStart(r);sel.value=keep;}});
   renderStatuses();updateMediaEstimate();initOutput();
 }
 function setLang(l){LANG=l==='de'?'de':'en';try{localStorage.setItem('prs_lang',LANG);}catch(_){}applyLang();}
@@ -336,16 +337,31 @@ function renderCoverStatus(){
   else h+='<br><span style="color:#008000">'+t('covOk')+'</span>';
   info.innerHTML=h;
 }
+// Folder extras: the button can open the folder itself or start one file inside it (e.g. the EXE of a second language version)
+const START_EXT=/\.(exe|bat|cmd|msi|lnk|pdf|txt|rtf|html?|mp3|flac|ogg|wav|mp4|mkv|avi|jpe?g|png)$/i;
+function extraHint(){return LANG==='de'?'Datei oder ganzen Ordner wählen (bei einem Ordner kannst du unten die Startdatei wählen)':'Select a file or an entire folder (for a folder you can pick the start file below)';}
+function fillExtraStart(row){
+  const sel=row.querySelector('.extra-start');
+  const files=[...row.querySelector('.extra-folder').files];
+  sel.innerHTML='';
+  if(!files.length){sel.hidden=true;return;}
+  const o0=document.createElement('option');o0.value='';o0.dataset.k='folder';o0.textContent=LANG==='de'?'Beim Klick: Ordner öffnen':'On click: open the folder';sel.appendChild(o0);
+  const rels=files.map(f=>(f.webkitRelativePath||f.name).split('/').slice(1).join('/')).filter(r=>r&&START_EXT.test(r)).sort((a,b)=>a.split('/').length-b.split('/').length||a.localeCompare(b));
+  rels.slice(0,300).forEach(r=>{const o=document.createElement('option');o.value=r;o.textContent=(LANG==='de'?'Starten: ':'Start: ')+r;sel.appendChild(o);});
+  const exes=rels.filter(r=>/\.exe$/i.test(r)&&r.indexOf('/')<0);
+  if(exes.length===1)sel.value=exes[0];   // one EXE in the top level: preselect it
+  sel.hidden=false;
+}
 function addExtra(){
   if(document.querySelectorAll('.extra').length>=MAX_EXTRAS){alert(t('errMaxExtras',MAX_EXTRAS));return;}
   const wrap=document.createElement('div');
   wrap.className='extra';
   wrap.innerHTML='<input class="extra-label" type="text" placeholder="'+(LANG==='de'?'Name der Schaltfläche (z. B. Patch-Installer)':'Button name (e.g. Patch installer)')+'">'
-    +'<div><input class="extra-file" type="file" title="Select one file"><br><input class="extra-folder" type="file" webkitdirectory directory multiple title="Select a complete folder"><small>'+(LANG==='de'?'Datei oder ganzen Ordner wählen':'Select a file or an entire folder')+'</small></div>'
+    +'<div><input class="extra-file" type="file" title="Select one file"><br><input class="extra-folder" type="file" webkitdirectory directory multiple title="Select a complete folder"><small>'+extraHint()+'</small><br><select class="extra-start" hidden title="Start file"></select></div>'
     +'<button type="button" class="danger" title="Remove">✕</button>';
   wrap.querySelector('button').onclick=()=>{wrap.remove();updateMediaEstimate();};
-  wrap.querySelector('.extra-file').onchange=()=>{wrap.querySelector('.extra-folder').value='';updateMediaEstimate();};
-  wrap.querySelector('.extra-folder').onchange=()=>{wrap.querySelector('.extra-file').value='';updateMediaEstimate();};
+  wrap.querySelector('.extra-file').onchange=()=>{wrap.querySelector('.extra-folder').value='';fillExtraStart(wrap);updateMediaEstimate();};
+  wrap.querySelector('.extra-folder').onchange=()=>{wrap.querySelector('.extra-file').value='';fillExtraStart(wrap);updateMediaEstimate();};
   document.getElementById('extras').appendChild(wrap);
 }
 
@@ -579,7 +595,10 @@ async function buildFixed(){
         if(!rel)continue;
         fixed.push({name:dir+'/'+rel,data:f});
       }
-      extras.push({label,path:dir});
+      const startSel=row.querySelector('.extra-start');
+      const startRel=startSel&&!startSel.hidden?startSel.value:'';
+      const startPath=startRel?dir+'/'+startRel.split('/').map(part=>safeName(part,'file')).join('/'):dir;
+      extras.push({label,path:startPath});
     }else if(file){
       extraIndex++;
       const label=(row.querySelector('.extra-label').value.trim()||file.name).replace(/[|\r\n]+/g,' ');
