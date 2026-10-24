@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Physical Release Studio — Hub</title>
   
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Tailwind CSS (lokal vorkompiliert, siehe tailwind.config.js) -->
+  <link rel="stylesheet" href="./assets/css/tailwind.css">
   
   <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="./assets/vendor/fontawesome/css/all.min.css">
   
   <!-- Lokale Fonts (100% DSGVO-konform über exakte statische .ttf Schnitte wie im Backup) -->
   <style>
@@ -99,35 +99,6 @@
     ::-webkit-scrollbar-thumb:hover { background: #3b82f6; }
   </style>
 
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-            mono: ['JetBrains Mono', 'monospace'],
-          },
-          colors: {
-            brand: {
-              50: '#f0f6ff',
-              500: '#3b82f6',
-              600: '#2563eb',
-              700: '#1d4ed8',
-              accent: '#a855f7',
-              neon: '#06b6d4',
-            },
-            dark: {
-              bg: '#090d16',
-              card: '#111726',
-              border: '#1f293d',
-              hover: '#1a2336'
-            }
-          }
-        }
-      }
-    }
-  </script>
 </head>
 <body class="bg-dark-bg text-slate-100 font-sans antialiased min-h-screen flex flex-col selection:bg-brand-500 selection:text-white">
 
@@ -575,22 +546,27 @@
               <div class="w-12 h-12 rounded-xl bg-orange-500/10 border border-orange-500/20 text-orange-400 flex items-center justify-center">
                 <i class="fa-solid fa-box text-xl"></i>
               </div>
-              <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 badge-planned-text">In Development</span>
+              <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">BETA</span>
             </div>
             <h3 class="text-lg font-bold text-white">Craft Studio</h3>
             <p class="text-slate-400 text-sm mt-2 leading-relaxed mb-3" data-i18n="card_craft_desc">
               Foldable dielines for cardboard packaging and boxes:
             </p>
             <ul class="text-[11px] text-slate-400 space-y-1 font-mono list-disc list-inside bg-dark-bg p-2 rounded-lg border border-dark-border">
-              <li>PC Big Boxes</li>
+              <li class="text-emerald-400">PC Big Boxes + CD-Inlay</li>
               <li>Nintendo Game Boy / Advance</li>
               <li>SNES Pappschachteln</li>
               <li>N64 Pappschachteln</li>
               <li>NES Pappschachteln</li>
             </ul>
           </div>
-          <div class="mt-6 py-2.5 rounded-xl bg-dark-hover border border-dark-border text-slate-400 text-xs font-medium text-center cursor-not-allowed" data-i18n="btn_coming_soon">
-            Coming Soon
+          <div class="mt-6 space-y-2">
+            <a href="studios/craft/bigbox-studio.html" class="block text-center py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold transition-colors shadow-lg shadow-brand-600/20">
+              PC Big Box Craft Studio
+            </a>
+            <a href="studios/craft/bigbox-inlay.html" class="block text-center py-2.5 rounded-xl bg-dark-hover hover:bg-dark-border border border-dark-border text-white text-xs font-bold transition-colors">
+              Inlay Craft Studio
+            </a>
           </div>
         </div>
 
@@ -674,6 +650,7 @@
         <a href="https://paypal.me/kainco" target="_blank" rel="noopener noreferrer" class="hover:text-blue-400 transition-colors">PayPal</a>
         <a href="https://ko-fi.com/kainco" target="_blank" rel="noopener noreferrer" class="hover:text-red-400 transition-colors">Ko-Fi</a>
         <!-- Hier ist der neue Datenschutz-Link -->
+        <a href="https://kainc0.github.io/Impressum/" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors text-slate-300 font-semibold" data-i18n="nav_imprint">Legal Notice</a>
         <a href="./assets/datenschutz.html" class="hover:text-white transition-colors text-slate-300 font-semibold" data-i18n="nav_privacy">Privacy Policy</a>
       </div>
     </div>
@@ -683,39 +660,10 @@
     </div>
   </footer>
 
-  <!-- ==================== DSGVO / TTDSG COOKIE BANNER ==================== -->
-  <div id="cookie-banner" class="fixed bottom-0 left-0 right-0 z-50 bg-dark-card border-t border-dark-border p-4 sm:p-6 shadow-2xl backdrop-blur-xl bg-opacity-95 hidden">
-    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-      <div class="text-xs sm:text-sm text-slate-300 leading-relaxed text-center md:text-left">
-        <span class="font-bold text-white block mb-1"><i class="fa-solid fa-shield-halved text-brand-500 mr-1.5"></i> Datenschutz & Cookies (DSGVO / TTDSG)</span>
-        Diese Website verwendet lokale Schriften und speichert lediglich deine Spracheinstellung im lokalen Speicher. Für externe Produktempfehlungen (Amazon-Partnerprogramm) werden beim Klick auf entsprechende Links Cookies von Drittanbietern gesetzt. Weitere Infos findest du in unserer Datenschutzerklärung.
-<a href="./assets/datenschutz.html" class="text-brand-500 underline hover:text-brand-400">Datenschutzerklärung</a>
-      </div>
-      <div class="flex items-center gap-3 shrink-0">
-        <button onclick="acceptCookies(false)" class="px-4 py-2 rounded-xl bg-dark-hover hover:bg-dark-border text-slate-300 font-bold text-xs transition-colors">
-          Nur Essenzielle
-        </button>
-        <button onclick="acceptCookies(true)" class="px-5 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs transition-colors shadow-lg shadow-brand-600/20">
-          Alle akzeptieren
-        </button>
-      </div>
-    </div>
-  </div>
-
   <!-- ==================== MULTILINGUAL & ANIMATION ENGINE ==================== -->
   <script>
-    // Cookie Banner Logik (DSGVO / TTDSG)
-    window.addEventListener('DOMContentLoaded', () => {
-      const consent = localStorage.getItem('prs_cookie_consent');
-      if (!consent) {
-        document.getElementById('cookie-banner').classList.remove('hidden');
-      }
-    });
-
-    function acceptCookies(allAccepted) {
-      localStorage.setItem('prs_cookie_consent', allAccepted ? 'all' : 'essential');
-      document.getElementById('cookie-banner').classList.add('hidden');
-    }
+    // Der frühere Cookie-Hinweis wurde entfernt (keine Cookies, keine Drittanbieter) – alten Merker aufräumen
+    try { localStorage.removeItem('prs_cookie_consent'); } catch (e) {}
 
     const i18n = {
       en: {
@@ -723,6 +671,7 @@
         nav_materials: "Materials & Supplies",
         nav_intention: "Mission & Intention",
 	nav_privacy: "Privacy Policy",
+        nav_imprint: "Legal Notice",
         btn_kofi: "Support on Ko-fi",
         hero_pill: "Physical Media Preservation Project",
         hero_title_1: "Digital Games.",
@@ -770,6 +719,7 @@ With this studio, you can convert DRM-free games, indie titles, or ROM backups i
         nav_materials: "Materialien & Hardware",
         nav_intention: "Sinn & Intention",
 	nav_privacy: "Datenschutzerklärung",
+        nav_imprint: "Impressum",
         btn_kofi: "Ko-fi Support",
         hero_pill: "Physical Media Preservation Projekt",
         hero_title_1: "Digitale Spiele.",
