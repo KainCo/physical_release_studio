@@ -6,6 +6,8 @@
     en: 'For private use only. All rights to games, cover art, packaging, names and trademarks belong to their respective owners. These templates are not intended for selling or distributing protected works. Users are responsible for the content they upload.'
   };
   function lang() {
+    var fixed = document.documentElement.getAttribute('data-note-lang');   // Seiten ohne Sprachumschalter (z. B. Datenschutz) legen die Sprache fest
+    if (fixed) return fixed === 'en' ? 'en' : 'de';
     var l = null;
     try { l = localStorage.getItem('prs_lang'); } catch (e) {}
     l = l || document.documentElement.lang || 'de';

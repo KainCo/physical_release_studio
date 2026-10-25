@@ -19,7 +19,7 @@
   <!-- Header -->
   <header class="sticky top-0 z-50 glass-nav border-b border-[#1f293d]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-      <a href="index.html" class="flex items-center gap-3 group">
+      <a href="../index.html" class="flex items-center gap-3 group">
         <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-purple-500 to-pink-500 p-0.5 shadow-lg shadow-blue-500/20">
           <div class="w-full h-full bg-[#090d16] rounded-[10px] flex items-center justify-center">
             <i class="fa-solid fa-compact-disc text-blue-500 text-xl"></i>
@@ -30,17 +30,23 @@
           <span class="text-xs font-mono text-blue-500 tracking-widest uppercase">Studio Hub</span>
         </div>
       </a>
-      <a href="index.html" class="text-xs font-semibold text-slate-400 hover:text-white transition-colors">
-        <i class="fa-solid fa-arrow-left mr-1"></i> Zurück zur Startseite
-      </a>
+      <div class="flex items-center gap-4">
+        <a href="../index.html" class="text-xs font-semibold text-slate-400 hover:text-white transition-colors">
+          <i class="fa-solid fa-arrow-left mr-1"></i> <span data-i="back">Zurück zur Startseite</span>
+        </a>
+        <div class="bg-dark-card border border-dark-border rounded-xl p-1 flex items-center text-xs font-bold font-mono">
+          <button type="button" id="lang-en" onclick="setLanguage('en')" class="px-2.5 py-1 rounded-lg transition-all text-slate-400 hover:text-white">EN</button>
+          <button type="button" id="lang-de" onclick="setLanguage('de')" class="px-2.5 py-1 rounded-lg transition-all text-slate-400 hover:text-white">DE</button>
+        </div>
+      </div>
     </div>
   </header>
 
   <!-- Content -->
   <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-10 flex-1">
     <div class="space-y-3">
-      <h1 class="text-3xl sm:text-4xl font-extrabold text-white">Datenschutzerklärung</h1>
-      <p class="text-slate-400 text-sm font-mono">Stand: Oktober 2026</p>
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-white" data-i="h1">Datenschutzerklärung</h1>
+      <p class="text-slate-400 text-sm font-mono" data-i="asof">Stand: Oktober 2026</p>
     </div>
 
     <div class="space-y-8 text-sm text-slate-300 leading-relaxed">
@@ -48,10 +54,10 @@
       <!-- 1. Datenschutz auf einen Blick -->
       <section class="space-y-3 bg-[#111726] border border-[#1f293d] p-6 rounded-2xl">
         <h2 class="text-lg font-bold text-white flex items-center gap-2">
-          <i class="fa-solid fa-circle-info text-blue-500"></i> 1. Datenschutz auf einen Blick
+          <i class="fa-solid fa-circle-info text-blue-500"></i> <span data-i="h_glance">1. Datenschutz auf einen Blick</span>
         </h2>
-        <h3 class="font-bold text-white text-xs uppercase tracking-wider mt-4">Allgemeine Hinweise</h3>
-        <p>
+        <h3 class="font-bold text-white text-xs uppercase tracking-wider mt-4" data-i="h3_gen">Allgemeine Hinweise</h3>
+        <p data-i="p_gen">
           Die folgenden Hinweise geben einen einfachen Überblick darüber, was mit Ihren personenbezogenen Daten passiert, wenn Sie diese Website besuchen. Personenbezogene Daten sind alle Daten, mit denen Sie persönlich identifiziert werden können.
         </p>
       </section>
@@ -59,10 +65,10 @@
       <!-- 2. Verantwortlicher -->
       <section class="space-y-3 bg-[#111726] border border-[#1f293d] p-6 rounded-2xl">
         <h2 class="text-lg font-bold text-white flex items-center gap-2">
-          <i class="fa-solid fa-user-shield text-blue-500"></i> 2. Verantwortlicher
+          <i class="fa-solid fa-user-shield text-blue-500"></i> <span data-i="h_ctrl">2. Verantwortlicher</span>
         </h2>
-        <p>
-          Verantwortlich für diese Website ist KainCo Productions. Anschrift und Kontaktmöglichkeiten findest du im
+        <p data-i="p_ctrl">
+          Verantwortlich für diese Website ist KainCo Productions. Anschrift und Kontaktmöglichkeiten finden Sie im
           <a href="https://kainc0.github.io/Impressum/" target="_blank" rel="noopener noreferrer" class="text-blue-400 underline hover:text-blue-300">Impressum</a>.
         </p>
       </section>
@@ -70,12 +76,12 @@
       <!-- 3. Hosting -->
       <section class="space-y-3 bg-[#111726] border border-[#1f293d] p-6 rounded-2xl">
         <h2 class="text-lg font-bold text-white flex items-center gap-2">
-          <i class="fa-solid fa-server text-blue-500"></i> 3. Hosting (GitHub Pages)
+          <i class="fa-solid fa-server text-blue-500"></i> <span data-i="h_host">3. Hosting (GitHub Pages)</span>
         </h2>
-        <p>
+        <p data-i="p_host1">
           Diese Website wird extern gehostet über den Dienst <strong>GitHub Pages</strong> (Anbieter: GitHub, Inc., 88 Colin P Kelly Jr St, San Francisco, CA 94107, USA).
         </p>
-        <p>
+        <p data-i="p_host2">
           Wenn Sie unsere Website besuchen, erfasst GitHub verschiedene Logfiles inklusive Ihrer IP-Adresse. Details entnehmen Sie der Datenschutzerklärung von GitHub: <a href="https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement" target="_blank" rel="noopener" class="text-blue-400 hover:underline">https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement</a>.
         </p>
       </section>
@@ -83,9 +89,9 @@
       <!-- 3. Datenerfassung auf dieser Website -->
       <section class="space-y-3 bg-[#111726] border border-[#1f293d] p-6 rounded-2xl">
         <h2 class="text-lg font-bold text-white flex items-center gap-2">
-          <i class="fa-solid fa-cookie text-blue-500"></i> 4. Cookies & Lokaler Speicher (Local Storage)
+          <i class="fa-solid fa-cookie text-blue-500"></i> <span data-i="h_cook">4. Cookies & Lokaler Speicher (Local Storage)</span>
         </h2>
-        <p>
+        <p data-i="p_cook">
           Unsere Website verwendet <strong>keine</strong> Cookies und keine Tracking- oder Analyse-Dienste. Alle Schriften, Icons und Skripte werden von unserem eigenen Server (GitHub Pages) geladen, es werden keine Inhalte von Drittanbietern nachgeladen. Wir nutzen den lokalen Speicher Ihres Browsers (LocalStorage) lediglich dazu, Ihre gewählte Sprache (Deutsch/Englisch) zu speichern. Dieser Eintrag ist für die von Ihnen gewünschte Funktion erforderlich und bleibt auf Ihrem Gerät.
         </p>
       </section>
@@ -93,12 +99,12 @@
       <!-- 4. Affiliate-Links (Amazon PartnerNet) -->
       <section class="space-y-3 bg-[#111726] border border-[#1f293d] p-6 rounded-2xl">
         <h2 class="text-lg font-bold text-white flex items-center gap-2">
-          <i class="fa-solid fa-cart-shopping text-blue-500"></i> 5. Amazon-Affiliate-Links
+          <i class="fa-solid fa-cart-shopping text-blue-500"></i> <span data-i="h_amz">5. Amazon-Affiliate-Links</span>
         </h2>
-        <p>
+        <p data-i="p_amz1">
           Auf dieser Website sind Empfehlungslinks („Affiliate-Links“) zum Online-Händler Amazon eingebunden. Wenn Sie auf einen solchen Link klicken und bei Amazon einkaufen, erhalten wir eine kleine Provision. Für Sie entstehen dabei keine Mehrkosten.
         </p>
-        <p>
+        <p data-i="p_amz2">
           <strong>Datenschutzhinweis zu Amazon:</strong> Erst wenn Sie aktiv auf einen Amazon-Link klicken, wird eine Verbindung zu den Servern von Amazon hergestellt. Dabei erfährt Amazon, dass Sie von unserer Website aus dorthin gelangt sind. Amazon kann hierbei Cookies auf Ihrem Endgerät setzen, um die Herkunft der Bestellung nachzuvollziehen. Weitere Informationen zur Datennutzung durch Amazon finden Sie in der Datenschutzerklärung von Amazon: <a href="https://www.amazon.de/gp/help/customer/display.html?nodeId=201909010" target="_blank" rel="noopener" class="text-blue-400 hover:underline">https://www.amazon.de/privacy</a>.
         </p>
       </section>
@@ -106,14 +112,14 @@
       <!-- 5. Spenden-Dienste -->
       <section class="space-y-3 bg-[#111726] border border-[#1f293d] p-6 rounded-2xl">
         <h2 class="text-lg font-bold text-white flex items-center gap-2">
-          <i class="fa-solid fa-mug-hot text-blue-500"></i> 6. Spenden (PayPal & Ko-fi)
+          <i class="fa-solid fa-mug-hot text-blue-500"></i> <span data-i="h_don">6. Spenden (PayPal & Ko-fi)</span>
         </h2>
-        <p>
+        <p data-i="p_don">
           Wir bieten auf unserer Seite die Möglichkeit an, unsere Arbeit freiwillig über PayPal oder Ko-fi zu unterstützen. Wenn Sie auf diese Spenden-Buttons klicken, werden Sie direkt zu den jeweiligen externen Zahlungsanbietern weitergeleitet. Es gelten die Datenschutzbestimmungen des jeweiligen Anbieters:
         </p>
         <ul class="list-disc list-inside space-y-1 text-slate-400">
-          <li>PayPal (Europe) S.à r.l. et Cie, S.C.A., Luxemburg</li>
-          <li>Ko-fi (Platform, Inc., USA)</li>
+          <li data-i="li_pp">PayPal (Europe) S.à r.l. et Cie, S.C.A., Luxemburg</li>
+          <li data-i="li_kofi">Ko-fi (Platform, Inc., USA)</li>
         </ul>
       </section>
 
@@ -122,10 +128,57 @@
 
   <!-- Footer -->
   <footer class="border-t border-[#1f293d] bg-[#111726]/50 py-8 text-xs text-slate-500 text-center">
-    <p class="space-x-4"><a href="https://kainc0.github.io/Impressum/" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">Impressum</a><a href="../index.html" class="hover:text-white transition-colors">Startseite</a></p>
-    <p class="mt-2">&copy; 2026 Physical Release Studio — Alle Rechte vorbehalten.</p>
+    <p class="space-x-4"><a href="https://kainc0.github.io/Impressum/" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors" data-i="f_imp">Impressum</a><a href="../index.html" class="hover:text-white transition-colors" data-i="f_home">Startseite</a></p>
+    <p class="mt-2" data-i="f_copy">&copy; 2026 Physical Release Studio — Alle Rechte vorbehalten.</p>
   </footer>
 
   <script src="legal-note.js" defer></script>
+  <script>
+    // Zweisprachig: Deutsch (Original im HTML) und Englisch. Sprache = gemeinsamer Merker 'prs_lang' wie auf der Startseite.
+    var EN = {
+  "back": "Back to home",
+  "h1": "Privacy Policy",
+  "asof": "As of: October 2026",
+  "h_glance": "1. Privacy at a glance",
+  "h3_gen": "General information",
+  "p_gen": "The following notes give a simple overview of what happens to your personal data when you visit this website. Personal data is any data with which you can be personally identified.",
+  "h_ctrl": "2. Controller",
+  "p_ctrl": "This website is operated by KainCo Productions. You can find the address and contact details in the <a href=\"https://kainc0.github.io/Impressum/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-blue-400 underline hover:text-blue-300\">Legal Notice</a>.",
+  "h_host": "3. Hosting (GitHub Pages)",
+  "p_host1": "This website is hosted externally via the service <strong>GitHub Pages</strong> (provider: GitHub, Inc., 88 Colin P Kelly Jr St, San Francisco, CA 94107, USA).",
+  "p_host2": "When you visit our website, GitHub collects various log files including your IP address. For details, please see GitHub's privacy statement: <a href=\"https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement\" target=\"_blank\" rel=\"noopener\" class=\"text-blue-400 hover:underline\">https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement</a>.",
+  "h_cook": "4. Cookies & Local Storage",
+  "p_cook": "Our website uses <strong>no</strong> cookies and no tracking or analytics services. All fonts, icons and scripts are loaded from our own server (GitHub Pages); no content is loaded from third parties. We only use your browser's local storage (LocalStorage) to save your chosen language (German/English). This entry is required for the function you requested and stays on your device.",
+  "h_amz": "5. Amazon affiliate links",
+  "p_amz1": "This website contains recommendation links (\"affiliate links\") to the online retailer Amazon. If you click such a link and buy something at Amazon, we receive a small commission. There is no additional cost to you.",
+  "p_amz2": "<strong>Privacy note on Amazon:</strong> A connection to Amazon's servers is only established once you actively click an Amazon link. Amazon then learns that you came from our website. Amazon may set cookies on your device to trace the origin of an order. For more information on how Amazon uses data, see Amazon's privacy notice: <a href=\"https://www.amazon.de/gp/help/customer/display.html?nodeId=201909010\" target=\"_blank\" rel=\"noopener\" class=\"text-blue-400 hover:underline\">https://www.amazon.de/privacy</a>.",
+  "h_don": "6. Donations (PayPal & Ko-fi)",
+  "p_don": "On our site you can voluntarily support our work via PayPal or Ko-fi. When you click these donation buttons, you are forwarded directly to the respective external payment provider. The privacy terms of the respective provider apply:",
+  "f_imp": "Legal Notice",
+  "f_home": "Home",
+  "f_copy": "&copy; 2026 Physical Release Studio — All rights reserved.",
+  "li_pp": "PayPal (Europe) S.à r.l. et Cie, S.C.A., Luxembourg",
+  "li_kofi": "Ko-fi (Platform, Inc., USA)"
+};
+    var TITLE = { de: 'Datenschutzerklärung — Physical Release Studio', en: 'Privacy Policy — Physical Release Studio' };
+    function setLanguage(lang) {
+      lang = lang === 'en' ? 'en' : 'de';
+      try { localStorage.setItem('prs_lang', lang); } catch (e) {}
+      document.querySelectorAll('[data-i]').forEach(function (el) {
+        if (el.dataset.de === undefined) el.dataset.de = el.innerHTML;
+        el.innerHTML = lang === 'en' && EN[el.dataset.i] !== undefined ? EN[el.dataset.i] : el.dataset.de;
+      });
+      document.title = TITLE[lang];
+      document.documentElement.lang = lang;
+      document.getElementById('lang-en').className = 'px-2.5 py-1 rounded-lg transition-all ' + (lang === 'en' ? 'bg-brand-600 text-white shadow-sm' : 'text-slate-400 hover:text-white');
+      document.getElementById('lang-de').className = 'px-2.5 py-1 rounded-lg transition-all ' + (lang === 'de' ? 'bg-brand-600 text-white shadow-sm' : 'text-slate-400 hover:text-white');
+    }
+    (function () {
+      var l = null; try { l = localStorage.getItem('prs_lang'); } catch (e) {}
+      if (l !== 'en' && l !== 'de') l = 'de';   // wie die Startseite: Standard Deutsch
+      document.addEventListener('DOMContentLoaded', function () { setLanguage(l); });
+    })();
+  </script>
+
 </body>
 </html>
