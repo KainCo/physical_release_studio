@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Physical Release Studio — Game Boy Box Craft Studio</title>
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="../../assets/vendor/fontawesome/css/all.min.css">
+
+  <!-- Lokale Schriften (Inter & JetBrains Mono), kein Google-Fonts-Abruf -->
+  <link rel="stylesheet" href="../../assets/fonts/fonts.css">
+
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: #111726;
+      --border: #1f293d;
+      --hover: #1a2336;
+      --brand: #2563eb;
+      --brand-accent: #a855f7;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px;
+    }
+
+    header {
+      width: 100%;
+      max-width: 1100px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 20px;
+      background: rgba(9, 13, 22, 0.9);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .brand-title { display: flex; align-items: center; gap: 12px; text-decoration: none; color: white; }
+    .brand-title i { font-size: 1.5rem; color: #f97316; }
+    .header-actions { display: flex; align-items: center; gap: 12px; }
+
+    .lang-switcher { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 2px; display: flex; }
+    .lang-btn {
+      background: transparent; border: none; color: var(--text-muted); padding: 4px 10px;
+      font-size: 0.75rem; font-weight: bold; font-family: 'JetBrains Mono', monospace; cursor: pointer; border-radius: 6px;
+    }
+    .lang-btn.active { background: var(--brand); color: white; }
+
+    .btn-index {
+      background: var(--card-bg); color: var(--text); border: 1px solid var(--border); padding: 6px 12px;
+      border-radius: 8px; font-size: 0.8rem; font-weight: bold; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .btn-index:hover { border-color: var(--brand); }
+
+    .ui-container {
+      width: 100%;
+      max-width: 1100px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      margin-bottom: 24px;
+    }
+
+    .header-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 4px; }
+    .sub-title { font-size: 0.8rem; font-family: 'JetBrains Mono', monospace; color: var(--text-muted); margin-bottom: 12px; }
+    .size-note {
+      font-size: 0.75rem; color: #fbbf24; background: rgba(245, 158, 11, 0.10);
+      border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 8px; padding: 8px 12px; margin-bottom: 16px;
+    }
+
+    .part-section-title {
+      font-size: 0.95rem; font-weight: 700; color: var(--brand); margin: 16px 0 10px 0;
+      border-bottom: 1px solid var(--border); padding-bottom: 6px; display: flex; align-items: center; gap: 8px;
+    }
+    .part-section-title.bottom { color: var(--brand-accent); }
+
+    .upload-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; margin-bottom: 20px; }
+    .upload-card {
+      background: var(--bg); border: 2px dashed var(--border); border-radius: 12px; padding: 12px;
+      cursor: pointer; transition: border-color 0.2s;
+    }
+    .upload-card.active { border-color: var(--brand); }
+    .upload-card label { display: block; font-weight: bold; font-size: 0.8rem; margin-bottom: 6px; cursor: pointer; }
+    .upload-card input[type="file"] { width: 100%; font-size: 0.7rem; color: var(--text-muted); }
+
+    /* DPI Quality Scale */
+    .dpi-container { display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+    .dpi-badge { padding: 5px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: bold; text-align: center; margin-bottom: 6px; }
+    .dpi-badge.green { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .dpi-badge.yellow { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .dpi-badge.red { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+    .dpi-scale-wrapper { position: relative; width: 100%; background: #1f293d; height: 8px; border-radius: 4px; overflow: hidden; display: flex; }
+    .scale-segment { height: 100%; }
+    .scale-red { width: 37.5%; background: #ef4444; }
+    .scale-yellow { width: 37.5%; background: #f59e0b; }
+    .scale-green { width: 25%; background: #10b981; }
+    .scale-marker { position: absolute; top: 0; bottom: 0; width: 4px; background: #fff; transform: translateX(-50%); transition: left 0.3s ease; }
+
+    .tabs {
+      display: flex; gap: 6px; margin-bottom: 16px; background: var(--bg); padding: 4px;
+      border-radius: 10px; border: 1px solid var(--border); overflow-x: auto;
+    }
+    .tab-btn {
+      flex: 1; min-width: 92px; padding: 8px 10px; border: none; background: transparent; color: var(--text-muted);
+      border-radius: 8px; font-weight: bold; font-size: 0.75rem; cursor: pointer; white-space: nowrap;
+    }
+    .tab-btn.active { background: var(--brand); color: white; }
+
+    .controls-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;
+      background: var(--bg); padding: 16px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 20px;
+    }
+    .control-group label {
+      font-size: 0.75rem; font-weight: bold; color: var(--text-muted); text-transform: uppercase;
+      letter-spacing: 0.05em; display: block; margin-bottom: 8px;
+    }
+    .btn-row { display: flex; gap: 4px; flex-wrap: wrap; }
+    .btn-small {
+      padding: 6px 10px; font-size: 0.75rem; font-family: 'JetBrains Mono', monospace; border-radius: 6px;
+      border: 1px solid var(--border); background: var(--card-bg); color: var(--text); cursor: pointer;
+    }
+    .btn-small:hover { border-color: var(--brand); }
+    .btn-small.on { background: var(--brand); color: #fff; border-color: var(--brand); }
+
+    .nudge-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; width: 110px; margin: 0 auto; }
+    .nudge-grid button {
+      padding: 6px; font-size: 0.75rem; background: var(--card-bg); border: 1px solid var(--border);
+      color: white; border-radius: 6px; cursor: pointer;
+    }
+    .nudge-grid button:hover { border-color: var(--brand); }
+
+    .btn-print { width: 100%; background: #10b981; color: white; padding: 14px; border: none; border-radius: 10px; font-size: 1rem; font-weight: bold; cursor: pointer; }
+    .btn-print:hover { background: #059669; }
+
+    /* ---- Preview: exact proportions, 20 px per cm (content-box via outline, so clientWidth/clientHeight are exact) ---- */
+    .preview-wrapper {
+      display: flex; gap: 32px; justify-content: center; align-items: flex-start; flex-wrap: wrap;
+      width: 100%; max-width: 1100px; background: var(--card-bg); border: 1px solid var(--border);
+      padding: 32px 16px; border-radius: 16px;
+    }
+    .box-net { display: grid; gap: 0; justify-content: center; align-content: center; }
+    .frame-container {
+      position: relative; background: var(--bg); outline: 1px solid var(--border); outline-offset: -1px;
+      overflow: hidden; cursor: pointer; touch-action: none;
+    }
+    .frame-container.active-target { outline: 2px solid var(--brand); outline-offset: -2px; z-index: 2; box-shadow: 0 0 12px rgba(37, 99, 235, 0.45); }
+    .cover-img { position: absolute; top: 50%; left: 50%; transform-origin: center center; pointer-events: none; max-width: none; max-height: none; }
+    .placeholder {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 0.65rem;
+      color: var(--text-muted); text-align: center; pointer-events: none; white-space: nowrap;
+    }
+    /* corner flaps (not uploadable): belong to the left / right wall, folded inside and glued */
+    .corner-flap {
+      outline: 1px dashed var(--border); outline-offset: -1px;
+      background: repeating-linear-gradient(45deg, transparent 0 4px, rgba(148, 163, 184, 0.14) 4px 5px);
+    }
+    .placeholder.vert { writing-mode: vertical-rl; letter-spacing: 0.1em; }
+
+
+    /* ---- Wizard ---- */
+    .wiz-steps { display: flex; gap: 6px; margin-bottom: 18px; }
+    .wiz-pill { flex: 1; text-align: center; padding: 8px 6px; border-radius: 10px; background: var(--bg); border: 1px solid var(--border); color: var(--text-muted); font-size: 0.75rem; font-weight: bold; cursor: pointer; }
+    .wiz-pill.active { background: var(--brand); border-color: var(--brand); color: #fff; }
+    .wiz-pill.done { color: var(--text); border-color: var(--brand); }
+    .wiz-step { display: none; }
+    .wiz-step.active { display: block; }
+    .wiz-h { font-size: 1.1rem; font-weight: 800; margin-bottom: 4px; }
+    .wiz-s { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 14px; }
+    .choice-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; margin-bottom: 14px; }
+    .choice { background: var(--bg); border: 2px solid var(--border); border-radius: 12px; padding: 12px; cursor: pointer; text-align: center; }
+    .choice:hover { border-color: var(--text-muted); }
+    .choice.on { border-color: var(--brand); box-shadow: 0 0 0 1px var(--brand) inset; }
+    .choice svg { display: block; margin: 0 auto 8px; max-width: 100%; }
+    .choice .c-name { font-weight: 800; font-size: 0.9rem; }
+    .choice .c-dim { font-size: 0.72rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; margin-top: 2px; }
+    .choice .c-note { font-size: 0.7rem; color: var(--text-muted); margin-top: 6px; }
+    .size-note.ok { color: #34d399; background: rgba(16, 185, 129, 0.10); border-color: rgba(16, 185, 129, 0.3); }
+    .wiz-nav { display: flex; justify-content: space-between; gap: 10px; margin-top: 18px; }
+    .wiz-nav .btn-small { padding: 10px 22px; font-size: 0.85rem; }
+    .inlay-link { display: block; text-align: center; font-size: 0.8rem; color: var(--brand); margin-bottom: 12px; text-decoration: none; }
+    .inlay-link:hover { text-decoration: underline; }
+    details.adv { margin: 14px 0; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; }
+    details.adv summary { cursor: pointer; font-size: 0.8rem; font-weight: bold; color: var(--text-muted); }
+    .adv-body { margin-top: 10px; display: flex; flex-direction: column; }
+    #wizNav[hidden], .wiz-nav[hidden] { display: none; }
+
+    /* ---- Print ---- */
+    #printScreen {
+      display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: white; z-index: 9999; padding: 10px; overflow: auto; color: black;
+    }
+    .print-pages { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+    .print-page { position: relative; flex: none; width: var(--pw, 210mm); height: var(--ph, 296mm); background: #fff; box-shadow: 0 2px 12px rgba(0,0,0,0.35); overflow: hidden; }
+    .print-page[hidden] { display: none !important; }
+    .print-page canvas { position: absolute; left: 0; top: 0; width: var(--pw, 210mm); height: var(--ph, 296mm); display: block; }
+    @media screen { .print-pages { zoom: 0.6; } }
+
+    @media print {
+      @page { size: A4 portrait; margin: 0mm !important; }
+      html, body {
+        display: block !important; width: var(--pw, 210mm) !important; height: auto !important; min-height: 0 !important;
+        margin: 0 !important; padding: 0 !important; overflow: visible !important; background: white !important;
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+      }
+      header, .ui-container, .preview-wrapper, .no-print { display: none !important; }
+      #printScreen {
+        display: block !important; position: static !important; width: var(--pw, 210mm) !important; height: auto !important;
+        margin: 0 !important; padding: 0 !important; overflow: visible !important; background: white !important;
+      }
+      .print-pages { display: block !important; zoom: 1 !important; }
+      .print-page { box-shadow: none !important; margin: 0 !important; break-after: page; page-break-after: always; }
+      .print-page.is-last { break-after: auto; page-break-after: auto; }
+    }
+
+    /* ---- Game Boy net preview (absolute layout, 20 px per cm) ---- */
+    .net-scroll { overflow-x: auto; max-width: 100%; padding-bottom: 6px; }
+    .net-stage { position: relative; margin: 0 auto; }
+    .net-stage svg { position: absolute; left: 0; top: 0; pointer-events: none; z-index: 0; }
+    .net-stage .frame-container { position: absolute; z-index: 1; }
+    .net-hint { font-size: 0.72rem; color: var(--text-muted); text-align: center; margin-top: 10px; max-width: 640px; }
+    .dim-row { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin: 4px 0 14px; }
+    .dim-row[hidden] { display: none; }
+    .dim-row label { font-size: 0.72rem; color: var(--text-muted); font-weight: bold; display: flex; flex-direction: column; gap: 4px; text-transform: none; letter-spacing: 0; }
+    .dim-row input { width: 90px; padding: 6px; background: var(--bg); border: 1px solid var(--border); color: #fff; border-radius: 6px; text-align: center; font-family: 'JetBrains Mono', monospace; }
+    .choice .c-icon { font-size: 2rem; color: var(--text-muted); height: 76px; display: flex; align-items: center; justify-content: center; }
+  </style>
+  <style id="pageStyle"></style>
+</head>
+<body>
+
+  <header>
+    <a href="../../index.html" class="btn-index">
+      <i class="fa-solid fa-arrow-left"></i>
+      <span data-i18n="nav_index">Back to Overview</span>
+    </a>
+
+    <a href="#" class="brand-title">
+      <i class="fa-solid fa-gamepad"></i>
+      <div>
+        <div style="font-weight: 800; font-size: 1rem;">PHYSICAL RELEASE</div>
+        <div style="font-size: 0.7rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">Game Boy Box Craft Studio <p>&copy; 2026 KainCo. All rights reserved.</p></div>
+      </div>
+    </a>
+
+    <div class="header-actions">
+      <div class="lang-switcher">
+        <button id="lang-en" onclick="setLanguage('en')" class="lang-btn active">EN</button>
+        <button id="lang-de" onclick="setLanguage('de')" class="lang-btn">DE</button>
+      </div>
+
+      <a href="https://paypal.me/kainco" target="_blank" rel="noopener noreferrer"
+         style="background: #0070ba; color: white; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
+        <i class="fa-brands fa-paypal"></i> <span data-i18n="btn_donation">Donation</span>
+      </a>
+      <a href="https://ko-fi.com/kainco" target="_blank" rel="noopener noreferrer"
+         style="background: #ff5e5b; color: white; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
+        <i class="fa-solid fa-mug-hot"></i> Support
+      </a>
+    </div>
+  </header>
+
+  <div class="ui-container">
+    <div class="header-title" data-i18n="studio_title">Game Boy Box Craft Studio</div>
+    <div class="sub-title" data-i18n="studio_sub">Fold-together box without glue: tuck-in lid, dust flaps and a seam flap.</div>
+
+    <div class="wiz-steps" id="wizSteps"></div>
+
+    <!-- Step 1: box -->
+    <div class="wiz-step" id="step-1">
+      <div class="wiz-h" data-i18n="wiz_h1">Which box do you want to build?</div>
+      <div class="wiz-s" data-i18n="wiz_s1"></div>
+      <div class="choice-grid" id="presetCards"></div>
+      <div class="dim-row" id="dimRow" hidden>
+        <label><span data-i18n="dim_w">Width (cm)</span><input type="number" id="dimW" min="3" max="40" step="0.1" oninput="setCustom()"></label>
+        <label><span data-i18n="dim_h">Height (cm)</span><input type="number" id="dimH" min="3" max="40" step="0.1" oninput="setCustom()"></label>
+        <label><span data-i18n="dim_d">Depth (cm)</span><input type="number" id="dimD" min="0.8" max="10" step="0.1" oninput="setCustom()"></label>
+      </div>
+    </div>
+
+    <!-- Step 2: paper -->
+    <div class="wiz-step" id="step-2">
+      <div class="wiz-h" data-i18n="wiz_h2">Which paper do you print on?</div>
+      <div class="wiz-s" data-i18n="wiz_s2"></div>
+      <div class="choice-grid" id="paperCards"></div>
+      <div class="size-note ok" id="sumNote"></div>
+    </div>
+
+    <!-- Step 3: images -->
+    <div class="wiz-step" id="step-3">
+      <div class="wiz-h" data-i18n="wiz_h3">Add your images</div>
+      <div class="wiz-s" data-i18n="wiz_s3"></div>
+      <div class="upload-cards" id="cards"></div>
+
+      <div class="tabs" id="tabBar"></div>
+      <div class="controls-grid">
+        <div class="control-group">
+          <label data-i18n="lbl_rotation">Rotation & Flip</label>
+          <div class="btn-row">
+            <button class="btn-small" onclick="rotate(0)">0°</button>
+            <button class="btn-small" onclick="rotate(-90)">-90°</button>
+            <button class="btn-small" onclick="rotate(90)">+90°</button>
+            <button class="btn-small" onclick="rotate(180)">180°</button>
+            <button class="btn-small" onclick="toggleFlip()">↔️ Flip</button>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label for="zoomInput" data-i18n="lbl_zoom">Granular Zoom (%)</label>
+          <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 6px;">
+            <input type="range" id="zoomSlider" min="10" max="300" step="0.1" value="100" style="flex: 1;" oninput="updateZoom(this.value)">
+            <input type="number" id="zoomInput" min="10" max="300" step="0.1" value="100" style="width: 60px; padding: 4px; background: var(--bg); border: 1px solid var(--border); color: white; border-radius: 4px; text-align: center; font-family: 'JetBrains Mono';" oninput="updateZoom(this.value)">
+          </div>
+          <div class="btn-row">
+            <button class="btn-small" style="flex: 1;" onclick="stepZoom(-1)">-1%</button>
+            <button class="btn-small" style="flex: 1;" onclick="stepZoom(-0.1)">-0.1%</button>
+            <button class="btn-small" style="flex: 1;" onclick="stepZoom(0.1)">+0.1%</button>
+            <button class="btn-small" style="flex: 1;" onclick="stepZoom(1)">+1%</button>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <label style="margin: 0;" data-i18n="lbl_nudge">Nudge Position</label>
+            <div class="btn-row" style="gap: 2px;">
+              <button id="nstep-1" class="btn-small on" style="padding: 2px 6px;" onclick="setNudgeStep(1)">1px</button>
+              <button id="nstep-5" class="btn-small" style="padding: 2px 6px;" onclick="setNudgeStep(5)">5px</button>
+              <button id="nstep-10" class="btn-small" style="padding: 2px 6px;" onclick="setNudgeStep(10)">10px</button>
+            </div>
+          </div>
+          <div class="nudge-grid">
+            <div></div>
+            <button onclick="nudge(0, -1)"><i class="fa-solid fa-arrow-up"></i></button>
+            <div></div>
+            <button onclick="nudge(-1, 0)"><i class="fa-solid fa-arrow-left"></i></button>
+            <button style="color: var(--brand); font-weight: bold;" onclick="resetPos()">•</button>
+            <button onclick="nudge(1, 0)"><i class="fa-solid fa-arrow-right"></i></button>
+            <div></div>
+            <button onclick="nudge(0, 1)"><i class="fa-solid fa-arrow-down"></i></button>
+            <div></div>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label data-i18n="lbl_alignment">Alignment & Print</label>
+          <div class="btn-row" style="margin-bottom: 8px;">
+            <button class="btn-small" style="flex: 1;" onclick="fitImage()" data-i18n="btn_fit">Fit</button>
+            <button class="btn-small" style="flex: 1;" onclick="resetTransforms()" data-i18n="btn_reset">Reset</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 4: print -->
+    <div class="wiz-step" id="step-4">
+      <div class="wiz-h" data-i18n="wiz_h4">Ready to print</div>
+      <div class="wiz-s" data-i18n="wiz_s4"></div>
+      <div class="size-note ok" id="sumNote2"></div>
+      <details class="adv" open>
+        <summary data-i18n="adv_title">Advanced options</summary>
+        <div class="adv-body">
+          <div data-i18n="adv_rec" style="font-size:0.75rem;color:var(--text-muted);margin-bottom:10px;"></div>
+          <label style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; cursor: pointer; text-transform: none; letter-spacing: 0; margin-bottom: 6px;">
+            <input type="checkbox" id="safeMode" checked onchange="applyGeometry()">
+            <span data-i18n="opt_safe">Edge-safe printing</span>
+          </label>
+          <label style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; cursor: pointer; text-transform: none; letter-spacing: 0;">
+            <input type="checkbox" id="showGuidelines" checked>
+            <span data-i18n="opt_cut_lines">Print cut & fold lines</span>
+          </label>
+          <label style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; text-transform: none; letter-spacing: 0; margin-top: 6px;">
+            <span data-i18n="opt_fold_mode">Fold lines on the artwork</span>
+            <select id="foldMode">
+              <option value="soft" data-i18n="fold_soft">Subtle</option>
+              <option value="off" data-i18n="fold_off">Off</option>
+              <option value="full" data-i18n="fold_full">Full</option>
+            </select>
+          </label>
+        </div>
+      </details>
+      <a class="inlay-link" href="gameboy-inlay-studio.html" target="_blank" data-i18n="btn_inlay">Cartridge inlay for this box →</a>
+      <button class="btn-print" onclick="preparePrint()" data-i18n="btn_print">🖨️ Generate cut-out sheet & print</button>
+    </div>
+
+    <div class="wiz-nav">
+      <button class="btn-small" id="wizBack" onclick="wizGo(-1)" data-i18n="btn_back">Back</button>
+      <button class="btn-small on" id="wizNext" onclick="wizGo(1)" data-i18n="btn_next">Next</button>
+    </div>
+  </div>
+
+  <div class="preview-wrapper" id="previewWrap" style="flex-direction: column; align-items: center;">
+    <div style="text-align: center; font-size: 0.85rem; font-weight: bold; color: var(--brand);" data-i18n="prev_title">Layout preview: the whole box as one net</div>
+    <div class="net-scroll"><div class="net-stage" id="netStage"></div></div>
+    <div class="net-hint" data-i18n="prev_hint"></div>
+  </div>
+
+  <!-- Print window -->
+  <div id="printScreen">
+    <div style="padding: 10px; text-align: center; background: #f3f4f6; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap;" class="no-print">
+      <button onclick="window.print()" style="padding: 10px 20px; background: #10b981; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;" data-i18n="btn_print_now">Print Now / Save PDF</button>
+
+      <a href="https://paypal.me/kainco" target="_blank" rel="noopener noreferrer"
+         style="background: #0070ba; color: white; padding: 8px 14px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
+        <i class="fa-brands fa-paypal"></i> <span data-i18n="btn_donation">Donation</span>
+      </a>
+      <a href="https://ko-fi.com/kainco" target="_blank" rel="noopener noreferrer"
+         style="background: #ff5e5b; color: white; padding: 8px 14px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
+        <i class="fa-solid fa-mug-hot"></i> Support
+      </a>
+
+      <button onclick="closePrint()" style="padding: 10px 20px; background: #6b7280; color: white; border: none; border-radius: 6px; cursor: pointer;" data-i18n="btn_close">Close</button>
+      <div data-i18n="print_hint" style="flex-basis: 100%; font-size: 0.75rem; color: #4b5563;"></div>
+      <div id="printHint2" data-i18n="print_hint_split" style="flex-basis: 100%; font-size: 0.75rem; color: #1d4ed8; display: none;"></div>
+      <div id="printWarn" style="flex-basis: 100%; font-size: 0.75rem; color: #b45309; display: none;"></div>
+    </div>
+    <div class="print-pages">
+      <div class="print-page" id="page-net"><canvas id="printCanvas" class="print-canvas"></canvas></div>
+      <div class="print-page is-last" id="page-net2" hidden><canvas id="printCanvas2" class="print-canvas"></canvas></div>
+    </div>
+  </div>
+
+  <script>
+    const i18n = {
+      en: {
+        wiz_1: "Box", wiz_2: "Paper", wiz_3: "Images", wiz_4: "Print",
+        nav_index: "Back to Overview",
+        studio_title: "Game Boy Box Craft Studio",
+        studio_sub: "Fold-together box without glue: tuck-in lid, dust flaps and a seam flap.",
+        wiz_h1: "Which box do you want to build?",
+        wiz_s1: "Pick the format. The size shown is width × height × depth of the real box.",
+        preset_gb: "Game Boy / Color / Advance", preset_gb_n: "original box (4.93″ × 4.93″ × 0.9″), same size for all three; only the inlay holding the cartridge differs. Tuck-in lid, no glue needed",
+        preset_custom: "Custom size", preset_custom_n: "for other boxes (e.g. Game Boy Advance): enter your own measurements",
+        dim_w: "Width (cm)", dim_h: "Height (cm)", dim_d: "Depth (cm)",
+        wiz_h2: "Which paper do you print on?",
+        wiz_s2: "The whole box is ONE net. On A4 it does not fit in original size, so it is scaled down proportionally (covers keep their aspect ratio and still fit). On A3 the box prints in original size.",
+        paper_orig: "original size (100 %)", paper_scaled: "scaled to {pct} %",
+        paper_a4_n: "fits almost every home printer", paper_a4x2_n: "2 sheets in original size – glue the two halves together with a glue stick", paper_a3_n: "needs an A3 printer",
+        sum: "Box {w} × {h} × {d} cm · net {nw} × {nh} cm · scale {pct} %",
+        wiz_h3: "Add your images",
+        wiz_s3: "One image per side. Front and back keep the proportions of the box, so existing covers fit 1:1.",
+        prev_title: "Layout preview: the whole box as one net",
+        prev_hint: "Top and bottom face appear upside down in the preview – that is correct, they get folded over later. Hatched areas are blank tabs.",
+        seg_front: "📷 Front", seg_back: "📷 Back", seg_sideL: "📷 Side left", seg_sideR: "📷 Side right", seg_top: "📷 Top face (lid)", seg_bottom: "📷 Bottom face",
+        ph_front: "Front", ph_back: "Back", ph_sideL: "Side L", ph_sideR: "Side R", ph_top: "Top face", ph_bottom: "Bottom face",
+        short_front: "Front", short_back: "Back", short_sideL: "Side L", short_sideR: "Side R", short_top: "Top", short_bottom: "Bottom",
+        lbl_rotation: "Rotation & Flip", lbl_zoom: "Granular Zoom (%)", lbl_nudge: "Nudge Position", lbl_alignment: "Alignment & Print",
+        btn_fit: "Fit", btn_reset: "Reset", btn_donation: "Donation", btn_back: "← Back", btn_next: "Next →", btn_inlay: "Cartridge inlay for this box →",
+        wiz_h4: "Ready to print",
+        wiz_s4: "You need: 200–250 g card (or paper on thin cardboard, or self-adhesive vinyl film), scissors or craft knife, ruler. Print at 100 %, margins “None”, no borderless printing. No glue needed.",
+        adv_title: "Advanced options", adv_rec: "Recommendation: leave everything as preset – this works for most printers.",
+        opt_safe: "Edge-safe printing (scales the net so nothing lies in the printer's unprintable margin). Off = full paper size, print borderless in the driver",
+        opt_cut_lines: "Print cut & fold lines",
+        opt_fold_mode: "Fold lines on the artwork", fold_soft: "Subtle", fold_off: "Off", fold_full: "Full",
+        btn_print: "🖨️ Generate cut-out sheet & print", btn_print_now: "Print Now / Save PDF", btn_close: "Close",
+        print_hint: "Chosen paper size, portrait, scale 100 %, margins \"None\", no borderless printing. Cut along the solid lines, score and fold along the dashed lines (ruler + blunt tool). Assembly without glue: 1) Fold the three long edges so the net becomes a tube and push the narrow seam flap inside the left side wall. 2) Fold the small dust flaps of the two side walls inwards (top and bottom). 3) Close the lid over them and push the rounded tongue behind the front. Do the same at the bottom.",
+        print_hint_split: "Two sheets: cut out both. Put glue stick on the blank GLUE tab of sheet 1 and stick it onto the inside of the back panel (sheet 2): the left edge of the back must lie exactly on the fold line of the tab. Then fold as described.",
+        glue_label: "GLUE",
+        fit_note: "Net scaled to {pct} % so it stays inside the printable area of the paper.",
+        alert_none: "Please select at least one image!",
+        dpi_excellent: "Excellent", dpi_good: "Good", dpi_low: "Low quality"
+      },
+      de: {
+        wiz_1: "Box", wiz_2: "Papier", wiz_3: "Bilder", wiz_4: "Drucken",
+        nav_index: "Zurück zur Übersicht",
+        studio_title: "Game Boy Box Craft Studio",
+        studio_sub: "Faltbox ohne Kleber: Steckdeckel, Staublaschen und eine Nahtlasche.",
+        wiz_h1: "Welche Box möchtest du bauen?",
+        wiz_s1: "Wähle das Format. Die Maße sind Breite × Höhe × Tiefe der echten Box.",
+        preset_gb: "Game Boy / Color / Advance", preset_gb_n: "Originalbox (4,93″ × 4,93″ × 0,9″), für alle drei gleich groß; nur das Inlay zur Modulhalterung unterscheidet sich. Steckdeckel, kein Kleber nötig",
+        preset_custom: "Eigene Maße", preset_custom_n: "für andere Boxen (z. B. Game Boy Advance): Maße selbst eingeben",
+        dim_w: "Breite (cm)", dim_h: "Höhe (cm)", dim_d: "Tiefe (cm)",
+        wiz_h2: "Auf welchem Papier druckst du?",
+        wiz_s2: "Die ganze Box ist EIN Netz. Auf A4 passt sie nicht in Originalgröße, deshalb wird sie proportional verkleinert (Covers behalten ihr Seitenverhältnis und passen weiter). Auf A3 wird die Box in Originalgröße gedruckt.",
+        paper_orig: "Originalgröße (100 %)", paper_scaled: "auf {pct} % verkleinert",
+        paper_a4_n: "passt auf fast jeden Heimdrucker", paper_a4x2_n: "2 Blätter in Originalgröße – die beiden Hälften mit Klebestift verbinden", paper_a3_n: "braucht einen A3-Drucker",
+        sum: "Box {w} × {h} × {d} cm · Netz {nw} × {nh} cm · Maßstab {pct} %",
+        wiz_h3: "Bilder hinzufügen",
+        wiz_s3: "Ein Bild pro Seite. Vorder- und Rückseite behalten die Proportionen der Box, bestehende Covers passen also 1:1.",
+        prev_title: "Layout-Vorschau: die ganze Box als ein Netz",
+        prev_hint: "Ober- und Unterseite stehen in der Vorschau auf dem Kopf – das ist richtig, sie werden später umgeklappt. Schraffierte Flächen sind leere Laschen.",
+        seg_front: "📷 Vorderseite", seg_back: "📷 Rückseite", seg_sideL: "📷 Seite links", seg_sideR: "📷 Seite rechts", seg_top: "📷 Oberseite (Deckel)", seg_bottom: "📷 Unterseite",
+        ph_front: "Vorderseite", ph_back: "Rückseite", ph_sideL: "Seite L", ph_sideR: "Seite R", ph_top: "Oberseite", ph_bottom: "Unterseite",
+        short_front: "Vorne", short_back: "Hinten", short_sideL: "Seite L", short_sideR: "Seite R", short_top: "Oben", short_bottom: "Unten",
+        lbl_rotation: "Drehung & Spiegeln", lbl_zoom: "Granularer Zoom (%)", lbl_nudge: "Position verschieben", lbl_alignment: "Ausrichtung & Druck",
+        btn_fit: "Einpassen", btn_reset: "Zurücksetzen", btn_donation: "Spende", btn_back: "← Zurück", btn_next: "Weiter →", btn_inlay: "Modul-Inlay für diese Box →",
+        wiz_h4: "Bereit zum Drucken",
+        wiz_s4: "Du brauchst: 200–250 g Karton (oder Papier auf dünner Pappe, oder selbstklebende Vinyl-Folie), Schere oder Cuttermesser, Lineal. Druck mit 100 %, Ränder „Keine“, nicht randlos drucken. Kleber wird nicht benötigt.",
+        adv_title: "Erweiterte Optionen", adv_rec: "Empfehlung: Lass alles wie voreingestellt – das passt für die meisten Drucker.",
+        opt_safe: "Randsicher drucken (verkleinert das Netz, damit nichts im Druckerrand liegt). Aus = volle Papiergröße, im Treiber randlos drucken",
+        opt_cut_lines: "Schnitt- & Faltlinien drucken",
+        opt_fold_mode: "Falzlinien im Motiv", fold_soft: "Dezent", fold_off: "Aus", fold_full: "Voll",
+        btn_print: "🖨️ Bastelbogen generieren & drucken", btn_print_now: "Jetzt drucken / Als PDF speichern", btn_close: "Schließen",
+        print_hint: "Gewähltes Papierformat, hochkant, Skalierung 100 %, Ränder „Keine“, nicht randlos drucken. Entlang der durchgezogenen Linien schneiden, an den gestrichelten ritzen und falten (Lineal + stumpfes Werkzeug). Zusammenbau ohne Kleber: 1) Die drei langen Kanten falten, sodass das Netz zum Schlauch wird, und die schmale Nahtlasche innen in die linke Seitenwand schieben. 2) Die kleinen Staublaschen der beiden Seitenwände (oben und unten) nach innen klappen. 3) Den Deckel darüber schließen und die runde Zunge hinter die Vorderseite stecken. Unten genauso.",
+        print_hint_split: "Zwei Blätter: Beide ausschneiden. Die leere KLEBEN-Lasche von Blatt 1 mit Klebestift bestreichen und innen auf die Rückseite (Blatt 2) kleben: Die linke Kante der Rückseite muss genau an der Falzlinie der Lasche liegen. Danach wie beschrieben falten.",
+        glue_label: "KLEBEN",
+        fit_note: "Netz auf {pct} % verkleinert, damit es im bedruckbaren Bereich des Papiers bleibt.",
+        alert_none: "Bitte mindestens ein Bild auswählen!",
+        dpi_excellent: "Ausgezeichnet", dpi_good: "Gut", dpi_low: "Niedrige Qualität"
+      }
+    };
+
+    let currentLang = localStorage.getItem('prs_lang') || 'en';
+    const t = (k) => (i18n[currentLang] && i18n[currentLang][k]) || i18n.en[k] || k;
+    const fmtNum = (n) => (currentLang === 'de' ? String(n).replace('.', ',') : String(n));
+    const fmt1 = (n) => fmtNum((Math.round(n * 10) / 10).toFixed(1));
+
+    // ---- Geometry (cm) -------------------------------------------------------
+    const KEYS = ['front', 'back', 'sideL', 'sideR', 'top', 'bottom'];
+    const PX_PER_CM = 20;                              // preview scale
+    const PX_CM = 300 / 2.54;                          // print scale (300 dpi)
+    const T_CM = 1.2;                                  // depth of the tuck tongue
+    const FW_CM = 1.1;                                 // width of the seam flap
+    const SAFE_MARGIN_SIDE_CM = 0.45, MARGIN_TOP_CM = 0.4, MARGIN_BOTTOM_CM = 1.1;
+
+    // real box: front width x height x depth (cm). Game Boy box: 4.93" x 4.93" x 0.90"
+    const PRESETS = { gb: { w: 12.5, h: 12.5, d: 2.3 }, custom: { w: 12.5, h: 12.5, d: 2.3 } };
+    const PAPERS = { a4: { w: 21.0, h: 29.6, mmW: 210, mmH: 296, css: 'A4' }, a4x2: { w: 21.0, h: 29.6, mmW: 210, mmH: 296, css: 'A4', sheets: 2, label: 'A4 × 2' }, a3: { w: 29.7, h: 41.8, mmW: 297, mmH: 418, css: 'A3' } };
+    let presetId = 'gb', paperId = 'a4';
+    let DIM = Object.assign({}, PRESETS.gb);
+    let PAGE_W_CM = 21.0, PAGE_H_CM = 29.6, PX_PAGE_W = 2480, PX_PAGE_H = 3496;
+    const safeOn = () => { const c = document.getElementById('safeMode'); return !c || c.checked; };
+
+    // Net layout (left -> right): side L | front | side R | back | seam flap.
+    // The lid (top face) and the base (bottom face) hang on the back; the rounded tongues tuck behind the front.
+    // Small dust flaps on both side walls fold in first. The seam flap is pushed inside the left side wall.
+    // sheet 0/undefined = whole net; 1 / 2 = left / right half for the 2-sheet A4 option (glue tab on the left half)
+    const GLUE_TAB_CM = 1.2;
+    function buildNet(dim, sheet) {
+      const N = buildFull(dim);
+      if (!sheet) return N;
+      dim = dim || DIM;
+      const xBk = 2 * dim.d + dim.w, e = 1e-6, oy = N.oy, H = dim.h, tw = GLUE_TAB_CM;
+      const rng = (poly) => { const xs = poly.map(q => q[0]); return [Math.min(...xs), Math.max(...xs)]; };
+      const isLeft = (poly) => { const [a, b] = rng(poly); return b <= xBk - e || (b <= xBk + e && a < xBk - e); };
+      const isRight = (poly) => rng(poly)[0] >= xBk - e;
+      const tab = [[xBk, oy], [xBk + tw, oy + 0.5], [xBk + tw, oy + H - 0.5], [xBk, oy + H]];
+      if (sheet === 1) {
+        const folds = N.folds.filter(f => isLeft([f.a, f.b]) || (f.a[0] === xBk && f.b[0] === xBk)).map(f => (f.a[0] === xBk && f.b[0] === xBk) ? Object.assign({}, f, { soft: false }) : f);
+        return { W: xBk + tw, H: N.H, oy, frames: { sideL: N.frames.sideL, front: N.frames.front, sideR: N.frames.sideR },
+          cuts: N.cuts.filter(isLeft).concat([tab]), folds, flaps: N.flaps.slice(0, 4).concat([tab]), glue: tab };
+      }
+      const sx = (pt) => [pt[0] - xBk, pt[1]], sp = (poly) => poly.map(sx);
+      const frames = {}; ['back', 'top', 'bottom'].forEach(k => { const f = N.frames[k]; frames[k] = Object.assign({}, f, { x: f.x - xBk }); });
+      return { W: N.W - xBk, H: N.H, oy, frames,
+        cuts: N.cuts.filter(isRight).map(sp).concat([[[0, oy], [0, oy + H]]]),
+        folds: N.folds.filter(f => isRight([f.a, f.b]) && !(f.a[0] === xBk && f.b[0] === xBk)).map(f => Object.assign({}, f, { a: sx(f.a), b: sx(f.b) })),
+        flaps: N.flaps.slice(4).map(sp) };
+    }
+    function buildFull(dim) {
+      dim = dim || DIM;
+      const W = dim.w, H = dim.h, D = dim.d, T = T_CM, F = FW_CM, oy = D + T;
+      const xFr = D, xSR = D + W, xBk = 2 * D + W, xSm = 2 * D + 2 * W;
+      const Dd = Math.max(0.5, Math.min(D - 0.3, W / 2 - 0.2));          // dust flap length
+      const c = Math.min(0.3, Dd / 3);
+      const r = Math.min(0.5, T * 0.45);
+      const mir = (pts) => pts.map(([x, y]) => [x, H - y]);              // top part -> bottom part
+      const dust = (r0, r1) => [[r0, 0], [r0 + c, -Dd], [r1 - c, -Dd], [r1, 0]];
+      const rootL = [0.1, D - 0.25], rootR = [xSR + 0.25, xSR + D - 0.1];
+      const arc = (cx, cy, a0, a1) => { const o = []; for (let i = 0; i <= 6; i++) { const a = (a0 + (a1 - a0) * i / 6) * Math.PI / 180; o.push([cx + r * Math.cos(a), cy + r * Math.sin(a)]); } return o; };
+      const tIn = 0.2;
+      const tongueTop = [[xBk, -D], [xBk + tIn, -D - T + r], ...arc(xBk + tIn + r, -D - T + r, 180, 270), ...arc(xSm - tIn - r, -D - T + r, 270, 360), [xSm, -D]];
+      const dustL = dust(rootL[0], rootL[1]), dustR = dust(rootR[0], rootR[1]);
+      const sh = Math.min(0.4, H / 4);
+      const seam = [[xSm, 0], [xSm + F, sh], [xSm + F, H - sh], [xSm, H]];
+
+      const shift = (pts) => pts.map(([x, y]) => [x, y + oy]);
+      const cutsRaw = [
+        [[0, 0], [0, H]],
+        [[xFr, 0], [xSR, 0]], [[xFr, H], [xSR, H]],
+        [[0, 0], [rootL[0], 0]], [[rootL[1], 0], [xFr, 0]], [[xSR, 0], [rootR[0], 0]], [[rootR[1], 0], [xBk, 0]],
+        [[0, H], [rootL[0], H]], [[rootL[1], H], [xFr, H]], [[xSR, H], [rootR[0], H]], [[rootR[1], H], [xBk, H]],
+        dustL, dustR, mir(dustL), mir(dustR),
+        [[xBk, 0], [xBk, -D]], [[xSm, 0], [xSm, -D]], [[xBk, H], [xBk, H + D]], [[xSm, H], [xSm, H + D]],
+        tongueTop, mir(tongueTop), seam
+      ];
+      const fl = (a, b, soft) => ({ a: [a[0], a[1] + oy], b: [b[0], b[1] + oy], soft });
+      const folds = [
+        fl([xFr, 0], [xFr, H], true), fl([xSR, 0], [xSR, H], true), fl([xBk, 0], [xBk, H], true), fl([xSm, 0], [xSm, H], false),
+        fl([rootL[0], 0], [rootL[1], 0], false), fl([rootR[0], 0], [rootR[1], 0], false),
+        fl([rootL[0], H], [rootL[1], H], false), fl([rootR[0], H], [rootR[1], H], false),
+        fl([xBk, 0], [xSm, 0], true), fl([xBk, H], [xSm, H], true),
+        fl([xBk, -D], [xSm, -D], false), fl([xBk, H + D], [xSm, H + D], false)
+      ];
+      return {
+        W: xSm + F, H: H + 2 * D + 2 * T, oy,
+        frames: {
+          front: { x: xFr, y: oy, w: W, h: H }, back: { x: xBk, y: oy, w: W, h: H },
+          sideL: { x: 0, y: oy, w: D, h: H }, sideR: { x: xSR, y: oy, w: D, h: H },
+          top: { x: xBk, y: oy - D, w: W, h: D }, bottom: { x: xBk, y: oy + H, w: W, h: D }
+        },
+        cuts: cutsRaw.map(shift), folds,
+        flaps: [dustL, dustR, mir(dustL), mir(dustR), tongueTop, mir(tongueTop), seam].map(shift)
+      };
+    }
+
+    function dimsOf(key) {
+      if (key === 'top' || key === 'bottom') return { w: DIM.w, h: DIM.d };
+      if (key === 'sideL' || key === 'sideR') return { w: DIM.d, h: DIM.h };
+      return { w: DIM.w, h: DIM.h };
+    }
+    // Top and bottom faces are folded away from the back: in the net they stand upside down (180°) compared with the natural view
+    const baseRot = (k) => (k === 'top' || k === 'bottom') ? 180 : 0;
+    const effRot = (k) => state[k].rotation + baseRot(k);
+
+    // Best orientation on the paper: net upright or turned by 90°, one common scale factor
+    function layoutFor(pp, safe, sheet) {
+      const mTop = safe ? MARGIN_TOP_CM : 0, mBot = safe ? MARGIN_BOTTOM_CM : 0, mSide = safe ? SAFE_MARGIN_SIDE_CM : 0;
+      const usableH = pp.h + (safe ? 0.1 : 0) - mTop - mBot, usableW = pp.w - 2 * mSide;
+      const list = pp.sheets === 2 ? [1, 2] : [0];
+      const res = list.map(sh => { const N = buildNet(DIM, sh);
+        const kA = Math.min(1, usableW / N.W, usableH / N.H), kB = Math.min(1, usableW / N.H, usableH / N.W);
+        return { k: Math.max(kA, kB), rot: kB > kA + 1e-6 }; });
+      const mine = res[Math.max(0, list.indexOf(sheet || list[0]))];
+      return { k: Math.min(...res.map(r => r.k)), rot: mine.rot, zoneCy: mTop + usableH / 2 };
+    }
+    const layout = (sheet) => layoutFor(PAPERS[paperId], safeOn(), sheet);
+    const isSplit = () => PAPERS[paperId].sheets === 2;
+
+    const state = {};
+    KEYS.forEach(k => { state[k] = { x: 0, y: 0, userZoom: 1, baseFitScale: 1, rotation: 0, flipX: 1, loaded: false, wCm: 1, hCm: 1 }; });
+    let activeTarget = 'front';
+    let currentNudgeStep = 1;
+
+    // ---- UI construction -------------------------------------------------------
+    function buildUI() {
+      document.getElementById('cards').innerHTML = KEYS.map(k => `
+        <div class="upload-card${k === activeTarget ? ' active' : ''}" id="card-${k}" onclick="selectTab('${k}')">
+          <label for="file-${k}" data-i18n="seg_${k}"></label>
+          <input type="file" id="file-${k}" accept="image/*" onchange="loadFile(event, '${k}')">
+          <div id="dpi-container-${k}" class="dpi-container">
+            <div id="dpi-badge-${k}" class="dpi-badge"></div>
+            <div class="dpi-scale-wrapper">
+              <div class="scale-segment scale-red"></div><div class="scale-segment scale-yellow"></div><div class="scale-segment scale-green"></div>
+              <div id="dpi-marker-${k}" class="scale-marker" style="left: 0%;"></div>
+            </div>
+          </div>
+        </div>`).join('');
+
+      document.getElementById('netStage').innerHTML = `<svg id="netSvg"></svg>` + KEYS.map(k =>
+        `<div class="frame-container${k === activeTarget ? ' active-target' : ''}" id="frame-${k}" data-key="${k}">
+           <div class="placeholder${(k === 'sideL' || k === 'sideR') ? ' vert' : ''}" id="ph-${k}" data-i18n="ph_${k}"></div>
+           <img id="img-${k}" class="cover-img" style="display:none;" alt="${k}">
+         </div>`).join('');
+
+      document.getElementById('tabBar').innerHTML = KEYS.map(k =>
+        `<button class="tab-btn${k === activeTarget ? ' active' : ''}" id="tab-${k}" onclick="selectTab('${k}')" data-i18n="short_${k}"></button>`).join('');
+    }
+
+    function applyGeometry() {
+      const pp = PAPERS[paperId], N = buildNet();
+      PAGE_W_CM = pp.w; PAGE_H_CM = pp.h;
+      PX_PAGE_W = Math.round(pp.mmW / 25.4 * 300); PX_PAGE_H = Math.round(pp.mmH / 25.4 * 300);
+      document.documentElement.style.setProperty('--pw', pp.mmW + 'mm');
+      document.documentElement.style.setProperty('--ph', pp.mmH + 'mm');
+      const ps = document.getElementById('pageStyle');
+      if (ps) ps.textContent = `@media print { @page { size: ${pp.css} portrait; margin: 0mm !important; } }`;
+
+      const stage = document.getElementById('netStage');
+      stage.style.width = N.W * PX_PER_CM + 'px'; stage.style.height = N.H * PX_PER_CM + 'px';
+      const P = PX_PER_CM, pts = (poly) => poly.map(([x, y]) => `${(x * P).toFixed(1)},${(y * P).toFixed(1)}`).join(' ');
+      const svg = document.getElementById('netSvg');
+      svg.setAttribute('width', N.W * P); svg.setAttribute('height', N.H * P); svg.setAttribute('viewBox', `0 0 ${N.W * P} ${N.H * P}`);
+      svg.innerHTML = `<defs><pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="6" stroke="rgba(148,163,184,0.35)" stroke-width="1"/></pattern></defs>` +
+        N.flaps.map(f => `<polygon points="${pts(f)}" fill="url(#hatch)" stroke="#64748b" stroke-width="1" stroke-dasharray="3 2"/>`).join('');
+
+      KEYS.forEach(k => {
+        const d = dimsOf(k), f = N.frames[k], fr = document.getElementById(`frame-${k}`);
+        state[k].wCm = d.w; state[k].hCm = d.h;
+        if (!fr) return;
+        fr.style.left = f.x * P + 'px'; fr.style.top = f.y * P + 'px';
+        fr.style.width = d.w * P + 'px'; fr.style.height = d.h * P + 'px';
+        if (state[k].loaded) { state[k].baseFitScale = coverScale(k); applyTransform(k); }
+      });
+      updateSizeNote();
+    }
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      try { localStorage.setItem('prs_lang', lang); } catch (e) {}
+      document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+      document.getElementById('lang-de').classList.toggle('active', lang === 'de');
+      document.documentElement.lang = lang;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (i18n[lang][key]) el.textContent = i18n[lang][key];
+      });
+      updateSizeNote();
+      showStep(wizStep);
+      KEYS.forEach(k => { if (state[k].loaded) updateDPI(k); });
+    }
+
+    function summaryText() {
+      const L = layout(), N = buildNet();
+      return t('sum').replace('{w}', fmt1(DIM.w * L.k)).replace('{h}', fmt1(DIM.h * L.k)).replace('{d}', fmt1(DIM.d * L.k))
+        .replace('{nw}', fmt1(N.W * L.k)).replace('{nh}', fmt1(N.H * L.k)).replace('{pct}', fmtNum(Math.round(L.k * 100)));
+    }
+    function updateSizeNote() {
+      ['sumNote', 'sumNote2'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = summaryText(); });
+      renderChoices();
+    }
+
+    // ---- Wizard -----------------------------------------------------------------
+    let wizStep = 1;
+    function netSketch(dim) {
+      const N = buildNet(dim), sc = Math.min(130 / N.W, 66 / N.H), x0 = (140 - N.W * sc) / 2, y0 = (76 - N.H * sc) / 2;
+      const pts = (poly) => poly.map(([x, y]) => `${(x0 + x * sc).toFixed(1)},${(y0 + y * sc).toFixed(1)}`).join(' ');
+      const rects = Object.keys(N.frames).map(k => { const f = N.frames[k]; return `<rect x="${x0 + f.x * sc}" y="${y0 + f.y * sc}" width="${f.w * sc}" height="${f.h * sc}" fill="rgba(37,99,235,${k === 'front' ? 0.45 : 0.2})" stroke="#2563eb" stroke-width="1"/>`; }).join('');
+      return `<svg width="140" height="76" viewBox="0 0 140 76" style="color:#94a3b8">` +
+        N.flaps.map(f => `<polygon points="${pts(f)}" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="2 2"/>`).join('') + rects + `</svg>`;
+    }
+    function renderChoices() {
+      const pc = document.getElementById('presetCards'), pa = document.getElementById('paperCards');
+      if (!pc || !pa) return;
+      pc.innerHTML = Object.keys(PRESETS).map(id => {
+        const dim = id === presetId ? DIM : PRESETS[id];
+        const dimTxt = id === 'custom' ? '' : `${fmt1(dim.w)} × ${fmt1(dim.h)} × ${fmt1(dim.d)} cm`;
+        return `<div class="choice${id === presetId ? ' on' : ''}" onclick="setPreset('${id}')">${netSketch(dim)}
+          <div class="c-name">${t('preset_' + id)}</div>
+          ${dimTxt ? `<div class="c-dim">${dimTxt}</div>` : ''}
+          <div class="c-note">${t('preset_' + id + '_n')}</div></div>`;
+      }).join('');
+      pa.innerHTML = Object.keys(PAPERS).map(id => {
+        const L = layoutFor(PAPERS[id], safeOn());
+        return `<div class="choice${id === paperId ? ' on' : ''}" onclick="setPaper('${id}')">
+          <div class="c-name">${PAPERS[id].label || PAPERS[id].css}</div>
+          <div class="c-dim">${L.k >= 0.995 ? t('paper_orig') : t('paper_scaled').replace('{pct}', fmtNum(Math.round(L.k * 100)))}</div>
+          <div class="c-note">${t('paper_' + id + '_n')}</div></div>`;
+      }).join('');
+    }
+    function loadCustom() {
+      try { const c = JSON.parse(localStorage.getItem('prs_gb_custom')); if (c && c.w > 0 && c.h > 0 && c.d > 0) return { w: c.w, h: c.h, d: c.d }; } catch (e) {}
+      return Object.assign({}, PRESETS.custom);
+    }
+    function setPreset(id) {
+      presetId = id;
+      if (id === 'custom') { DIM = loadCustom(); PRESETS.custom = Object.assign({}, DIM); } else { DIM = Object.assign({}, PRESETS[id]); }
+      try { localStorage.setItem('prs_gb_preset', id); } catch (e) {}
+      const row = document.getElementById('dimRow'); row.hidden = id !== 'custom';
+      if (id === 'custom') { dimW.value = DIM.w; dimH.value = DIM.h; dimD.value = DIM.d; }
+      applyGeometry();
+    }
+    function setCustom() {
+      const clamp = (v, a, b, def) => { v = parseFloat(v); return isFinite(v) ? Math.min(b, Math.max(a, v)) : def; };
+      DIM = { w: clamp(dimW.value, 3, 40, DIM.w), h: clamp(dimH.value, 3, 40, DIM.h), d: clamp(dimD.value, 0.8, 10, DIM.d) };
+      PRESETS.custom = Object.assign({}, DIM);
+      try { localStorage.setItem('prs_gb_custom', JSON.stringify(DIM)); } catch (e) {}
+      applyGeometry();
+    }
+    function setPaper(id) { paperId = id; try { localStorage.setItem('prs_gb_paper', id); } catch (e) {} applyGeometry(); }
+    function showStep(n) {
+      wizStep = Math.max(1, Math.min(4, n));
+      for (let i = 1; i <= 4; i++) document.getElementById('step-' + i).classList.toggle('active', i === wizStep);
+      document.getElementById('previewWrap').style.display = wizStep === 3 ? 'flex' : 'none';
+      document.getElementById('wizBack').style.visibility = wizStep === 1 ? 'hidden' : 'visible';
+      document.getElementById('wizNext').style.display = wizStep === 4 ? 'none' : '';
+      document.getElementById('wizSteps').innerHTML = [1, 2, 3, 4].map(i =>
+        `<div class="wiz-pill${i === wizStep ? ' active' : (i < wizStep ? ' done' : '')}" onclick="showStep(${i})">${i} · ${t('wiz_' + i)}</div>`).join('');
+      if (wizStep === 3) KEYS.forEach(k => { if (state[k].loaded) { state[k].baseFitScale = coverScale(k); applyTransform(k); } });
+    }
+    function wizGo(d) { showStep(wizStep + d); }
+
+    // ---- Selection / editing ---------------------------------------------------
+    function selectTab(target) {
+      activeTarget = target;
+      KEYS.forEach(k => {
+        document.getElementById(`tab-${k}`).classList.toggle('active', k === target);
+        document.getElementById(`card-${k}`).classList.toggle('active', k === target);
+        document.getElementById(`frame-${k}`).classList.toggle('active-target', k === target);
+      });
+      updateControls();
+    }
+
+    function dims(key) {
+      const img = document.getElementById(`img-${key}`);
+      const is90 = ((effRot(key) % 180) + 180) % 180 === 90;
+      return { w: is90 ? img.naturalHeight : img.naturalWidth, h: is90 ? img.naturalWidth : img.naturalHeight };
+    }
+    const frW = (key) => dimsOf(key).w * PX_PER_CM, frH = (key) => dimsOf(key).h * PX_PER_CM;   // frame size from geometry
+    function coverScale(key) {
+      const img = document.getElementById(`img-${key}`);
+      if (!img || !img.naturalWidth) return 1;
+      const d = dims(key);
+      return Math.max(frW(key) / d.w, frH(key) / d.h);
+    }
+    const effScale = (key) => state[key].baseFitScale * state[key].userZoom;
+
+    function applyTransform(key) {
+      const img = document.getElementById(`img-${key}`);
+      const s = state[key];
+      if (!img || !s.loaded) return;
+      const sc = effScale(key);
+      img.style.transform = `translate(calc(-50% + ${s.x}px), calc(-50% + ${s.y}px)) rotate(${effRot(key)}deg) scale(${sc * s.flipX}, ${sc})`;
+      updateDPI(key);
+      if (key === activeTarget) updateControls();
+    }
+
+    function updateControls() {
+      const s = state[activeTarget];
+      const val = parseFloat((s.userZoom * 100).toFixed(1));
+      document.getElementById('zoomSlider').value = val;
+      document.getElementById('zoomInput').value = val;
+    }
+
+    // Effective DPI of the segment as printed (includes zoom and the print scale)
+    function updateDPI(key) {
+      const s = state[key];
+      const container = document.getElementById(`dpi-container-${key}`);
+      const badge = document.getElementById(`dpi-badge-${key}`);
+      const marker = document.getElementById(`dpi-marker-${key}`);
+      if (!s.loaded || !container) return;
+      container.style.display = 'block';
+      const dpi = Math.round(2.54 * frW(key) / (effScale(key) * s.wCm * layout().k));
+      let pos;
+      if (dpi <= 150) pos = (dpi / 150) * 37.5;
+      else if (dpi < 300) pos = 37.5 + ((dpi - 150) / 150) * 37.5;
+      else pos = 75 + (Math.min(dpi - 300, 100) / 100) * 25;
+      marker.style.left = `${Math.min(Math.max(pos, 2), 98)}%`;
+      badge.className = 'dpi-badge';
+      if (dpi >= 300) { badge.classList.add('green'); badge.innerHTML = `🟢 <b>${dpi} DPI</b> – ${t('dpi_excellent')}`; }
+      else if (dpi >= 150) { badge.classList.add('yellow'); badge.innerHTML = `🟡 <b>${dpi} DPI</b> – ${t('dpi_good')}`; }
+      else { badge.classList.add('red'); badge.innerHTML = `🔴 <b>${dpi} DPI</b> – ${t('dpi_low')}`; }
+    }
+
+    function loadFile(e, key) {
+      const file = e.target.files[0];
+      if (!file) return;
+      selectTab(key);
+      const img = document.getElementById(`img-${key}`);
+      const ph = document.getElementById(`ph-${key}`);
+      if (img.dataset.blob) URL.revokeObjectURL(img.dataset.blob);
+      const url = URL.createObjectURL(file);
+      img.dataset.blob = url;
+      img.onload = () => {
+        img.style.width = img.naturalWidth + 'px';
+        img.style.height = img.naturalHeight + 'px';
+        img.style.display = 'block';
+        if (ph) ph.style.display = 'none';
+        state[key].loaded = true;
+        fitKey(key);
+      };
+      img.src = url;
+    }
+
+    function fitKey(key) {
+      const s = state[key];
+      if (!s.loaded) return;
+      s.baseFitScale = coverScale(key);
+      s.userZoom = 1; s.x = 0; s.y = 0;
+      applyTransform(key);
+    }
+    const fitImage = () => fitKey(activeTarget);
+
+    function resetTransforms() {
+      const s = state[activeTarget];
+      s.rotation = 0; s.flipX = 1;
+      fitKey(activeTarget);
+      updateControls();
+    }
+    function rotate(deg) {
+      const s = state[activeTarget];
+      if (!s.loaded) return;
+      s.rotation = deg;
+      s.baseFitScale = coverScale(activeTarget);
+      applyTransform(activeTarget);
+    }
+    function toggleFlip() {
+      const s = state[activeTarget];
+      if (!s.loaded) return;
+      s.flipX *= -1;
+      applyTransform(activeTarget);
+    }
+    function updateZoom(val) {
+      const s = state[activeTarget];
+      const v = Math.min(300, Math.max(10, parseFloat(val) || 100));
+      s.userZoom = v / 100;
+      applyTransform(activeTarget);
+      updateControls();
+    }
+    function stepZoom(delta) { updateZoom(state[activeTarget].userZoom * 100 + delta); }
+    function setNudgeStep(n) {
+      currentNudgeStep = n;
+      [1, 5, 10].forEach(v => document.getElementById('nstep-' + v).classList.toggle('on', v === n));
+    }
+    function nudge(dx, dy) {
+      const s = state[activeTarget];
+      if (!s.loaded) return;
+      s.x += dx * currentNudgeStep; s.y += dy * currentNudgeStep;
+      applyTransform(activeTarget);
+    }
+    function resetPos() {
+      const s = state[activeTarget];
+      s.x = 0; s.y = 0;
+      applyTransform(activeTarget);
+    }
+
+    // Dragging (pointer events, delegated)
+    let drag = null;
+    function initDrag() {
+      const wrap = document.getElementById('netStage');
+      wrap.addEventListener('pointerdown', (e) => {
+        const fr = e.target.closest('.frame-container');
+        if (!fr) return;
+        const key = fr.dataset.key;
+        selectTab(key);
+        if (!state[key].loaded) return;
+        drag = { key, sx: e.clientX - state[key].x, sy: e.clientY - state[key].y };
+        fr.setPointerCapture(e.pointerId);
+        e.preventDefault();
+      });
+      wrap.addEventListener('pointermove', (e) => {
+        if (!drag) return;
+        state[drag.key].x = e.clientX - drag.sx;
+        state[drag.key].y = e.clientY - drag.sy;
+        applyTransform(drag.key);
+      });
+      const end = () => { drag = null; };
+      wrap.addEventListener('pointerup', end);
+      wrap.addEventListener('pointercancel', end);
+    }
+
+    // ---- Print -----------------------------------------------------------------
+    function drawSegment(ctx, key, x, y, destW, destH) {
+      const s = state[key];
+      const img = document.getElementById(`img-${key}`);
+      if (!s.loaded || !img.naturalWidth) return;
+      const f = destW / frW(key);               // preview px -> print px
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(x, y, destW, destH);
+      ctx.clip();
+      ctx.translate(x + destW / 2 + s.x * f, y + destH / 2 + s.y * f);
+      ctx.rotate(effRot(key) * Math.PI / 180);
+      ctx.scale(effScale(key) * s.flipX * f, effScale(key) * f);
+      ctx.imageSmoothingQuality = 'high';
+      ctx.drawImage(img, -img.naturalWidth / 2, -img.naturalHeight / 2);
+      ctx.restore();
+    }
+
+    function drawNet(lines, sheet, canvasId) {
+      const canvas = document.getElementById(canvasId);
+      canvas.width = PX_PAGE_W; canvas.height = PX_PAGE_H;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      const N = buildNet(DIM, sheet), L = layout(sheet), P = PX_CM;
+
+      ctx.save();
+      ctx.translate(canvas.width / 2, L.zoneCy * P);        // centre the net in the safe zone
+      if (L.rot) ctx.rotate(Math.PI / 2);                   // turned by 90° when that gives a bigger print
+      ctx.scale(L.k, L.k);
+      ctx.translate(-N.W * P / 2, -N.H * P / 2);
+
+      Object.keys(N.frames).forEach(k => { const f = N.frames[k]; drawSegment(ctx, k, f.x * P, f.y * P, f.w * P, f.h * P); });
+
+      if (lines) {
+        ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+        ctx.strokeStyle = '#000'; ctx.lineWidth = 3; ctx.setLineDash([]);
+        N.cuts.forEach(poly => {
+          ctx.beginPath();
+          poly.forEach(([x, y], i) => i ? ctx.lineTo(x * P, y * P) : ctx.moveTo(x * P, y * P));
+          ctx.stroke();
+        });
+        // fold lines: on the artwork subtle / off / full, on blank tabs always dark
+        const fm = document.getElementById('foldMode').value;
+        ctx.lineWidth = 1.5; ctx.setLineDash([8, 6]);
+        if (N.glue) {                                         // label on the glue tab
+          const g = N.glue, cx = (g[0][0] + g[1][0]) / 2 * P, cy = (g[0][1] + g[3][1]) / 2 * P;
+          ctx.save(); ctx.setLineDash([]); ctx.translate(cx, cy); ctx.rotate(-Math.PI / 2);
+          ctx.fillStyle = '#999'; ctx.font = `${0.45 * P}px sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+          ctx.fillText(t('glue_label'), 0, 0); ctx.restore();
+        }
+        ctx.lineWidth = 1.5; ctx.setLineDash([8, 6]);
+        N.folds.forEach(f => {
+          if (f.soft) { if (fm === 'off') return; ctx.strokeStyle = fm === 'soft' ? 'rgba(120,120,120,0.35)' : '#000'; }
+          else ctx.strokeStyle = '#000';
+          ctx.beginPath(); ctx.moveTo(f.a[0] * P, f.a[1] * P); ctx.lineTo(f.b[0] * P, f.b[1] * P); ctx.stroke();
+        });
+      }
+      ctx.restore();
+    }
+
+    function preparePrint() {
+      if (!KEYS.some(k => state[k].loaded)) { alert(t('alert_none')); return; }
+      const lines = document.getElementById('showGuidelines').checked, split = isSplit();
+      drawNet(lines, split ? 1 : 0, 'printCanvas');
+      const pg2 = document.getElementById('page-net2'); pg2.hidden = !split;
+      document.getElementById('page-net').classList.toggle('is-last', !split);
+      if (split) drawNet(lines, 2, 'printCanvas2');
+      document.getElementById('printHint2').style.display = split ? 'block' : 'none';
+      const k = layout().k;
+      const w = document.getElementById('printWarn');
+      w.textContent = k < 1 ? t('fit_note').replace('{pct}', fmtNum(Math.round(k * 1000) / 10)) : '';
+      w.style.display = k < 1 ? 'block' : 'none';
+      document.getElementById('printScreen').style.display = 'block';
+    }
+    function closePrint() { document.getElementById('printScreen').style.display = 'none'; }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      try { const b = localStorage.getItem('prs_gb_paper'); if (PAPERS[b]) paperId = b; const a = localStorage.getItem('prs_gb_preset'); if (PRESETS[a]) presetId = a; } catch (e) {}
+      buildUI();
+      initDrag();
+      if (presetId === 'custom') { DIM = loadCustom(); PRESETS.custom = Object.assign({}, DIM); } else { DIM = Object.assign({}, PRESETS[presetId]); }
+      document.getElementById('dimRow').hidden = presetId !== 'custom';
+      if (presetId === 'custom') { dimW.value = DIM.w; dimH.value = DIM.h; dimD.value = DIM.d; }
+      applyGeometry();
+      setLanguage(currentLang);
+      selectTab(activeTarget);
+      showStep(1);
+    });
+  </script>
+  <script src="../../assets/legal-note.js" defer></script>
+</body>
+</html>
