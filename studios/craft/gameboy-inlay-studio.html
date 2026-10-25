@@ -284,8 +284,9 @@
         <label><span data-i18n="d_w">Tray width (cm)</span><input type="number" id="dW" step="0.05" min="5" max="16" oninput="readDims()"></label>
         <label><span data-i18n="d_h">Tray length (cm)</span><input type="number" id="dH" step="0.05" min="5" max="16" oninput="readDims()"></label>
         <label><span data-i18n="d_wall">Wall height (cm)</span><input type="number" id="dWall" step="0.05" min="0.8" max="3" oninput="readDims()"></label>
-        <label><span data-i18n="d_mw">Window width (cm)</span><input type="number" id="dMw" step="0.05" min="2" max="10" oninput="readDims()"></label>
-        <label><span data-i18n="d_mh">Window length (cm)</span><input type="number" id="dMh" step="0.05" min="2" max="10" oninput="readDims()"></label>
+        <label><span data-i18n="d_mw">Pocket width (cm)</span><input type="number" id="dMw" step="0.05" min="2" max="10" oninput="readDims()"></label>
+        <label><span data-i18n="d_mh">Pocket length (cm)</span><input type="number" id="dMh" step="0.05" min="2" max="10" oninput="readDims()"></label>
+        <label><span data-i18n="d_th">Tab height (cm)</span><input type="number" id="dTh" step="0.05" min="0.5" max="2.5" oninput="readDims()"></label>
       </div>
       <div class="size-note" data-i18n="d_warn"></div>
     </div>
@@ -328,37 +329,37 @@
       en: {
         wiz_1: "Model", wiz_2: "Size", wiz_3: "Print", nav_index: "Back to Overview",
         studio_title: "Game Boy Inlay Craft Studio",
-        studio_sub: "Cut-and-fold plate with a window that holds the cartridge. Lines only, no artwork.",
+        studio_sub: "Cut-and-fold tray with a cartridge pocket: four small tabs are folded up and hold the module. Lines only, also usable as a template.",
         wiz_h1: "Which inlay do you need?", wiz_s1: "The box is the same size for Game Boy, Color and Advance – only the inlay holding the cartridge differs.",
         m_gb: "Game Boy / Color", m_gb_n: "tray 12.1 × 12.1 × 2.0 cm",
         m_gba: "Game Boy Advance", m_gba_n: "tray 12.0 × 12.1 × 2.0 cm",
-        wiz_h2: "Check the measurements", wiz_s2: "Tray size, wall height and window size come from the shop images. The window must be slightly bigger than your cartridge (about 3 mm play).",
-        d_w: "Tray width (cm)", d_h: "Tray length (cm)", d_wall: "Wall height (cm)", d_mw: "Window width (cm)", d_mh: "Window length (cm)",
-        d_warn: "Please check the window against your real cartridge (lay it on the screen or measure it) and adjust if needed.",
-        wiz_h3: "Ready to print", wiz_s3: "You need: 300–400 g folding card, scissors or craft knife, ruler, glue stick. Print at 100 %, margins “None”, no borderless printing.",
-        sum: "Tray {w} × {h} × {wall} cm · window {pw} × {ph} cm · scale {pct} %",
+        wiz_h2: "Check the measurements", wiz_s2: "Tray size and wall height come from the shop images. The pocket must be slightly bigger than your cartridge (about 3 mm play). The tabs fold up around it.",
+        d_w: "Tray width (cm)", d_h: "Tray length (cm)", d_wall: "Wall height (cm)", d_mw: "Pocket width (cm)", d_mh: "Pocket length (cm)", d_th: "Tab height (cm)",
+        d_warn: "Please check the pocket against your real cartridge (measure it) and adjust if needed. Tab height about cartridge thickness + 2 mm.",
+        wiz_h3: "Ready to print", wiz_s3: "You need: 300–400 g folding card (or paper as a template to trace onto cardboard), scissors or craft knife, ruler, glue stick. Print at 100 %, margins “None”, no borderless printing.",
+        sum: "Tray {w} × {h} × {wall} cm · pocket {pw} × {ph} cm · scale {pct} %",
         prev_title: "Preview of the sheet", lg_cut: "cut", lg_fold: "fold", lg_x: "",
         btn_print: "🖨️ Generate sheet & print", btn_print_now: "Print Now / Save PDF", btn_close: "Close", btn_back: "← Back", btn_next: "Next →", btn_donation: "Donation",
-        print_hint: "Chosen paper size, portrait, scale 100 %, margins \"None\", no borderless printing. Cut along the solid lines (incl. the window with its finger notch and the short cuts at the corners), score and fold along the dashed lines. Fold the four walls down, fold the corner squares inwards and glue them to the inside of the neighbouring wall. Put the plate into the box with the walls down: the cartridge lies in the window on the bottom of the box, the notch lets you grip it.",
-        lbl_floor: "FRONT",
+        print_hint: "Chosen paper size, portrait, scale 100 %, margins \"None\", no borderless printing. Print on cardboard, or on paper and use it as a template: lay it on the cardboard and trace the solid and dashed lines (press through with a pen). Cut the solid lines (incl. the four pocket tabs and the short cuts at the corners), score the dashed lines with a ruler and a blunt tool. Walls: fold up, fold the corner squares inwards and glue them to the neighbouring wall. Pocket: fold the four tabs UP at 90° – they stand around the cartridge. Put the cartridge in, then slide the tray into the box.",
+        lbl_floor: "FRONT", lbl_pocket: "MODULE",
         fit_note: "Sheet scaled to {pct} % so it stays inside the printable area."
       },
       de: {
         wiz_1: "Modell", wiz_2: "Maße", wiz_3: "Drucken", nav_index: "Zurück zur Übersicht",
         studio_title: "Game Boy Inlay Craft Studio",
-        studio_sub: "Falt-Platte mit Fenster, das das Modul hält. Nur Linien, kein Motiv.",
+        studio_sub: "Falt-Tablett mit Modulfach: vier kleine Laschen werden hochgeklappt und halten das Modul. Nur Linien, auch als Schablone nutzbar.",
         wiz_h1: "Welches Inlay brauchst du?", wiz_s1: "Die Box ist bei Game Boy, Color und Advance gleich groß – nur das Inlay, das das Modul hält, unterscheidet sich.",
         m_gb: "Game Boy / Color", m_gb_n: "Tablett 12,1 × 12,1 × 2,0 cm",
         m_gba: "Game Boy Advance", m_gba_n: "Tablett 12,0 × 12,1 × 2,0 cm",
-        wiz_h2: "Maße prüfen", wiz_s2: "Tablettgröße, Wandhöhe und Fenstergröße stammen von den Shop-Bildern. Das Fenster muss etwas größer als dein Modul sein (ca. 3 mm Spiel).",
-        d_w: "Tablett Breite (cm)", d_h: "Tablett Länge (cm)", d_wall: "Wandhöhe (cm)", d_mw: "Fenster Breite (cm)", d_mh: "Fenster Länge (cm)",
-        d_warn: "Bitte prüfe das Fenster einmal gegen dein echtes Modul (messen) und passe es bei Bedarf an.",
-        wiz_h3: "Bereit zum Drucken", wiz_s3: "Du brauchst: 300–400 g Faltkarton, Schere oder Cuttermesser, Lineal, Klebestift. Druck mit 100 %, Ränder „Keine“, nicht randlos drucken.",
-        sum: "Tablett {w} × {h} × {wall} cm · Fenster {pw} × {ph} cm · Maßstab {pct} %",
+        wiz_h2: "Maße prüfen", wiz_s2: "Tablettgröße und Wandhöhe stammen von den Shop-Bildern. Das Fach muss etwas größer als dein Modul sein (ca. 3 mm Spiel). Die Laschen werden darum hochgeklappt.",
+        d_w: "Tablett Breite (cm)", d_h: "Tablett Länge (cm)", d_wall: "Wandhöhe (cm)", d_mw: "Fach Breite (cm)", d_mh: "Fach Länge (cm)", d_th: "Laschenhöhe (cm)",
+        d_warn: "Bitte prüfe das Fach einmal gegen dein echtes Modul (messen) und passe es bei Bedarf an. Laschenhöhe etwa Modulstärke + 2 mm.",
+        wiz_h3: "Bereit zum Drucken", wiz_s3: "Du brauchst: 300–400 g Faltkarton (oder Papier als Schablone, die du auf Pappe übertragst), Schere oder Cuttermesser, Lineal, Klebestift. Druck mit 100 %, Ränder „Keine“, nicht randlos drucken.",
+        sum: "Tablett {w} × {h} × {wall} cm · Fach {pw} × {ph} cm · Maßstab {pct} %",
         prev_title: "Vorschau des Bogens", lg_cut: "schneiden", lg_fold: "falten", lg_x: "",
         btn_print: "🖨️ Bogen generieren & drucken", btn_print_now: "Jetzt drucken / Als PDF speichern", btn_close: "Schließen", btn_back: "← Zurück", btn_next: "Weiter →", btn_donation: "Spende",
-        print_hint: "Gewähltes Papierformat, hochkant, Skalierung 100 %, Ränder „Keine“, nicht randlos drucken. Entlang der durchgezogenen Linien schneiden (auch das Fenster mit der Griffmulde und die kurzen Schnitte an den Ecken), an den gestrichelten Linien ritzen und falten. Die vier Wände nach unten klappen, die Eckquadrate nach innen falten und innen an die Nachbarwand kleben. Die Platte mit den Wänden nach unten in die Box legen: Das Modul liegt im Fenster auf dem Boden der Box, an der Mulde kannst du es greifen.",
-        lbl_floor: "VORNE",
+        print_hint: "Gewähltes Papierformat, hochkant, Skalierung 100 %, Ränder „Keine“, nicht randlos drucken. Auf Pappe drucken, oder auf Papier drucken und als Schablone benutzen: auf die Pappe legen und die durchgezogenen und gestrichelten Linien nachfahren (mit dem Stift durchdrücken). Durchgezogene Linien schneiden (auch die vier Fach-Laschen und die kurzen Schnitte an den Ecken), gestrichelte mit Lineal und stumpfem Werkzeug ritzen. Wände hochklappen, Eckquadrate nach innen falten und an die Nachbarwand kleben. Fach: die vier Laschen im Winkel von 90° HOCH klappen – sie stehen um das Modul. Modul einlegen, dann das Tablett in die Box schieben.",
+        lbl_floor: "VORNE", lbl_pocket: "MODUL",
         fit_note: "Bogen auf {pct} % verkleinert, damit er im bedruckbaren Bereich bleibt."
       }
     };
@@ -370,8 +371,8 @@
 
     // Model defaults (cm): tray size / wall from the shop images; cartridge sizes are estimates the user can correct
     const MODELS = {
-      gb:  { w: 12.1, h: 12.1, wall: 2.0, mw: 6.8, mh: 6.0 },
-      gba: { w: 12.0, h: 12.1, wall: 2.0, mw: 3.8, mh: 6.1 }
+      gb:  { w: 12.1, h: 12.1, wall: 2.0, mw: 6.8, mh: 6.0, th: 1.0 },
+      gba: { w: 12.0, h: 12.1, wall: 2.0, mw: 3.8, mh: 6.1, th: 1.0 }
     };
     const NOTCH_R = 0.9, WIN_R = 0.3;
     let modelId = 'gb', M = Object.assign({}, MODELS.gb);
@@ -388,17 +389,17 @@
       [w, w + W].forEach(x => { cuts.push([[x, 0], [x, w]]); cuts.push([[x, Th - w], [x, Th]]); });
       folds.push([[w, w], [w + W, w]], [[w, w + H], [w + W, w + H]], [[w, w], [w, w + H]], [[w + W, w], [w + W, w + H]]);
       folds.push([[0, w], [w, w]], [[w + W, w], [Tw, w]], [[0, w + H], [w, w + H]], [[w + W, w + H], [Tw, w + H]]);
-      // window near the front edge, centred left-right
-      const wx = w + (W - ww) / 2, cx = wx + ww / 2;
-      const wy = Math.max(w + 0.4 + NOTCH_R, w + H - wl - 1.5);
-      const r = Math.min(WIN_R, ww / 4, wl / 4), nr = Math.min(NOTCH_R, ww / 2 - r - 0.2);
-      const arc = (ax, ay, a0, a1, n) => { const o = []; for (let i = 0; i <= n; i++) { const a = (a0 + (a1 - a0) * i / n) * Math.PI / 180; o.push([ax + r * Math.cos(a), ay + r * Math.sin(a)]); } return o; };
-      const win = [...arc(wx + r, wy + r, 180, 270, 5)];
-      for (let i = 0; i <= 10; i++) { const a = Math.PI * i / 10; win.push([cx - nr * Math.cos(a), wy - nr * Math.sin(a)]); }
-      win.push(...arc(wx + ww - r, wy + r, 270, 360, 5), ...arc(wx + ww - r, wy + wl - r, 0, 90, 5), ...arc(wx + r, wy + wl - r, 90, 180, 5));
-      win.push(win[0]);
-      cuts.push(win);
-      labels.push({ text: t('lbl_floor'), x: w + W / 2, y: w + H - 0.6, rot: 0 });
+      // cartridge pocket in the middle of the floor: four small tongues, hinged on the pocket edges, are folded UP and hold the module
+      const th = Math.min(P.th, 2.5), px = w + (W - ww) / 2, py = w + (H - wl) / 2, c = Math.min(0.25, th / 3);
+      const cx = px + ww / 2, nr = Math.max(0.2, Math.min(0.7, th - 0.25, ww / 3));
+      cuts.push([[px, py], [px - th, py + c], [px - th, py + wl - c], [px, py + wl]]);
+      cuts.push([[px + ww, py], [px + ww + th, py + c], [px + ww + th, py + wl - c], [px + ww, py + wl]]);
+      const notch = []; for (let i = 0; i <= 10; i++) { const a = Math.PI * i / 10; notch.push([cx - nr * Math.cos(a), py - th + nr * Math.sin(a)]); }
+      cuts.push([[px, py], [px + c, py - th], [cx - nr, py - th], ...notch, [cx + nr, py - th], [px + ww - c, py - th], [px + ww, py]]);
+      cuts.push([[px, py + wl], [px + c, py + wl + th], [px + ww - c, py + wl + th], [px + ww, py + wl]]);
+      folds.push([[px, py], [px, py + wl]], [[px + ww, py], [px + ww, py + wl]], [[px, py], [px + ww, py]], [[px, py + wl], [px + ww, py + wl]]);
+      labels.push({ text: t('lbl_pocket'), x: cx, y: py + wl / 2, rot: 0 });
+      labels.push({ text: t('lbl_floor'), x: w + W / 2, y: w + H - 0.5, rot: 0 });
       return { cuts, folds, marks, labels, W: Tw, H: Th, pw: ww, ph: wl };
     }
 
@@ -432,11 +433,11 @@
       document.getElementById('modelCards').innerHTML = Object.keys(MODELS).map(id =>
         `<div class="choice${id === modelId ? ' on' : ''}" onclick="setModel('${id}')">${sketch(id)}<div class="c-name">${t('m_' + id)}</div><div class="c-dim">${t('m_' + id + '_n')}</div></div>`).join('');
     }
-    function fillInputs() { dW.value = M.w; dH.value = M.h; dWall.value = M.wall; dMw.value = M.mw; dMh.value = M.mh; }
+    function fillInputs() { dW.value = M.w; dH.value = M.h; dWall.value = M.wall; dMw.value = M.mw; dMh.value = M.mh; dTh.value = M.th; }
     function setModel(id) { modelId = id; M = Object.assign({}, MODELS[id]); try { localStorage.setItem('prs_gbi_model', id); } catch (e) {} fillInputs(); refresh(); }
     function readDims() {
       const g = (el, a, b, d) => { const v = parseFloat(el.value); return isFinite(v) ? Math.min(b, Math.max(a, v)) : d; };
-      M = { w: g(dW, 5, 16, M.w), h: g(dH, 5, 16, M.h), wall: g(dWall, 0.8, 3, M.wall), mw: g(dMw, 2, 10, M.mw), mh: g(dMh, 2, 10, M.mh) };
+      M = { w: g(dW, 5, 16, M.w), h: g(dH, 5, 16, M.h), wall: g(dWall, 0.8, 3, M.wall), mw: g(dMw, 2, 10, M.mw), mh: g(dMh, 2, 10, M.mh), th: g(dTh, 0.5, 2.5, M.th) };
       refresh();
     }
     function refresh() { renderPreview(); renderChoices(); }
