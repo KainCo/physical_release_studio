@@ -242,7 +242,10 @@
     .dim-grid input { padding: 8px; background: var(--bg); border: 1px solid var(--border); color: #fff; border-radius: 6px; text-align: center; font-family: 'JetBrains Mono', monospace; }
     .legend { font-size: 0.72rem; color: var(--text-muted); text-align: center; }
     .legend b.c { color: #e2e8f0; } .legend b.f { color: #38bdf8; } .legend b.m { color: #fbbf24; }
-  </style>
+    .fold-guide { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; margin: 10px 0 14px; text-align: left; }
+  .fold-guide .fg-title { font-weight: 800; font-size: 0.85rem; margin-bottom: 6px; }
+  .fold-guide ol { margin: 0; padding-left: 20px; font-size: 0.78rem; color: var(--text-muted); line-height: 1.6; }
+</style>
   <style id="pageStyle">@media print { @page { size: A4 portrait; margin: 0mm !important; } }</style>
 </head>
 <body>
@@ -295,6 +298,13 @@
       <div class="wiz-h" data-i18n="wiz_h3">Ready to print</div>
       <div class="wiz-s" data-i18n="wiz_s3"></div>
       <div class="size-note ok" id="sumNote"></div>
+      <div class="fold-guide">
+        <div class="fg-title" data-i18n="fg_title">Folding guide</div>
+        <ol>
+          <li data-i18n="fg1"></li><li data-i18n="fg2"></li><li data-i18n="fg3"></li>
+          <li data-i18n="fg4"></li><li data-i18n="fg5"></li><li data-i18n="fg6"></li>
+        </ol>
+      </div>
       <button class="btn-print" onclick="preparePrint()" data-i18n="btn_print">🖨️ Generate sheet & print</button>
     </div>
 
@@ -333,9 +343,16 @@
         wiz_h1: "Which inlay do you need?", wiz_s1: "The box is the same size for Game Boy, Color and Advance – only the inlay holding the cartridge differs.",
         m_gb: "Game Boy / Color", m_gb_n: "tray 12.1 × 12.1 × 2.0 cm",
         m_gba: "Game Boy Advance", m_gba_n: "tray 12.0 × 12.1 × 2.0 cm",
-        wiz_h2: "Check the measurements", wiz_s2: "Tray size and wall height come from the shop images. The pocket must be slightly bigger than your cartridge (about 3 mm play). The tabs fold up around it.",
+        wiz_h2: "Check the measurements", wiz_s2: "The default sizes fit the standard Game Boy box. The pocket should be slightly bigger than the cartridge (about 3 mm play). The tabs fold up around it.",
         d_w: "Tray width (cm)", d_h: "Tray length (cm)", d_wall: "Wall height (cm)", d_mw: "Pocket width (cm)", d_mh: "Pocket length (cm)", d_th: "Tab height (cm)",
-        d_warn: "Please check the pocket against your real cartridge (measure it) and adjust if needed. Tab height about cartridge thickness + 2 mm.",
+        d_warn: "Do not change anything unless the pocket does not fit your cartridge. The default values suit the standard box. If needed: pocket about 3 mm bigger than the cartridge, tab height ≈ cartridge thickness + 2 mm.",
+        fg_title: "Folding guide",
+        fg1: "Cut along all solid lines (outer edge, the four short corner cuts and the four pocket tabs).",
+        fg2: "Score all dashed lines from the printed side with a ruler and a blunt tool (empty pen, knitting needle), so the card folds cleanly.",
+        fg3: "Fold the four tray walls up at 90°.",
+        fg4: "Fold each corner square inwards and glue it to the inside of the neighbouring wall. Press until dry.",
+        fg5: "Fold the four pocket tabs in the middle of the floor UP at 90°. The one with the round notch is for your finger.",
+        fg6: "Place the cartridge in the pocket (label up) and slide the tray into the box. Too loose? Fold the tabs a little inwards. Too tight? Make the pocket 1–2 mm bigger.",
         wiz_h3: "Ready to print", wiz_s3: "You need: 300–400 g folding card (or paper as a template to trace onto cardboard), scissors or craft knife, ruler, glue stick. Print at 100 %, margins “None”, no borderless printing.",
         sum: "Tray {w} × {h} × {wall} cm · pocket {pw} × {ph} cm · scale {pct} %",
         prev_title: "Preview of the sheet", lg_cut: "cut", lg_fold: "fold", lg_x: "",
@@ -351,9 +368,16 @@
         wiz_h1: "Welches Inlay brauchst du?", wiz_s1: "Die Box ist bei Game Boy, Color und Advance gleich groß – nur das Inlay, das das Modul hält, unterscheidet sich.",
         m_gb: "Game Boy / Color", m_gb_n: "Tablett 12,1 × 12,1 × 2,0 cm",
         m_gba: "Game Boy Advance", m_gba_n: "Tablett 12,0 × 12,1 × 2,0 cm",
-        wiz_h2: "Maße prüfen", wiz_s2: "Tablettgröße und Wandhöhe stammen von den Shop-Bildern. Das Fach muss etwas größer als dein Modul sein (ca. 3 mm Spiel). Die Laschen werden darum hochgeklappt.",
+        wiz_h2: "Maße prüfen", wiz_s2: "Die Standardmaße passen in die normale Game-Boy-Box. Das Fach sollte etwas größer als das Modul sein (ca. 3 mm Spiel). Die Laschen werden darum hochgeklappt.",
         d_w: "Tablett Breite (cm)", d_h: "Tablett Länge (cm)", d_wall: "Wandhöhe (cm)", d_mw: "Fach Breite (cm)", d_mh: "Fach Länge (cm)", d_th: "Laschenhöhe (cm)",
-        d_warn: "Bitte prüfe das Fach einmal gegen dein echtes Modul (messen) und passe es bei Bedarf an. Laschenhöhe etwa Modulstärke + 2 mm.",
+        d_warn: "Nichts verändern, außer das Fach passt nicht zu deinem Modul. Die Standardwerte passen zur normalen Box. Falls nötig: Fach ca. 3 mm größer als das Modul, Laschenhöhe ≈ Modulstärke + 2 mm.",
+        fg_title: "Faltanleitung",
+        fg1: "Alle durchgezogenen Linien schneiden (Außenrand, die vier kurzen Eckschnitte und die vier Fach-Laschen).",
+        fg2: "Alle gestrichelten Linien von der bedruckten Seite mit Lineal und stumpfem Werkzeug (leerer Kugelschreiber, Stricknadel) ritzen, damit der Karton sauber knickt.",
+        fg3: "Die vier Tablett-Wände im Winkel von 90° hochklappen.",
+        fg4: "Jedes Eckquadrat nach innen falten und innen an die Nachbarwand kleben. Bis zum Trocknen andrücken.",
+        fg5: "Die vier Laschen in der Mitte des Bodens im Winkel von 90° HOCH klappen. Die mit der runden Aussparung ist für deinen Finger.",
+        fg6: "Modul (Etikett oben) ins Fach legen und das Tablett in die Box schieben. Zu locker? Laschen etwas nach innen biegen. Zu eng? Fach 1–2 mm größer machen.",
         wiz_h3: "Bereit zum Drucken", wiz_s3: "Du brauchst: 300–400 g Faltkarton (oder Papier als Schablone, die du auf Pappe übertragst), Schere oder Cuttermesser, Lineal, Klebestift. Druck mit 100 %, Ränder „Keine“, nicht randlos drucken.",
         sum: "Tablett {w} × {h} × {wall} cm · Fach {pw} × {ph} cm · Maßstab {pct} %",
         prev_title: "Vorschau des Bogens", lg_cut: "schneiden", lg_fold: "falten", lg_x: "",
@@ -369,7 +393,7 @@
     const fmt1 = (n) => fmtNum((Math.round(n * 10) / 10).toFixed(1));
     const fmt2 = (n) => fmtNum(String(Math.round(n * 100) / 100));
 
-    // Model defaults (cm): tray size / wall from the shop images; cartridge sizes are estimates the user can correct
+    // Model defaults (cm): tray size / wall default sizes; cartridge sizes are estimates the user can correct
     const MODELS = {
       gb:  { w: 12.1, h: 12.1, wall: 2.0, mw: 6.8, mh: 6.0, th: 1.0 },
       gba: { w: 12.0, h: 12.1, wall: 2.0, mw: 3.8, mh: 6.1, th: 1.0 }
