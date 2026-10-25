@@ -313,6 +313,18 @@
       <div class="wiz-h" data-i18n="wiz_h3">Add your images</div>
       <div class="wiz-s" data-i18n="wiz_s3"></div>
       <div class="upload-cards" id="cards"></div>
+      <div class="upload-cards">
+        <div class="upload-card" id="card-flaps" style="cursor: default;">
+          <label for="file-flaps" data-i18n="seg_flaps">📷 Tabs & ears (colour)</label>
+          <input type="file" id="file-flaps" accept="image/*" onchange="loadFlapFile(event)">
+          <div style="display:flex;gap:8px;align-items:center;margin-top:8px;font-size:0.72rem;color:var(--text-muted);">
+            <span data-i18n="flap_color">or pick a colour:</span>
+            <input type="color" id="flapColor" value="#2563eb" oninput="setFlapColor(this.value)" style="width:42px;height:28px;border:none;background:none;padding:0;cursor:pointer;">
+            <button class="btn-small" onclick="clearFlaps()" data-i18n="flap_clear">Remove</button>
+          </div>
+          <div style="font-size:0.68rem;color:var(--text-muted);margin-top:8px;" data-i18n="flap_hint"></div>
+        </div>
+      </div>
 
       <div class="tabs" id="tabBar"></div>
       <div class="controls-grid">
@@ -466,7 +478,7 @@
         ph_front: "Front", ph_back: "Back", ph_sideL: "Side L", ph_sideR: "Side R", ph_top: "Top face", ph_bottom: "Bottom face",
         short_front: "Front", short_back: "Back", short_sideL: "Side L", short_sideR: "Side R", short_top: "Top", short_bottom: "Bottom",
         lbl_rotation: "Rotation & Flip", lbl_zoom: "Granular Zoom (%)", lbl_nudge: "Nudge Position", lbl_alignment: "Alignment & Print",
-        btn_fit: "Fit", btn_reset: "Reset", btn_donation: "Donation", btn_back: "← Back", btn_next: "Next →", btn_inlay: "Cartridge inlay for this box →",
+        btn_fit: "Fit", btn_reset: "Reset", btn_donation: "Donation", btn_back: "← Back", btn_next: "Next →", btn_inlay: "Cartridge inlay for this box →", seg_flaps: "📷 Tabs & ears (colour)", flap_color: "or pick a colour:", flap_clear: "Remove", flap_hint: "A small image or colour fills all blank tabs: ears, tongue, bottom flaps and the glue flap. Best: a small patch of the cover colour.",
         wiz_h4: "Ready to print",
         wiz_s4: "You need: 200–250 g card (or paper on thin cardboard, or self-adhesive vinyl film), scissors or craft knife, ruler, glue stick (only for the seam). Print at 100 %, margins “None”, no borderless printing.",
         adv_title: "Advanced options", adv_rec: "Recommendation: leave everything as preset – this works for most printers.",
@@ -504,7 +516,7 @@
         ph_front: "Vorderseite", ph_back: "Rückseite", ph_sideL: "Seite L", ph_sideR: "Seite R", ph_top: "Oberseite", ph_bottom: "Unterseite",
         short_front: "Vorne", short_back: "Hinten", short_sideL: "Seite L", short_sideR: "Seite R", short_top: "Oben", short_bottom: "Unten",
         lbl_rotation: "Drehung & Spiegeln", lbl_zoom: "Granularer Zoom (%)", lbl_nudge: "Position verschieben", lbl_alignment: "Ausrichtung & Druck",
-        btn_fit: "Einpassen", btn_reset: "Zurücksetzen", btn_donation: "Spende", btn_back: "← Zurück", btn_next: "Weiter →", btn_inlay: "Modul-Inlay für diese Box →",
+        btn_fit: "Einpassen", btn_reset: "Zurücksetzen", btn_donation: "Spende", btn_back: "← Zurück", btn_next: "Weiter →", btn_inlay: "Modul-Inlay für diese Box →", seg_flaps: "📷 Laschen & Ecken (Farbe)", flap_color: "oder Farbe wählen:", flap_clear: "Entfernen", flap_hint: "Ein kleines Bild oder eine Farbe füllt alle leeren Laschen: Ohren, Zunge, Bodenlaschen und Klebelasche. Am besten ein kleiner Ausschnitt in der Farbe des Covers.",
         wiz_h4: "Bereit zum Drucken",
         wiz_s4: "Du brauchst: 200–250 g Karton (oder Papier auf dünner Pappe, oder selbstklebende Vinyl-Folie), Schere oder Cuttermesser, Lineal, Klebestift (nur für die Naht). Druck mit 100 %, Ränder „Keine“, nicht randlos drucken.",
         adv_title: "Erweiterte Optionen", adv_rec: "Empfehlung: Lass alles wie voreingestellt – das passt für die meisten Drucker.",
@@ -672,6 +684,30 @@
         `<button class="tab-btn${k === activeTarget ? ' active' : ''}" id="tab-${k}" onclick="selectTab('${k}')" data-i18n="short_${k}"></button>`).join('');
     }
 
+    // blank tabs: hatched, or filled with the chosen colour / small image
+    const FLAP = { img: null, url: null, color: null };
+    function renderFlapSvg(svg, N, P, pts) {
+      const has = FLAP.img || FLAP.color;
+      let defs = `<defs><pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="6" stroke="rgba(148,163,184,0.35)" stroke-width="1"/></pattern>`;
+      let body = '';
+      if (FLAP.img) {
+        defs += `<clipPath id="flapClip">${N.flaps.map(f => `<polygon points="${pts(f)}"/>`).join('')}</clipPath>`;
+        body = `<image href="${FLAP.url}" x="0" y="0" width="${N.W * P}" height="${N.H * P}" preserveAspectRatio="xMidYMid slice" clip-path="url(#flapClip)"/>` +
+          N.flaps.map(f => `<polygon points="${pts(f)}" fill="none" stroke="#64748b" stroke-width="1" stroke-dasharray="3 2"/>`).join('');
+      } else {
+        body = N.flaps.map(f => `<polygon points="${pts(f)}" fill="${FLAP.color || 'url(#hatch)'}" stroke="#64748b" stroke-width="1" stroke-dasharray="3 2"/>`).join('');
+      }
+      svg.innerHTML = defs + '</defs>' + body;
+    }
+    function loadFlapFile(e) {
+      const file = e.target.files[0]; if (!file) return;
+      if (FLAP.url) URL.revokeObjectURL(FLAP.url);
+      FLAP.url = URL.createObjectURL(file);
+      const im = new Image(); im.onload = () => { FLAP.img = im; FLAP.color = null; applyGeometry(); }; im.src = FLAP.url;
+    }
+    function setFlapColor(c) { FLAP.color = c; FLAP.img = null; applyGeometry(); }
+    function clearFlaps() { FLAP.img = null; FLAP.color = null; document.getElementById('file-flaps').value = ''; applyGeometry(); }
+
     function applyGeometry() {
       const pp = PAPERS[paperId], N = buildNet();
       PAGE_W_CM = pp.w; PAGE_H_CM = pp.h;
@@ -686,8 +722,7 @@
       const P = PX_PER_CM, pts = (poly) => poly.map(([x, y]) => `${(x * P).toFixed(1)},${(y * P).toFixed(1)}`).join(' ');
       const svg = document.getElementById('netSvg');
       svg.setAttribute('width', N.W * P); svg.setAttribute('height', N.H * P); svg.setAttribute('viewBox', `0 0 ${N.W * P} ${N.H * P}`);
-      svg.innerHTML = `<defs><pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="6" stroke="rgba(148,163,184,0.35)" stroke-width="1"/></pattern></defs>` +
-        N.flaps.map(f => `<polygon points="${pts(f)}" fill="url(#hatch)" stroke="#64748b" stroke-width="1" stroke-dasharray="3 2"/>`).join('');
+      renderFlapSvg(svg, N, P, pts);
 
       KEYS.forEach(k => {
         const d = dimsOf(k), f = N.frames[k], fr = document.getElementById(`frame-${k}`);
@@ -977,6 +1012,17 @@
       ctx.scale(L.k, L.k);
       ctx.translate(-N.W * P / 2, -N.H * P / 2);
 
+      if (FLAP.img || FLAP.color) {
+        ctx.save(); ctx.beginPath();
+        N.flaps.forEach(poly => { poly.forEach(([x, y], i) => i ? ctx.lineTo(x * P, y * P) : ctx.moveTo(x * P, y * P)); ctx.closePath(); });
+        ctx.clip();
+        if (FLAP.img) {
+          const iw = FLAP.img.naturalWidth, ih = FLAP.img.naturalHeight, bw = N.W * P, bh = N.H * P, sc = Math.max(bw / iw, bh / ih);
+          ctx.imageSmoothingQuality = 'high';
+          ctx.drawImage(FLAP.img, (bw - iw * sc) / 2, (bh - ih * sc) / 2, iw * sc, ih * sc);
+        } else { ctx.fillStyle = FLAP.color; ctx.fillRect(0, 0, N.W * P, N.H * P); }
+        ctx.restore();
+      }
       Object.keys(N.frames).forEach(k => { const f = N.frames[k]; drawSegment(ctx, k, f.x * P, f.y * P, f.w * P, f.h * P, N.clips && N.clips[k]); });
 
       if (lines) {
