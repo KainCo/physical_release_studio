@@ -1241,6 +1241,14 @@
       const is90 = Math.abs(state[target].rotation % 180) === 90;
       const w = is90 ? img.naturalHeight : img.naturalWidth;
       const h = is90 ? img.naturalWidth : img.naturalHeight;
+      if (/^spine/.test(target)) {
+        // spine strips: stretch exactly onto the strip so nothing is cropped (scans are never exactly the strip's aspect ratio)
+        const lx = (is90 ? frame.clientHeight : frame.clientWidth) / img.naturalWidth;
+        const ly = (is90 ? frame.clientWidth : frame.clientHeight) / img.naturalHeight;
+        state[target].aspect = lx / ly;
+        return ly;
+      }
+      state[target].aspect = 1;
       return Math.max(frame.clientWidth / w, frame.clientHeight / h);
     }
 
@@ -1248,7 +1256,7 @@
       const img = document.getElementById(`img-${activeTarget}`);
       const s = state[activeTarget];
       s.scale = s.baseFitScale * s.userZoom;
-      img.style.transform = `translate(calc(-50% + ${s.x}px), calc(-50% + ${s.y}px)) rotate(${s.rotation}deg) scale(${s.scale * s.flipX}, ${s.scale})`;
+      img.style.transform = `translate(calc(-50% + ${s.x}px), calc(-50% + ${s.y}px)) rotate(${s.rotation}deg) scale(${s.scale * s.flipX * (s.aspect || 1)}, ${s.scale})`;
       updateControls();
     }
 
@@ -1417,7 +1425,7 @@
           ctx.clip();
           ctx.translate(p.x0 + p.w / 2 + mirror * s.x * scaleFactor, targetH / 2 + s.y * scaleFactor);
           ctx.rotate((mirror * s.rotation * Math.PI) / 180);
-          ctx.scale(s.scale * s.flipX * mirror * scaleFactor, s.scale * scaleFactor);
+          ctx.scale(s.scale * s.flipX * (s.aspect || 1) * mirror * scaleFactor, s.scale * scaleFactor);
           ctx.drawImage(img, -img.naturalWidth / 2, -img.naturalHeight / 2);
           ctx.restore();
         });
