@@ -356,6 +356,25 @@
     .frame-back { width: 375px; height: 294px; }
     .frame-front { width: 300px; height: 300px; }
     .frame-inside { width: 375px; height: 294px; }
+    .frame-front.wide { width: 375px; height: 294px; }
+    /* multi case: Front first, then Back */
+    body.multi-mode #card-front, body.multi-mode #tab-front, body.multi-mode #prev-front-wrap { order: -6; }
+    body.multi-mode #card-spineFL, body.multi-mode #tab-spineFL { order: -5; }
+    body.multi-mode #card-spineFR, body.multi-mode #tab-spineFR { order: -4; }   /* multi case: the front is a 15.0 x 11.75 cm card */
+
+    /* Case type selector */
+    .type-cards { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin: 4px 0 18px; }
+    .type-card {
+      flex: 1 1 220px; max-width: 320px; cursor: pointer; text-align: center;
+      background: var(--bg); border: 2px solid var(--border); border-radius: 12px; padding: 14px 12px;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .type-card:hover { border-color: #3b4a6b; }
+    .type-card.active { border-color: var(--brand); background: rgba(37, 99, 235, 0.10); }
+    .type-card .tc-icon { font-size: 1.6rem; color: var(--text-muted); margin-bottom: 6px; }
+    .type-card.active .tc-icon { color: var(--brand); }
+    .type-card .tc-name { font-weight: 800; font-size: 0.9rem; }
+    .type-card .tc-sub { font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; }
 
     /* Optional split mode: left spine | center | right spine (0.6 + 13.8 + 0.6 cm) */
     .back-group { display: flex; align-items: stretch; justify-content: center; }
@@ -371,7 +390,7 @@
     }
     .back-group.split .frame-spine { display: block; }
     .back-group.split .frame-container { border: 0; border-radius: 0; }
-    .back-group.split .frame-back { width: 345px; }
+    .back-group.split .frame-back, .back-group.split .frame-front.wide { width: 345px; }
     .back-group.split .frame-container.active-target {
       box-shadow: none;
       outline: 2px solid var(--brand);
@@ -445,6 +464,8 @@
 
     .pp-back, .pp-inside { left: 30mm; top: 20mm; width: 150mm; height: 117.5mm; }
     .pp-front { left: 45mm; top: 145.5mm; width: 120mm; height: 120mm; }
+    #page-1.multi .pp-front { left: 30mm; top: 20mm; width: 150mm; height: 117.5mm; }
+    #page-1.multi .pp-back { top: 145.5mm; }
 
     /* Printer-specific duplex correction: only the inside page (page 2) is shifted */
     #page-2 img {
@@ -544,7 +565,21 @@
 
   <div class="ui-container">
     <div class="header-title">Crystal CD Case Cover Studio</div>
-    <div class="sub-title" data-i18n="sub_dims">Back Cover: 15.0 × 11.75 cm | Front Cover: 12.0 × 12.0 cm</div>
+    <div class="sub-title" id="subDims" data-i18n="sub_dims">Back Cover: 15.0 × 11.75 cm | Front Cover: 12.0 × 12.0 cm</div>
+
+    <!-- Case type -->
+    <div class="type-cards" id="typeCards">
+      <div class="type-card active" id="type-single" onclick="setCaseType('single')">
+        <div class="tc-icon"><i class="fa-solid fa-compact-disc"></i></div>
+        <div class="tc-name" data-i18n="type_single">1 CD Jewel Case</div>
+        <div class="tc-sub" data-i18n="type_single_sub">Back 15.0 × 11.75 cm + Front 12.0 × 12.0 cm</div>
+      </div>
+      <div class="type-card" id="type-multi" onclick="setCaseType('multi')">
+        <div class="tc-icon"><i class="fa-solid fa-layer-group"></i></div>
+        <div class="tc-name" data-i18n="type_multi">Multi CD Jewel Case</div>
+        <div class="tc-sub" data-i18n="type_multi_sub">Two joined back trays: Front + Back, each 15.0 × 11.75 cm</div>
+      </div>
+    </div>
 
     <div class="upload-cards">
       <!-- Back Cover Upload -->
@@ -596,7 +631,7 @@
 
       <!-- Front Cover Upload -->
       <div class="upload-card" id="card-front" onclick="selectTab('front')">
-        <label for="file-front" data-i18n="cd_front_label">📷 Front Cover Image</label>
+        <label for="file-front" id="lbl-front" data-i18n="cd_front_label">📷 Front Cover Image</label>
         <input type="file" id="file-front" accept="image/*" onchange="loadFile(event, 'front')">
         
         <div id="dpi-container-front" class="dpi-container">
@@ -606,6 +641,36 @@
             <div class="scale-segment scale-yellow"></div>
             <div class="scale-segment scale-green"></div>
             <div id="dpi-marker-front" class="scale-marker" style="left: 0%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="upload-card" id="card-spineFL" onclick="selectTab('spineFL')" style="display: none;">
+        <label for="file-spineFL" data-i18n="cd_spineFL_label">📷 Front: Spine left (0.6 × 11.75 cm)</label>
+        <input type="file" id="file-spineFL" accept="image/*" onchange="loadFile(event, 'spineFL')">
+
+        <div id="dpi-container-spineFL" class="dpi-container">
+          <div id="dpi-badge-spineFL" class="dpi-badge"></div>
+          <div class="dpi-scale-wrapper">
+            <div class="scale-segment scale-red"></div>
+            <div class="scale-segment scale-yellow"></div>
+            <div class="scale-segment scale-green"></div>
+            <div id="dpi-marker-spineFL" class="scale-marker" style="left: 0%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="upload-card" id="card-spineFR" onclick="selectTab('spineFR')" style="display: none;">
+        <label for="file-spineFR" data-i18n="cd_spineFR_label">📷 Front: Spine right (0.6 × 11.75 cm)</label>
+        <input type="file" id="file-spineFR" accept="image/*" onchange="loadFile(event, 'spineFR')">
+
+        <div id="dpi-container-spineFR" class="dpi-container">
+          <div id="dpi-badge-spineFR" class="dpi-badge"></div>
+          <div class="dpi-scale-wrapper">
+            <div class="scale-segment scale-red"></div>
+            <div class="scale-segment scale-yellow"></div>
+            <div class="scale-segment scale-green"></div>
+            <div id="dpi-marker-spineFR" class="scale-marker" style="left: 0%;"></div>
           </div>
         </div>
       </div>
@@ -633,6 +698,8 @@
       <button class="tab-btn" id="tab-spineL" onclick="selectTab('spineL')" style="display: none;" data-i18n="tab_edit_spineL">Edit: Spine L</button>
       <button class="tab-btn" id="tab-spineR" onclick="selectTab('spineR')" style="display: none;" data-i18n="tab_edit_spineR">Edit: Spine R</button>
       <button class="tab-btn" id="tab-front" onclick="selectTab('front')" data-i18n="tab_edit_front">Edit: Front</button>
+      <button class="tab-btn" id="tab-spineFL" onclick="selectTab('spineFL')" style="display: none;" data-i18n="tab_edit_spineFL">Edit: Front Spine L</button>
+      <button class="tab-btn" id="tab-spineFR" onclick="selectTab('spineFR')" style="display: none;" data-i18n="tab_edit_spineFR">Edit: Front Spine R</button>
       <button class="tab-btn" id="tab-inside" onclick="selectTab('inside')" style="display: none;" data-i18n="tab_edit_inside">Edit: Back (Innenseite)</button>
     </div>
 
@@ -699,7 +766,7 @@
             <input type="checkbox" id="showGuidelines" checked>
             <span data-i18n="opt_crop_marks">Print crop marks / guidelines</span>
           </label>
-          <label style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; cursor: pointer; color: #38bdf8;">
+          <label id="insideOptWrap" style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; cursor: pointer; color: #38bdf8;">
             <input type="checkbox" id="enableInside" onchange="toggleInsideCover(this.checked)">
             <span data-i18n="opt_inside_cover">Back Cover Innenseite (Duplex / NTSC)</span>
           </label>
@@ -724,7 +791,11 @@
           </div>
           <label style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; cursor: pointer; color: #fbbf24;">
             <input type="checkbox" id="enableSpines" onchange="toggleSplitSpines(this.checked)">
-            <span data-i18n="opt_split_spines">Upload spines separately (left / right)</span>
+            <span id="optSplitBackLbl" data-i18n="opt_split_spines">Upload spines separately (left / right)</span>
+          </label>
+          <label id="splitFrontWrap" style="display: none; align-items: center; gap: 6px; font-size: 0.75rem; cursor: pointer; color: #fbbf24;">
+            <input type="checkbox" id="enableSpinesFront" onchange="toggleSplitFront(this.checked)">
+            <span data-i18n="opt_split_front">Front: upload spines separately (left / right)</span>
           </label>
         </div>
       </div>
@@ -752,11 +823,21 @@
       </div>
     </div>
 
-    <div style="text-align: center;">
-      <div style="font-size: 0.8rem; font-weight: bold; margin-bottom: 6px;" data-i18n="prev_front">Front Cover</div>
-      <div class="frame-container frame-front" id="frame-front" onclick="selectTab('front')">
-        <div class="placeholder" id="ph-front" data-i18n="ph_select_front">Select file above</div>
-        <img id="img-front" class="cover-img" style="display:none;" alt="Front">
+    <div style="text-align: center;" id="prev-front-wrap">
+      <div id="prev-lbl-front" style="font-size: 0.8rem; font-weight: bold; margin-bottom: 6px;" data-i18n="prev_front">Front Cover</div>
+      <div class="back-group" id="front-group">
+        <div class="frame-container frame-spine" id="frame-spineFL" onclick="selectTab('spineFL')">
+          <div class="placeholder spine-ph" id="ph-spineFL" data-i18n="ph_spineFL">FRONT SPINE L</div>
+          <img id="img-spineFL" class="cover-img" style="display:none;" alt="Front spine left">
+        </div>
+        <div class="frame-container frame-front" id="frame-front" onclick="selectTab('front')">
+          <div class="placeholder" id="ph-front" data-i18n="ph_select_front">Select file above</div>
+          <img id="img-front" class="cover-img" style="display:none;" alt="Front">
+        </div>
+        <div class="frame-container frame-spine" id="frame-spineFR" onclick="selectTab('spineFR')">
+          <div class="placeholder spine-ph" id="ph-spineFR" data-i18n="ph_spineFR">FRONT SPINE R</div>
+          <img id="img-spineFR" class="cover-img" style="display:none;" alt="Front spine right">
+        </div>
       </div>
     </div>
 
@@ -826,6 +907,21 @@
         opt_manual_shift: "Shift inside image manually (X / Y)",
         dx_hint: "+X = right, +Y = down (as you look at page 2). Saved in this browser.",
         opt_split_spines: "Upload spines separately (left / right)",
+        opt_split_back: "Back: upload spines separately (left / right)",
+        cd_back_label_multi: "📷 Back (Multi case, 15.0 × 11.75 cm)", prev_back_multi: "Back (15.0 × 11.75 cm)",
+        opt_split_front: "Front: upload spines separately (left / right)",
+        type_single: "1 CD Jewel Case", type_single_sub: "Back 15.0 × 11.75 cm + Front 12.0 × 12.0 cm",
+        type_multi: "Multi CD Jewel Case", type_multi_sub: "Two joined back trays: Front + Back, each 15.0 × 11.75 cm",
+        sub_dims_multi: "Multi case: Front 15.0 × 11.75 cm | Back 15.0 × 11.75 cm",
+        cd_front_label_multi: "📷 Front (Multi case, 15.0 × 11.75 cm)",
+        cd_front_center_label: "📷 Front – Center (without spines, 13.8 × 11.75 cm)",
+        cd_spineFL_label: "📷 Front: Spine left (0.6 × 11.75 cm)",
+        cd_spineFR_label: "📷 Front: Spine right (0.6 × 11.75 cm)",
+        tab_edit_front_center: "Edit: Front (Center)",
+        tab_edit_spineFL: "Edit: Front Spine L", tab_edit_spineFR: "Edit: Front Spine R",
+        prev_front_multi: "Front (15.0 × 11.75 cm)",
+        prev_front_split: "Front – Center + Spines",
+        ph_spineFL: "FRONT SPINE L", ph_spineFR: "FRONT SPINE R",
         cd_back_center_label: "📷 Back Cover – Center (without spines, 13.8 × 11.75 cm)",
         cd_spineL_label: "📷 Spine left (0.6 × 11.75 cm)",
         cd_spineR_label: "📷 Spine right (0.6 × 11.75 cm)",
@@ -869,6 +965,21 @@
         opt_manual_shift: "Innenseite manuell verschieben (X / Y)",
         dx_hint: "+X = nach rechts, +Y = nach unten (so wie du Seite 2 ansiehst). Wird in diesem Browser gespeichert.",
         opt_split_spines: "Spines separat hochladen (links / rechts)",
+        opt_split_back: "Back: Spines separat hochladen (links / rechts)",
+        cd_back_label_multi: "📷 Back (Multi-Hülle, 15,0 × 11,75 cm)", prev_back_multi: "Back (15,0 × 11,75 cm)",
+        opt_split_front: "Front: Spines separat hochladen (links / rechts)",
+        type_single: "1 CD Jewel Case", type_single_sub: "Back 15,0 × 11,75 cm + Front 12,0 × 12,0 cm",
+        type_multi: "Multi CD Jewel Case", type_multi_sub: "Zwei verbundene Rückseiten: Front + Back, je 15,0 × 11,75 cm",
+        sub_dims_multi: "Multi-Hülle: Front 15,0 × 11,75 cm | Back 15,0 × 11,75 cm",
+        cd_front_label_multi: "📷 Front (Multi-Hülle, 15,0 × 11,75 cm)",
+        cd_front_center_label: "📷 Front – Mitte (ohne Spines, 13,8 × 11,75 cm)",
+        cd_spineFL_label: "📷 Front: Spine links (0,6 × 11,75 cm)",
+        cd_spineFR_label: "📷 Front: Spine rechts (0,6 × 11,75 cm)",
+        tab_edit_front_center: "Bearbeiten: Front (Mitte)",
+        tab_edit_spineFL: "Bearbeiten: Front Spine L", tab_edit_spineFR: "Bearbeiten: Front Spine R",
+        prev_front_multi: "Front (15,0 × 11,75 cm)",
+        prev_front_split: "Front – Mitte + Spines",
+        ph_spineFL: "FRONT SPINE L", ph_spineFR: "FRONT SPINE R",
         cd_back_center_label: "📷 Rückseite – Mitte (ohne Spines, 13,8 × 11,75 cm)",
         cd_spineL_label: "📷 Spine links (0,6 × 11,75 cm)",
         cd_spineR_label: "📷 Spine rechts (0,6 × 11,75 cm)",
@@ -928,8 +1039,67 @@
       front: { x: 0, y: 0, scale: 1, baseFitScale: 1, userZoom: 1, rotation: 0, flipX: 1, loaded: false, targetCmW: 12.0, targetCmH: 12.0 },
       inside: { x: 0, y: 0, scale: 1, baseFitScale: 1, userZoom: 1, rotation: 0, flipX: 1, loaded: false, targetCmW: 15.0, targetCmH: 11.75 },
       spineL: { x: 0, y: 0, scale: 1, baseFitScale: 1, userZoom: 1, rotation: 0, flipX: 1, loaded: false, targetCmW: 0.6, targetCmH: 11.75 },
-      spineR: { x: 0, y: 0, scale: 1, baseFitScale: 1, userZoom: 1, rotation: 0, flipX: 1, loaded: false, targetCmW: 0.6, targetCmH: 11.75 }
+      spineR: { x: 0, y: 0, scale: 1, baseFitScale: 1, userZoom: 1, rotation: 0, flipX: 1, loaded: false, targetCmW: 0.6, targetCmH: 11.75 },
+      spineFL: { x: 0, y: 0, scale: 1, baseFitScale: 1, userZoom: 1, rotation: 0, flipX: 1, loaded: false, targetCmW: 0.6, targetCmH: 11.75 },
+      spineFR: { x: 0, y: 0, scale: 1, baseFitScale: 1, userZoom: 1, rotation: 0, flipX: 1, loaded: false, targetCmW: 0.6, targetCmH: 11.75 }
     };
+
+    // Case type: 'single' (1 CD: back 15.0 x 11.75 + front 12 x 12) or 'multi' (2 joined back trays, each 15.0 x 11.75)
+    let caseType = 'single';
+    const isMulti = () => caseType === 'multi';
+
+    function setCaseType(type) {
+      caseType = type === 'multi' ? 'multi' : 'single';
+      try { localStorage.setItem('prs_cd_type', caseType); } catch (e) {}
+      const multi = isMulti();
+      document.getElementById('type-single').classList.toggle('active', !multi);
+      document.getElementById('type-multi').classList.toggle('active', multi);
+
+      // front card: 12 x 12 (single) or 15.0 x 11.75 (multi)
+      document.getElementById('frame-front').classList.toggle('wide', multi);
+      state.front.targetCmH = multi ? 11.75 : 12.0;
+      document.getElementById('splitFrontWrap').style.display = multi ? 'flex' : 'none';
+
+      // duplex "inside" option only for the single case
+      document.getElementById('insideOptWrap').style.display = multi ? 'none' : 'flex';
+      if (multi && document.getElementById('enableInside').checked) {
+        document.getElementById('enableInside').checked = false;
+        toggleInsideCover(false);
+      }
+
+      document.getElementById('subDims').setAttribute('data-i18n', multi ? 'sub_dims_multi' : 'sub_dims');
+      document.getElementById('optSplitBackLbl').setAttribute('data-i18n', multi ? 'opt_split_back' : 'opt_split_spines');
+
+      // single case: no front spines
+      const sf = document.getElementById('enableSpinesFront');
+      if (!multi && sf.checked) sf.checked = false;
+      document.body.classList.toggle('multi-mode', multi);
+      toggleSplitSpines(document.getElementById('enableSpines').checked);
+      toggleSplitFront(multi && sf.checked);   // also refreshes labels, widths and DPI
+    }
+
+    // Front split mode (multi case only): left spine | center | right spine
+    function toggleSplitFront(on) {
+      const multi = isMulti();
+      on = !!(on && multi);
+      ['spineFL', 'spineFR'].forEach(k => {
+        document.getElementById(`card-${k}`).style.display = on ? 'block' : 'none';
+        document.getElementById(`tab-${k}`).style.display = on ? 'block' : 'none';
+      });
+      document.getElementById('front-group').classList.toggle('split', on);
+      document.getElementById('lbl-front').setAttribute('data-i18n', on ? 'cd_front_center_label' : (multi ? 'cd_front_label_multi' : 'cd_front_label'));
+      document.getElementById('tab-front').setAttribute('data-i18n', on ? 'tab_edit_front_center' : 'tab_edit_front');
+      document.getElementById('prev-lbl-front').setAttribute('data-i18n', on ? 'prev_front_split' : (multi ? 'prev_front_multi' : 'prev_front'));
+      setLanguage(currentLang);
+
+      state.front.targetCmW = multi ? (on ? 13.8 : 15.0) : 12.0;
+      if (!on && (activeTarget === 'spineFL' || activeTarget === 'spineFR')) selectTab('front');
+
+      if (state.front.loaded) {
+        refit('front');
+        calculateAndDisplayDPI('front');
+      }
+    }
 
     function toggleInsideCover(show) {
       const cardInside = document.getElementById('card-inside');
@@ -970,9 +1140,9 @@
       });
       document.getElementById('back-group').classList.toggle('split', on);
 
-      document.getElementById('lbl-back').setAttribute('data-i18n', on ? 'cd_back_center_label' : 'cd_back_label');
+      document.getElementById('lbl-back').setAttribute('data-i18n', on ? 'cd_back_center_label' : (isMulti() ? 'cd_back_label_multi' : 'cd_back_label'));
       document.getElementById('tab-back').setAttribute('data-i18n', on ? 'tab_edit_back_center' : 'tab_edit_back');
-      document.getElementById('prev-lbl-back').setAttribute('data-i18n', on ? 'prev_back_split' : 'prev_back');
+      document.getElementById('prev-lbl-back').setAttribute('data-i18n', on ? 'prev_back_split' : (isMulti() ? 'prev_back_multi' : 'prev_back'));
       setLanguage(currentLang);
 
       state.back.targetCmW = on ? 13.8 : 15.0;
@@ -986,7 +1156,7 @@
 
     function selectTab(target) {
       activeTarget = target;
-      ['back', 'front', 'inside', 'spineL', 'spineR'].forEach(t => {
+      ['back', 'front', 'inside', 'spineL', 'spineR', 'spineFL', 'spineFR'].forEach(t => {
         const tab = document.getElementById(`tab-${t}`);
         const card = document.getElementById(`card-${t}`);
         const frame = document.getElementById(`frame-${t}`);
@@ -1162,7 +1332,7 @@
       calculateAndDisplayDPI(activeTarget);
     }
 
-    ['back', 'front', 'inside', 'spineL', 'spineR'].forEach(key => {
+    ['back', 'front', 'inside', 'spineL', 'spineR', 'spineFL', 'spineFR'].forEach(key => {
       const frame = document.getElementById(`frame-${key}`);
       if (!frame) return;
       let startX, startY, isDragging = false;
@@ -1197,7 +1367,9 @@
     function preparePrint() {
       const split = document.getElementById('enableSpines').checked;
       const hasBack = state.back.loaded || (split && (state.spineL.loaded || state.spineR.loaded));
-      const hasFront = state.front.loaded;
+      const multi = isMulti();
+      const splitF = multi && document.getElementById('enableSpinesFront').checked;
+      const hasFront = state.front.loaded || (splitF && (state.spineFL.loaded || state.spineFR.loaded));
       const enableInside = document.getElementById('enableInside').checked;
       const hasInside = enableInside && state.inside.loaded;
 
@@ -1214,11 +1386,13 @@
         const spinePx = Math.round((0.6 / 15.0) * targetW);
 
         // Parts to draw: whole image, or (back + split mode) center + left/right spine
-        const parts = (key === 'back' && split)
+        const splitKeys = (key === 'back' && split) ? ['back', 'spineL', 'spineR']
+                        : (key === 'front' && splitF) ? ['front', 'spineFL', 'spineFR'] : null;
+        const parts = splitKeys
           ? [
-              { k: 'back',   x0: spinePx,           w: targetW - 2 * spinePx },
-              { k: 'spineL', x0: 0,                 w: spinePx },
-              { k: 'spineR', x0: targetW - spinePx, w: spinePx }
+              { k: splitKeys[0], x0: spinePx,           w: targetW - 2 * spinePx },
+              { k: splitKeys[1], x0: 0,                 w: spinePx },
+              { k: splitKeys[2], x0: targetW - spinePx, w: spinePx }
             ].filter(p => state[p.k].loaded)
           : (state[key].loaded ? [{ k: key, x0: 0, w: targetW }] : []);
 
@@ -1254,7 +1428,7 @@
           ctx.lineWidth = 3;
           ctx.strokeRect(0, 0, targetW, targetH);
           
-          if (key === 'back' || key === 'inside') {
+          if (key === 'back' || key === 'inside' || (key === 'front' && multi)) {
             const spineW = spinePx;
             ctx.setLineDash([8, 8]);
             ctx.beginPath();
@@ -1271,7 +1445,7 @@
       }
 
       const backData = renderCanvas('back', 1772, 1388, 1);
-      const frontData = renderCanvas('front', 1417, 1417, 1);
+      const frontData = multi ? renderCanvas('front', 1772, 1388, 1) : renderCanvas('front', 1417, 1417, 1);
       const mirrorInside = document.getElementById('mirrorInside').checked ? -1 : 1;
       if (document.getElementById('overscanInside').checked) drawGuidelines = false;   // no frame / fold lines on an enlarged inside page
       const insideData = hasInside ? renderCanvas('inside', 1772, 1388, mirrorInside) : null;
@@ -1292,6 +1466,7 @@
       // Page 1 stays (even if empty) whenever an inside page exists, so the duplex pairing is kept
       const page1 = document.getElementById('page-1');
       const page2 = document.getElementById('page-2');
+      page1.classList.toggle('multi', multi);
       page1.hidden = !(backData || frontData || insideData);
       page2.hidden = !insideData;
       page1.classList.toggle('is-last', page2.hidden);
@@ -1338,9 +1513,11 @@
         }
       } catch (e) {}
       applyDuplexOffset();
+      try { const t = localStorage.getItem('prs_cd_type'); if (t === 'multi') caseType = 'multi'; } catch (e) {}
       // Browsers may restore checkbox state after a reload – sync the UI with it
       toggleInsideCover(document.getElementById('enableInside').checked);
       toggleSplitSpines(document.getElementById('enableSpines').checked);
+      setCaseType(caseType);
     });
   </script>
   <script src="../../assets/legal-note.js" defer></script>
