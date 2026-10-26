@@ -317,7 +317,7 @@
   <div class="preview-wrapper" id="previewWrap" style="flex-direction: column; align-items: center;">
     <div style="font-size: 0.85rem; font-weight: bold; color: var(--brand);" data-i18n="prev_title">Preview of the sheet</div>
     <div class="inl-wrap"><svg id="inlSvg" class="inl-svg"></svg></div>
-    <div class="legend"><b class="c">━</b> <span data-i18n="lg_cut">cut</span> &nbsp; <b class="f">╍</b> <span data-i18n="lg_fold">fold</span></div>
+    <div class="legend"><b class="c">━</b> <span data-i18n="lg_cut">cut</span> &nbsp; <b class="f">╍</b> <span data-i18n="lg_fold">fold</span> &nbsp; <b style="color:#38bdf8">▮</b> <span data-i18n="lg_tab">tab: fold up</span></div>
   </div>
 
   <div id="printScreen">
@@ -347,18 +347,18 @@
         d_w: "Tray width (cm)", d_h: "Tray length (cm)", d_wall: "Wall height (cm)", d_mw: "Pocket width (cm)", d_mh: "Pocket length (cm)", d_th: "Tab height (cm)",
         d_warn: "Do not change anything unless the pocket does not fit your cartridge. The default values suit the standard box. If needed: pocket about 3 mm bigger than the cartridge, tab height ≈ cartridge thickness + 2 mm.",
         fg_title: "Folding guide",
-        fg1: "Cut along all solid lines (outer edge, the four short corner cuts and the four pocket tabs).",
+        fg1: "Cut along all solid lines (outer edge, the four short corner cuts and the four pocket tabs). Do NOT cut out the middle: the floor stays in one piece, only the four tabs are cut free on three sides.",
         fg2: "Score all dashed lines from the printed side with a ruler and a blunt tool (empty pen, knitting needle), so the card folds cleanly.",
         fg3: "Fold the four tray walls up at 90°.",
         fg4: "Fold each corner square inwards and glue it to the inside of the neighbouring wall. Press until dry.",
-        fg5: "Fold the four pocket tabs in the middle of the floor UP at 90°. The one with the round notch is for your finger.",
-        fg6: "Place the cartridge in the pocket (label up) and slide the tray into the box. Too loose? Fold the tabs a little inwards. Too tight? Make the pocket 1–2 mm bigger.",
+        fg5: "Fold the four tabs (blue in the preview) UP at 90° along their dashed line. They stand around the cartridge. ",
+        fg6: "Place the cartridge in the pocket (label up) and slide the tray into the box. To remove it: fold one tab to the side or pinch the cartridge at the corners between the tabs. Too loose? Bend the tabs slightly inwards. Too tight? Make the pocket 1–2 mm bigger.",
         wiz_h3: "Ready to print", wiz_s3: "You need: 300–400 g folding card (or paper as a template to trace onto cardboard), scissors or craft knife, ruler, glue stick. Print at 100 %, margins “None”, no borderless printing.",
         sum: "Tray {w} × {h} × {wall} cm · pocket {pw} × {ph} cm · scale {pct} %",
-        prev_title: "Preview of the sheet", lg_cut: "cut", lg_fold: "fold", lg_x: "",
+        prev_title: "Preview of the sheet", lg_cut: "cut", lg_fold: "fold", lg_tab: "tab: fold up", lg_x: "",
         btn_print: "🖨️ Generate sheet & print", btn_print_now: "Print Now / Save PDF", btn_close: "Close", btn_back: "← Back", btn_next: "Next →", btn_donation: "Donation",
         print_hint: "Chosen paper size, portrait, scale 100 %, margins \"None\", no borderless printing. Print on cardboard, or on paper and use it as a template: lay it on the cardboard and trace the solid and dashed lines (press through with a pen). Cut the solid lines (incl. the four pocket tabs and the short cuts at the corners), score the dashed lines with a ruler and a blunt tool. Walls: fold up, fold the corner squares inwards and glue them to the neighbouring wall. Pocket: fold the four tabs UP at 90° – they stand around the cartridge. Put the cartridge in, then slide the tray into the box.",
-        lbl_floor: "FRONT", lbl_pocket: "MODULE",
+        lbl_floor: "FRONT", lbl_pocket: "MODULE", lbl_tab: "FOLD UP",
         fit_note: "Sheet scaled to {pct} % so it stays inside the printable area."
       },
       de: {
@@ -372,18 +372,18 @@
         d_w: "Tablett Breite (cm)", d_h: "Tablett Länge (cm)", d_wall: "Wandhöhe (cm)", d_mw: "Fach Breite (cm)", d_mh: "Fach Länge (cm)", d_th: "Laschenhöhe (cm)",
         d_warn: "Nichts verändern, außer das Fach passt nicht zu deinem Modul. Die Standardwerte passen zur normalen Box. Falls nötig: Fach ca. 3 mm größer als das Modul, Laschenhöhe ≈ Modulstärke + 2 mm.",
         fg_title: "Faltanleitung",
-        fg1: "Alle durchgezogenen Linien schneiden (Außenrand, die vier kurzen Eckschnitte und die vier Fach-Laschen).",
+        fg1: "Alle durchgezogenen Linien schneiden (Außenrand, die vier kurzen Eckschnitte und die vier Fach-Laschen). Die Mitte wird NICHT ausgeschnitten: der Boden bleibt ein Stück, nur die vier Laschen werden an drei Seiten freigeschnitten.",
         fg2: "Alle gestrichelten Linien von der bedruckten Seite mit Lineal und stumpfem Werkzeug (leerer Kugelschreiber, Stricknadel) ritzen, damit der Karton sauber knickt.",
         fg3: "Die vier Tablett-Wände im Winkel von 90° hochklappen.",
         fg4: "Jedes Eckquadrat nach innen falten und innen an die Nachbarwand kleben. Bis zum Trocknen andrücken.",
-        fg5: "Die vier Laschen in der Mitte des Bodens im Winkel von 90° HOCH klappen. Die mit der runden Aussparung ist für deinen Finger.",
-        fg6: "Modul (Etikett oben) ins Fach legen und das Tablett in die Box schieben. Zu locker? Laschen etwas nach innen biegen. Zu eng? Fach 1–2 mm größer machen.",
+        fg5: "Die vier Laschen (in der Vorschau blau) an ihrer gestrichelten Linie im Winkel von 90° HOCH klappen. Sie stehen um das Modul. ",
+        fg6: "Modul (Etikett oben) ins Fach legen und das Tablett in die Box schieben. Zum Herausnehmen: eine Lasche zur Seite klappen oder das Modul an den Ecken zwischen den Laschen greifen. Zu locker? Laschen etwas nach innen biegen. Zu eng? Fach 1–2 mm größer machen.",
         wiz_h3: "Bereit zum Drucken", wiz_s3: "Du brauchst: 300–400 g Faltkarton (oder Papier als Schablone, die du auf Pappe übertragst), Schere oder Cuttermesser, Lineal, Klebestift. Druck mit 100 %, Ränder „Keine“, nicht randlos drucken.",
         sum: "Tablett {w} × {h} × {wall} cm · Fach {pw} × {ph} cm · Maßstab {pct} %",
-        prev_title: "Vorschau des Bogens", lg_cut: "schneiden", lg_fold: "falten", lg_x: "",
+        prev_title: "Vorschau des Bogens", lg_cut: "schneiden", lg_fold: "falten", lg_tab: "Lasche: hochklappen", lg_x: "",
         btn_print: "🖨️ Bogen generieren & drucken", btn_print_now: "Jetzt drucken / Als PDF speichern", btn_close: "Schließen", btn_back: "← Zurück", btn_next: "Weiter →", btn_donation: "Spende",
         print_hint: "Gewähltes Papierformat, hochkant, Skalierung 100 %, Ränder „Keine“, nicht randlos drucken. Auf Pappe drucken, oder auf Papier drucken und als Schablone benutzen: auf die Pappe legen und die durchgezogenen und gestrichelten Linien nachfahren (mit dem Stift durchdrücken). Durchgezogene Linien schneiden (auch die vier Fach-Laschen und die kurzen Schnitte an den Ecken), gestrichelte mit Lineal und stumpfem Werkzeug ritzen. Wände hochklappen, Eckquadrate nach innen falten und an die Nachbarwand kleben. Fach: die vier Laschen im Winkel von 90° HOCH klappen – sie stehen um das Modul. Modul einlegen, dann das Tablett in die Box schieben.",
-        lbl_floor: "VORNE", lbl_pocket: "MODUL",
+        lbl_floor: "VORNE", lbl_pocket: "MODUL", lbl_tab: "HOCH",
         fit_note: "Bogen auf {pct} % verkleinert, damit er im bedruckbaren Bereich bleibt."
       }
     };
@@ -413,18 +413,23 @@
       [w, w + W].forEach(x => { cuts.push([[x, 0], [x, w]]); cuts.push([[x, Th - w], [x, Th]]); });
       folds.push([[w, w], [w + W, w]], [[w, w + H], [w + W, w + H]], [[w, w], [w, w + H]], [[w + W, w], [w + W, w + H]]);
       folds.push([[0, w], [w, w]], [[w + W, w], [Tw, w]], [[0, w + H], [w, w + H]], [[w + W, w + H], [Tw, w + H]]);
-      // cartridge pocket in the middle of the floor: four small tongues, hinged on the pocket edges, are folded UP and hold the module
+      // cartridge pocket in the middle of the floor. The floor stays in one piece (it is NOT cut out):
+      // four tabs, each only ~60 % of a pocket edge, are cut free on three sides and folded UP on the 4th side (hinge). The corners stay uncut.
       const th = Math.min(P.th, 2.5), px = w + (W - ww) / 2, py = w + (H - wl) / 2, c = Math.min(0.25, th / 3);
-      const cx = px + ww / 2, nr = Math.max(0.2, Math.min(0.7, th - 0.25, ww / 3));
-      cuts.push([[px, py], [px - th, py + c], [px - th, py + wl - c], [px, py + wl]]);
-      cuts.push([[px + ww, py], [px + ww + th, py + c], [px + ww + th, py + wl - c], [px + ww, py + wl]]);
-      const notch = []; for (let i = 0; i <= 10; i++) { const a = Math.PI * i / 10; notch.push([cx - nr * Math.cos(a), py - th + nr * Math.sin(a)]); }
-      cuts.push([[px, py], [px + c, py - th], [cx - nr, py - th], ...notch, [cx + nr, py - th], [px + ww - c, py - th], [px + ww, py]]);
-      cuts.push([[px, py + wl], [px + c, py + wl + th], [px + ww - c, py + wl + th], [px + ww, py + wl]]);
-      folds.push([[px, py], [px, py + wl]], [[px + ww, py], [px + ww, py + wl]], [[px, py], [px + ww, py]], [[px, py + wl], [px + ww, py + wl]]);
+      const cx = px + ww / 2, gx = ww * 0.2, gy = wl * 0.2, x1 = px + gx, x2 = px + ww - gx, y1 = py + gy, y2 = py + wl - gy;
+      const tabs = [];
+      const L1 = [[px, y1], [px - th, y1 + c], [px - th, y2 - c], [px, y2]];
+      const R1 = [[px + ww, y1], [px + ww + th, y1 + c], [px + ww + th, y2 - c], [px + ww, y2]];
+      const B1 = [[x1, py + wl], [x1 + c, py + wl + th], [x2 - c, py + wl + th], [x2, py + wl]];
+      const T1 = [[x1, py], [x1 + c, py - th], [x2 - c, py - th], [x2, py]];
+      [L1, R1, B1, T1].forEach(q => { cuts.push(q); tabs.push(q); });
+      folds.push([[px, y1], [px, y2]], [[px + ww, y1], [px + ww, y2]], [[x1, py + wl], [x2, py + wl]], [[x1, py], [x2, py]]);
       labels.push({ text: t('lbl_pocket'), x: cx, y: py + wl / 2, rot: 0 });
+      labels.push({ text: t('lbl_tab'), x: px - th / 2, y: py + wl / 2, rot: -90, small: true });
+      labels.push({ text: t('lbl_tab'), x: px + ww + th / 2, y: py + wl / 2, rot: 90, small: true });
+      labels.push({ text: t('lbl_tab'), x: cx, y: py + wl + th / 2, rot: 0, small: true });
       labels.push({ text: t('lbl_floor'), x: w + W / 2, y: w + H - 0.5, rot: 0 });
-      return { cuts, folds, marks, labels, W: Tw, H: Th, pw: ww, ph: wl };
+      return { cuts, folds, marks, labels, tabs, W: Tw, H: Th, pw: ww, ph: wl };
     }
 
     function layout(S) {
@@ -439,6 +444,7 @@
       svg.setAttribute('viewBox', `0 0 ${S.W * P + 2 * pad} ${S.H * P + 2 * pad}`);
       svg.setAttribute('width', S.W * P + 2 * pad); svg.setAttribute('height', S.H * P + 2 * pad);
       svg.innerHTML =
+        S.tabs.map(f => `<polygon points="${pts(f)}" fill="rgba(56,189,248,0.28)" stroke="none"/>`).join('') +
         S.folds.map(f => `<polyline points="${pts(f)}" fill="none" stroke="#38bdf8" stroke-width="1.2" stroke-dasharray="5 4"/>`).join('') +
         S.marks.map(f => `<polyline points="${pts(f)}" fill="none" stroke="#fbbf24" stroke-width="1.2" stroke-dasharray="3 3"/>`).join('') +
         S.cuts.map(f => `<polyline points="${pts(f)}" fill="none" stroke="#e2e8f0" stroke-width="1.8" stroke-linejoin="round"/>`).join('') +
