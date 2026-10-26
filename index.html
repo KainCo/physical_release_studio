@@ -88,6 +88,18 @@
     .card-glow:hover {
       box-shadow: 0 0 25px -5px rgba(59, 130, 246, 0.25), 0 0 10px -5px rgba(168, 85, 247, 0.2);
     }
+    .btn-craft {
+      background: linear-gradient(90deg, rgba(234, 88, 12, 0.30) 0%, rgba(217, 119, 6, 0.30) 100%);
+      border: 1px solid rgba(251, 146, 60, 0.35);
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.10), 0 4px 14px -6px rgba(234, 88, 12, 0.35);
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .btn-craft:hover {
+      background: linear-gradient(90deg, rgba(234, 88, 12, 0.45) 0%, rgba(217, 119, 6, 0.45) 100%);
+      border-color: rgba(251, 146, 60, 0.6);
+    }
     .gradient-text {
       background: linear-gradient(135deg, #60a5fa 0%, #a855f7 50%, #ec4899 100%);
       -webkit-background-clip: text;
@@ -561,16 +573,16 @@
             </ul>
           </div>
           <div class="mt-6 space-y-2">
-            <a href="studios/craft/bigbox-studio.html" class="block text-center py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold transition-colors shadow-lg shadow-brand-600/20">
+            <a href="studios/craft/bigbox-studio.html" class="block text-center py-2.5 rounded-xl btn-craft text-white text-xs font-bold">
               PC Big Box Craft Studio
             </a>
-            <a href="studios/craft/bigbox-inlay.html" class="block text-center py-2.5 rounded-xl bg-dark-hover hover:bg-dark-border border border-dark-border text-white text-xs font-bold transition-colors">
+            <a href="studios/craft/bigbox-inlay.html" class="block text-center py-2.5 rounded-xl btn-craft text-white text-xs font-bold">
               Inlay Craft Studio
             </a>
-            <a href="studios/craft/gameboy-box-studio.html" class="block text-center py-2.5 rounded-xl bg-dark-hover hover:bg-dark-border border border-dark-border text-white text-xs font-bold transition-colors">
+            <a href="studios/craft/gameboy-box-studio.html" class="block text-center py-2.5 rounded-xl btn-craft text-white text-xs font-bold">
               Game Boy Box Craft Studio
             </a>
-            <a href="studios/craft/gameboy-inlay-studio.html" class="block text-center py-2.5 rounded-xl bg-dark-hover hover:bg-dark-border border border-dark-border text-white text-xs font-bold transition-colors">
+            <a href="studios/craft/gameboy-inlay-studio.html" class="block text-center py-2.5 rounded-xl btn-craft text-white text-xs font-bold">
               Game Boy Inlay Craft Studio
             </a>
           </div>
