@@ -493,7 +493,7 @@
 	    <!-- PayPal Button mit dynamischem Text via data-i18n -->
       <a href="https://paypal.me/kainco" target="_blank" rel="noopener noreferrer" 
          style="background: #0070ba; color: white; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
-        <i class="fa-brands fa-paypal"></i> <span data-i18n="btn_donation">Spende</span>
+        <i class="fa-brands fa-paypal"></i> <span data-i18n="btn_donation">Donation</span>
       </a>
 	    <!-- Ko-Fi Button -->
       <a href="https://ko-fi.com/kainco" target="_blank" rel="noopener noreferrer" 
@@ -505,7 +505,7 @@
 
   <div class="ui-container">
     <div class="header-title">PlayStation 1 PAL Cover Studio</div>
-    <div class="sub-title">Back Cover: 16.3 × 12.2 cm | Front Cover: 12.5 × 12.7 cm</div>
+    <div class="sub-title" data-i18n="sub_dims">Back Cover: 16.3 × 12.2 cm | Front Cover: 12.5 × 12.7 cm</div>
 
     <div class="upload-cards">
       <div class="upload-card active" id="card-back" onclick="selectTab('back')">
@@ -522,8 +522,8 @@
           </div>
           <div class="scale-labels">
             <span>0</span>
-            <span>150 (Good)</span>
-            <span>300 (Ideal)</span>
+            <span data-i18n="sc_good">150 (Good)</span>
+            <span data-i18n="sc_ideal">300 (Ideal)</span>
             <span>400+</span>
           </div>
         </div>
@@ -543,8 +543,8 @@
           </div>
           <div class="scale-labels">
             <span>0</span>
-            <span>150 (Good)</span>
-            <span>300 (Ideal)</span>
+            <span data-i18n="sc_good">150 (Good)</span>
+            <span data-i18n="sc_ideal">300 (Ideal)</span>
             <span>400+</span>
           </div>
         </div>
@@ -587,7 +587,7 @@
       <!-- Position Nudge Pad (Pfeiltasten) -->
       <div class="control-group">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-          <label style="margin: 0;">Nudge Position</label>
+          <label style="margin: 0;" data-i18n="lbl_nudge">Nudge Position</label>
           <div class="btn-row" style="gap: 2px;">
             <button id="step-1" class="btn-small" style="padding: 2px 6px; background: var(--brand);" onclick="setNudgeStep(1)">1px</button>
             <button id="step-5" class="btn-small" style="padding: 2px 6px;" onclick="setNudgeStep(5)">5px</button>
@@ -626,7 +626,7 @@
 
   <div class="preview-wrapper">
     <div style="text-align: center;">
-      <div style="font-size: 0.8rem; font-weight: bold; margin-bottom: 6px;">Back Cover (16,3 × 12,2 cm)</div>
+      <div style="font-size: 0.8rem; font-weight: bold; margin-bottom: 6px;" data-i18n="prev_back">Back Cover (16.3 × 12.2 cm)</div>
       <div class="frame-container frame-back active-target" id="frame-back" onclick="selectTab('back')">
         <div class="placeholder" id="ph-back" data-i18n="ph_select_back">Select file above</div>
         <img id="img-back" class="cover-img" style="display:none;" alt="Back">
@@ -634,7 +634,7 @@
     </div>
 
     <div style="text-align: center;">
-      <div style="font-size: 0.8rem; font-weight: bold; margin-bottom: 6px;">Front Cover (12,5 × 12,7 cm)</div>
+      <div style="font-size: 0.8rem; font-weight: bold; margin-bottom: 6px;" data-i18n="prev_front">Front Cover (12.5 × 12.7 cm)</div>
       <div class="frame-container frame-front" id="frame-front" onclick="selectTab('front')">
         <div class="placeholder" id="ph-front" data-i18n="ph_select_front">Select file above</div>
         <img id="img-front" class="cover-img" style="display:none;" alt="Front">
@@ -645,19 +645,19 @@
   <!-- Druckfenster / Druckvorschau -->
   <div id="printScreen">
     <div style="padding: 10px; text-align: center; background: #f3f4f6; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap;" class="no-print">
-      <button onclick="window.print()" style="padding: 10px 20px; background: #10b981; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">Print Now / Save PDF</button>
+      <button onclick="window.print()" style="padding: 10px 20px; background: #10b981; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;" data-i18n="btn_print_now">Print Now / Save PDF</button>
       
       <!-- PayPal & Ko-Fi Spenden-Buttons in der Druckansicht -->
       <a href="https://paypal.me/kainco" target="_blank" rel="noopener noreferrer" 
          style="background: #0070ba; color: white; padding: 8px 14px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
-        <i class="fa-brands fa-paypal"></i> <span data-i18n="btn_donation">Spende</span>
+        <i class="fa-brands fa-paypal"></i> <span data-i18n="btn_donation">Donation</span>
       </a>
       <a href="https://ko-fi.com/kainco" target="_blank" rel="noopener noreferrer" 
          style="background: #ff5e5b; color: white; padding: 8px 14px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
         <i class="fa-solid fa-mug-hot"></i> Support
       </a>
 
-      <button onclick="closePrint()" style="padding: 10px 20px; background: #6b7280; color: white; border: none; border-radius: 6px; cursor: pointer;">Close</button>
+      <button onclick="closePrint()" style="padding: 10px 20px; background: #6b7280; color: white; border: none; border-radius: 6px; cursor: pointer;" data-i18n="btn_close">Close</button>
     </div>
     <div class="print-container">
       <!-- Exakte Originalmaße in cm für PS1 PAL -->
@@ -686,7 +686,14 @@
         opt_crop_marks: "Print crop marks / guidelines",
         btn_print_both: "🖨️ Print Both / Save as PDF",
         ph_select_back: "Select back cover file above",
-        ph_select_front: "Select front cover file above"
+        ph_select_front: "Select front cover file above",
+        sub_dims: "Back Cover: 16.3 × 12.2 cm | Front Cover: 12.5 × 12.7 cm",
+        lbl_nudge: "Nudge Position",
+        sc_good: "150 (Good)", sc_ideal: "300 (Ideal)",
+        prev_back: "Back Cover (16.3 × 12.2 cm)", prev_front: "Front Cover (12.5 × 12.7 cm)",
+        btn_print_now: "Print Now / Save PDF", btn_close: "Close",
+        dpi_great: "Excellent (300+ DPI standard)", dpi_good: "Good ({p}% of ideal)", dpi_low: "Low quality (< 150 DPI)",
+        alert_img: "Please select at least one image!"
       },
       de: {
         nav_index: "Zurück zur Übersicht",
@@ -703,7 +710,14 @@
         opt_crop_marks: "Schnittmarken drucken",
         btn_print_both: "🖨️ Beide drucken / Als PDF speichern",
         ph_select_back: "Wähle oben eine Datei für die Rückseite",
-        ph_select_front: "Wähle oben eine Datei für die Vorderseite"
+        ph_select_front: "Wähle oben eine Datei für die Vorderseite",
+        sub_dims: "Rückseite: 16,3 × 12,2 cm | Vorderseite: 12,5 × 12,7 cm",
+        lbl_nudge: "Position verschieben",
+        sc_good: "150 (Gut)", sc_ideal: "300 (Ideal)",
+        prev_back: "Rückseite (16,3 × 12,2 cm)", prev_front: "Vorderseite (12,5 × 12,7 cm)",
+        btn_print_now: "Jetzt drucken / Als PDF speichern", btn_close: "Schließen",
+        dpi_great: "Sehr gut (300+ DPI Standard)", dpi_good: "Gut ({p} % vom Ideal)", dpi_low: "Geringe Qualität (< 150 DPI)",
+        alert_img: "Bitte wähle mindestens ein Bild aus!"
       }
     };
 
@@ -732,6 +746,7 @@
           el.textContent = i18n[lang][key];
         }
       });
+      ['back', 'front'].forEach(k => { if (state[k] && state[k].loaded) calculateAndDisplayDPI(k); });
     }
 
     let activeTarget = 'back';
@@ -789,14 +804,14 @@
 
       if (dpi >= 300) {
         badge.classList.add('green');
-        badge.innerHTML = `🟢 <b>${dpi} DPI</b> – Excellent (300+ DPI standard)`;
+        badge.innerHTML = `🟢 <b>${dpi} DPI</b> – ${i18n[currentLang].dpi_great}`;
       } else if (dpi >= 150) {
         badge.classList.add('yellow');
         const percentageToGreen = Math.round((dpi / 300) * 100);
-        badge.innerHTML = `🟡 <b>${dpi} DPI</b> – Good (${percentageToGreen}% of ideal)`;
+        badge.innerHTML = `🟡 <b>${dpi} DPI</b> – ${i18n[currentLang].dpi_good.replace('{p}', percentageToGreen)}`;
       } else {
         badge.classList.add('red');
-        badge.innerHTML = `🔴 <b>${dpi} DPI</b> – Low quality (< 150 DPI)`;
+        badge.innerHTML = `🔴 <b>${dpi} DPI</b> – ${i18n[currentLang].dpi_low}`;
       }
     }
 
@@ -950,7 +965,7 @@
 
     function preparePrint() {
       if (!state.back.loaded && !state.front.loaded) {
-        alert('Please select at least one image!');
+        alert(i18n[currentLang].alert_img);
         return;
       }
 

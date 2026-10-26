@@ -558,7 +558,7 @@
 	
       <a href="https://paypal.me/kainco" target="_blank" rel="noopener noreferrer" 
          style="background: #0070ba; color: white; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
-        <i class="fa-brands fa-paypal"></i> <span data-i18n="btn_donation">Spende</span>
+        <i class="fa-brands fa-paypal"></i> <span data-i18n="btn_donation">Donation</span>
       </a>
       <a href="https://ko-fi.com/kainco" target="_blank" rel="noopener noreferrer" 
          style="background: #ff5e5b; color: white; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
@@ -569,7 +569,7 @@
 
   <div class="ui-container">
     <div class="header-title" data-i18n="studio_title">DVD Case Cover Studio</div>
-    <div class="sub-title">Full Inlay: 27.6 × 18.3 cm (Front: 13.5 cm | Spine: 1.4 cm | Back: 12.7 cm)</div>
+    <div class="sub-title" data-i18n="sub_dims">Full Inlay: 27.6 × 18.3 cm (Front: 13.5 cm | Spine: 1.4 cm | Back: 12.7 cm)</div>
 
     <div class="upload-cards">
       <!-- DVD Inlay (Außenseite) -->
@@ -692,7 +692,7 @@
       <!-- Position Nudge Pad -->
       <div class="control-group">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-          <label style="margin: 0;">Nudge Position</label>
+          <label style="margin: 0;" data-i18n="lbl_nudge">Nudge Position</label>
           <div class="btn-row" style="gap: 2px;">
             <button id="step-1" class="btn-small" style="padding: 2px 6px; background: var(--brand);" onclick="setNudgeStep(1)">1px</button>
             <button id="step-5" class="btn-small" style="padding: 2px 6px;" onclick="setNudgeStep(5)">5px</button>
@@ -766,16 +766,16 @@
         <img id="img-dvd" class="cover-img" style="display:none;" alt="DVD Outside">
         <!-- Optional back / front overlays -->
         <div class="frame-container frame-part frame-back empty" id="frame-back" onclick="event.stopPropagation(); selectTab('back')">
-          <div class="placeholder" id="ph-back">BACK</div>
+          <div class="placeholder" id="ph-back" data-i18n="ph_back">BACK</div>
           <img id="img-back" class="cover-img" style="display:none;" alt="Back">
         </div>
         <div class="frame-container frame-part frame-front empty" id="frame-front" onclick="event.stopPropagation(); selectTab('front')">
-          <div class="placeholder" id="ph-front">FRONT</div>
+          <div class="placeholder" id="ph-front" data-i18n="ph_front">FRONT</div>
           <img id="img-front" class="cover-img" style="display:none;" alt="Front">
         </div>
         <!-- Optional spine overlay (center, 1.4 cm) -->
         <div class="frame-container frame-spine empty" id="frame-spine" onclick="event.stopPropagation(); selectTab('spine')">
-          <div class="placeholder spine-ph" id="ph-spine">SPINE</div>
+          <div class="placeholder spine-ph" id="ph-spine" data-i18n="ph_spine">SPINE</div>
           <img id="img-spine" class="cover-img" style="display:none;" alt="Spine">
         </div>
       </div>
@@ -793,18 +793,18 @@
   <!-- Druckfenster / Druckvorschau -->
   <div id="printScreen">
     <div style="padding: 10px; text-align: center; background: #f3f4f6; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap;" class="no-print">
-      <button onclick="window.print()" style="padding: 10px 20px; background: #10b981; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">Print Now / Save PDF</button>
+      <button onclick="window.print()" style="padding: 10px 20px; background: #10b981; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;" data-i18n="btn_print_now">Print Now / Save PDF</button>
       
       <a href="https://paypal.me/kainco" target="_blank" rel="noopener noreferrer" 
          style="background: #0070ba; color: white; padding: 8px 14px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
-        <i class="fa-brands fa-paypal"></i> <span data-i18n="btn_donation">Spende</span>
+        <i class="fa-brands fa-paypal"></i> <span data-i18n="btn_donation">Donation</span>
       </a>
       <a href="https://ko-fi.com/kainco" target="_blank" rel="noopener noreferrer" 
          style="background: #ff5e5b; color: white; padding: 8px 14px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
         <i class="fa-solid fa-mug-hot"></i> Support
       </a>
 
-      <button onclick="closePrint()" style="padding: 10px 20px; background: #6b7280; color: white; border: none; border-radius: 6px; cursor: pointer;">Close</button>
+      <button onclick="closePrint()" style="padding: 10px 20px; background: #6b7280; color: white; border: none; border-radius: 6px; cursor: pointer;" data-i18n="btn_close">Close</button>
       <div data-i18n="print_hint" style="flex-basis: 100%; font-size: 0.75rem; color: #4b5563;">Duplex: A4 landscape, scale 100%, margins "None", double-sided → flip on short edge.</div>
     </div>
     <div class="print-pages">
@@ -854,6 +854,12 @@
         btn_print_both: "🖨️ Print / Save as PDF",
         ph_select_dvd: "Select DVD inlay file above",
         ph_select_inside: "Select inside file above",
+        lbl_nudge: "Nudge Position",
+        btn_print_now: "Print Now / Save PDF", btn_close: "Close",
+        dpi_great: "Excellent", dpi_good: "Good", dpi_low: "Low quality",
+        alert_img: "Please select at least one image!",
+        sub_dims: "Full Inlay: 27.6 × 18.3 cm (Front: 13.5 cm | Spine: 1.4 cm | Back: 12.7 cm)",
+        ph_back: "BACK", ph_front: "FRONT", ph_spine: "SPINE",
         prev_dvd: "DVD Inlay (Outside: 27,6 × 18,3 cm)",
         prev_inside: "DVD Inlay (Inside)"
       },
@@ -887,6 +893,12 @@
         btn_print_both: "🖨️ Drucken / Als PDF speichern",
         ph_select_dvd: "Wähle DVD Inlay Datei oben",
         ph_select_inside: "Wähle Innenseite Datei oben",
+        lbl_nudge: "Position verschieben",
+        btn_print_now: "Jetzt drucken / Als PDF speichern", btn_close: "Schließen",
+        dpi_great: "Sehr gut", dpi_good: "Gut", dpi_low: "Geringe Qualität",
+        alert_img: "Bitte wähle mindestens ein Bild aus!",
+        sub_dims: "Gesamt-Inlay: 27,6 × 18,3 cm (Vorne: 13,5 cm | Rücken: 1,4 cm | Hinten: 12,7 cm)",
+        ph_back: "HINTEN", ph_front: "VORNE", ph_spine: "RÜCKEN",
         prev_dvd: "DVD Inlay (Außenseite: 27,6 × 18,3 cm)",
         prev_inside: "DVD Inlay (Innenseite)"
       }
@@ -1010,13 +1022,13 @@
 
       if (dpi >= 300) {
         badge.classList.add('green');
-        badge.innerHTML = `🟢 <b>${dpi} DPI</b> – Excellent`;
+        badge.innerHTML = `🟢 <b>${dpi} DPI</b> – ${i18n[currentLang].dpi_great}`;
       } else if (dpi >= 150) {
         badge.classList.add('yellow');
-        badge.innerHTML = `🟡 <b>${dpi} DPI</b> – Good`;
+        badge.innerHTML = `🟡 <b>${dpi} DPI</b> – ${i18n[currentLang].dpi_good}`;
       } else {
         badge.classList.add('red');
-        badge.innerHTML = `🔴 <b>${dpi} DPI</b> – Low quality`;
+        badge.innerHTML = `🔴 <b>${dpi} DPI</b> – ${i18n[currentLang].dpi_low}`;
       }
     }
 
@@ -1182,7 +1194,7 @@
       const hasInside = enableInside && state.inside.loaded;
 
       if (!hasDvd && !hasInside) {
-        alert('Please select at least one image!');
+        alert(i18n[currentLang].alert_img);
         return;
       }
 
