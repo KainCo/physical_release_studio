@@ -100,6 +100,34 @@
       background: linear-gradient(90deg, rgba(234, 88, 12, 0.45) 0%, rgba(217, 119, 6, 0.45) 100%);
       border-color: rgba(251, 146, 60, 0.6);
     }
+    /* GOG Disc Creator – featured flagship block */
+    .gog-hero {
+      position: relative; overflow: hidden; max-width: 72rem; margin: 0 auto;
+      border-radius: 20px; padding: 28px 24px;
+      border: 1px solid rgba(168, 85, 247, 0.45);
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.16) 0%, rgba(168, 85, 247, 0.16) 55%, rgba(236, 72, 153, 0.12) 100%), #111726;
+      box-shadow: 0 20px 50px -20px rgba(168, 85, 247, 0.45);
+      display: grid; grid-template-columns: 1fr; gap: 24px; align-items: center;
+    }
+    @media (min-width: 768px) { .gog-hero { grid-template-columns: 1.6fr 1fr; padding: 36px 40px; } }
+    .gog-hero .gh-pill { display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px; border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: .04em;
+      background: rgba(168, 85, 247, 0.18); color: #d8b4fe; border: 1px solid rgba(168, 85, 247, 0.4); }
+    .gog-hero h2 { font-size: 1.9rem; font-weight: 800; color: #fff; margin: 14px 0 8px; line-height: 1.15; }
+    .gog-hero p { color: #94a3b8; font-size: 0.95rem; line-height: 1.6; max-width: 40rem; }
+    .gog-hero ul { list-style: none; margin: 16px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+    .gog-hero li { font-size: 12px; color: #cbd5e1; padding: 5px 11px; border-radius: 999px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.10); }
+    .gog-hero li i { color: #a78bfa; margin-right: 6px; }
+    .gog-hero .gh-cta { display: inline-flex; align-items: center; gap: 10px; margin-top: 22px; padding: 13px 26px; border-radius: 14px; font-weight: 800; font-size: 0.95rem; color: #fff; text-decoration: none;
+      background: linear-gradient(90deg, #2563eb 0%, #a855f7 100%); box-shadow: 0 10px 25px -8px rgba(168, 85, 247, 0.6); transition: transform .2s, filter .2s; }
+    .gog-hero .gh-cta:hover { transform: translateY(-2px); filter: brightness(1.1); }
+    .gog-hero .gh-art { display: flex; align-items: center; justify-content: center; font-size: 7rem; color: rgba(216, 180, 254, 0.9); filter: drop-shadow(0 0 30px rgba(168, 85, 247, 0.5)); }
+    @media (max-width: 767px) { .gog-hero .gh-art { display: none; } }
+
+
+    /* header: Discord shows only its icon on narrow desktop widths so the nav never overflows */
+    @media (max-width: 1023px) { .nav-discord-label { display: none; } }
+    @media (max-width: 899px) { .nav-discord { display: none; } }
+
     .gradient-text {
       background: linear-gradient(135deg, #60a5fa 0%, #a855f7 50%, #ec4899 100%);
       -webkit-background-clip: text;
@@ -173,6 +201,13 @@
           <i class="fa-solid fa-circle-info text-sky-400"></i>
           <span data-i18n="nav_intention">Intention</span>
         </a>
+
+        <!-- Discord: external link, opens in a new window -->
+        <a href="https://discord.gg/cpxGkNTYXU" target="_blank" rel="noopener noreferrer" title="Discord (extern / external, neues Fenster / new window)" aria-label="Discord (external link, opens in a new window)" class="nav-discord px-3 py-2 rounded-lg hover:text-white hover:bg-dark-hover flex items-center gap-2 transition-colors">
+          <i class="fa-brands fa-discord" style="color:#818cf8"></i>
+          <span class="nav-discord-label">Discord</span>
+          <i class="fa-solid fa-arrow-up-right-from-square nav-discord-label" style="font-size:9px;opacity:.55" aria-hidden="true"></i>
+        </a>
       </nav>
 
       <div class="flex items-center gap-2">
@@ -215,6 +250,7 @@
       <a href="https://paypal.me/kainco" target="_blank" rel="noopener noreferrer" class="block px-3 py-2 rounded-lg hover:bg-dark-hover text-sm text-blue-400">PayPal Spende</a>
       <a href="#materials" class="block px-3 py-2 rounded-lg hover:bg-dark-hover text-sm" data-i18n="nav_materials">Materials</a>
       <a href="#intention-section" class="block px-3 py-2 rounded-lg hover:bg-dark-hover text-sm" data-i18n="nav_intention">Intention</a>
+      <a href="https://discord.gg/cpxGkNTYXU" target="_blank" rel="noopener noreferrer" class="block px-3 py-2 rounded-lg hover:bg-dark-hover text-sm" style="color:#818cf8">Discord ↗</a>
     </div>
   </header>
 
@@ -271,6 +307,26 @@
           <div class="text-xs text-slate-400 mt-1 font-mono">In Development</div>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- ==================== FEATURED: GOG DISC CREATOR ==================== -->
+  <section id="gog-disc-creator" class="px-4 sm:px-6 lg:px-8 pt-12">
+    <div class="gog-hero">
+      <div>
+        <span class="gh-pill"><i class="fa-solid fa-star"></i> <span data-i18n="gog_pill">Flagship tool</span> · v7 BETA</span>
+        <h2>GOG Disc Creator</h2>
+        <p data-i18n="gog_feat_desc">Turn your GOG offline installers into real, auto-starting backup discs: the tool builds the launcher, autorun files and cover banner for you – ready to burn.</p>
+        <ul>
+          <li><i class="fa-solid fa-bolt"></i><span data-i18n="gog_f1">Autostart on disc insert</span></li>
+          <li><i class="fa-solid fa-lock"></i><span data-i18n="gog_f2">Runs locally in your browser, no uploads</span></li>
+          <li><i class="fa-solid fa-language"></i><span data-i18n="gog_f3">German / English</span></li>
+        </ul>
+        <a href="studios/GOG_Disc_Creator/Physical-Release-Studio-GOG-Disc-Creator.html" class="gh-cta">
+          <i class="fa-solid fa-rocket"></i> <span data-i18n="btn_launch_gog">Open GOG Disc Creator (v7 Beta)</span>
+        </a>
+      </div>
+      <div class="gh-art" aria-hidden="true"><i class="fa-solid fa-compact-disc"></i></div>
     </div>
   </section>
 
@@ -342,7 +398,7 @@
             </div>
             <h3 class="text-lg font-bold text-white group-hover:text-brand-500 transition-colors">CD jewel case games</h3>
             <p class="text-slate-400 text-sm mt-2 leading-relaxed" data-i18n="card_cd_desc">
-              Design custom cover inserts for CD jewel case games like NTSC PS1, Dreamcast, or PC.
+              Design custom cover inserts for CD jewel case games like NTSC PS1, Dreamcast, or PC – also for multi-disc cases.
             </p>
           </div>
           <div class="mt-6 pt-4 border-t border-dark-border/60 flex items-center justify-between text-xs font-semibold text-brand-500">
@@ -495,11 +551,11 @@
             <i class="fa-solid fa-cubes text-brand-accent"></i>
             <span data-i18n="section_modules_title">Craft Modules & Studios</span>
           </h2>
-          <p class="text-slate-400 text-sm mt-1" data-i18n="section_modules_desc">Separate standalone modules for manuals, stickers, packaging, and launcher automation.</p>
+          <p class="text-slate-400 text-sm mt-1" data-i18n="section_modules_desc">Separate standalone modules for manuals, stickers and packaging.</p>
         </div>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         
         <!-- 1. Booklet Studio -->
         <div id="booklet-studio" class="bg-dark-card border border-dark-border rounded-2xl p-6 transition-all duration-300 hover:border-brand-accent/50 flex flex-col justify-between">
@@ -588,25 +644,6 @@
           </div>
         </div>
 
-        <!-- 4. GOG Disc Creator v5.0 (Aktualisiert & Aktiv in Beta) -->
-        <div id="gog-disc-creator" class="bg-dark-card border border-brand-accent/40 rounded-2xl p-6 transition-all duration-300 hover:border-brand-accent shadow-lg shadow-brand-accent/5 flex flex-col justify-between">
-          <div>
-            <div class="flex items-center justify-between mb-4">
-              <div class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center">
-                <i class="fa-solid fa-rocket text-xl"></i>
-              </div>
-              <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-purple-500/15 text-purple-300 border border-purple-500/30">v7 BETA</span>
-            </div>
-            <h3 class="text-lg font-bold text-white">GOG Disc Creator</h3>
-            <p class="text-slate-400 text-sm mt-2 leading-relaxed" data-i18n="card_gog_desc">
-              Generate autostart launchers for your burned backup discs to automatically trigger GOG offline installers upon disc insertion.
-            </p>
-          </div>
-          <a href="studios/GOG_Disc_Creator/Physical-Release-Studio-GOG-Disc-Creator.html" class="mt-6 block text-center py-2.5 rounded-xl bg-gradient-to-r from-brand-600 to-brand-accent hover:from-brand-500 hover:to-purple-600 text-white text-xs font-bold transition-colors shadow-lg shadow-brand-accent/20">
-            <span data-i18n="btn_launch_gog">Open GOG Disc Creator</span>
-          </a>
-        </div>
-
       </div>
     </section>
 
@@ -662,11 +699,12 @@
         <i class="fa-solid fa-compact-disc text-brand-500 text-lg"></i>
         <span>&copy; 2026 Physical Release Studio — Open Preservation Suite</span>
       </div>
-      <div class="flex items-center gap-6 text-slate-400">
+      <div class="flex items-center gap-6 text-slate-400" style="flex-wrap: wrap; justify-content: center; row-gap: 8px;">
         <a href="#intention-section" class="hover:text-white transition-colors" data-i18n="nav_intention">Intention</a>
         <a href="#materials" class="hover:text-white transition-colors" data-i18n="nav_materials">Materials</a>
         <a href="https://paypal.me/kainco" target="_blank" rel="noopener noreferrer" class="hover:text-blue-400 transition-colors">PayPal</a>
         <a href="https://ko-fi.com/kainco" target="_blank" rel="noopener noreferrer" class="hover:text-red-400 transition-colors">Ko-Fi</a>
+        <a href="https://discord.gg/cpxGkNTYXU" target="_blank" rel="noopener noreferrer" class="hover:text-indigo-300 transition-colors">Discord</a>
         <!-- Hier ist der neue Datenschutz-Link -->
         <a href="https://kainc0.github.io/Impressum/" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors text-slate-300 font-semibold" data-i18n="nav_imprint">Legal Notice</a>
         <a href="./assets/datenschutz.html" class="hover:text-white transition-colors text-slate-300 font-semibold" data-i18n="nav_privacy">Privacy Policy</a>
@@ -700,17 +738,20 @@
         section_covers_desc: "Print-ready cover art inserts for classic console cases and future planned formats.",
         card_dc_desc: "Design custom cover inserts for blue Sega Dreamcast PAL double jewel cases.",
         card_ps1_desc: "Create PAL regional covers and back spine inserts for thick PlayStation 1 cases.",
-		card_cd_desc: "Design custom cover inserts for CD jewel case games like NTSC PS1, Dreamcast, or PC.",
+		card_cd_desc: "Design custom cover inserts for CD jewel case games like NTSC PS1, Dreamcast, or PC – also for multi-disc cases.",
 		card_dvd_desc: "Design custom cover inserts for DVD game cases like GameCube, PS2, or Xbox 360.",
 		card_ps3_desc: "Design custom cover inserts for PS3, PS4 and Playstation 5.",
         open_studio: "Open Studio",
         section_modules_title: "Craft Modules & Studios",
-        section_modules_desc: "Separate standalone modules for manuals, stickers, packaging, and launcher automation.",
+        section_modules_desc: "Separate standalone modules for manuals, stickers and packaging.",
         card_booklet_desc: "Create printable multi-page game manuals and booklets with automatic page imposition.",
         card_sticker_desc: "Precision labels for memory cards and cartridge sticker replacements:",
         card_craft_desc: "Foldable dielines for cardboard packaging and boxes:",
         card_gog_desc: "Generate autostart launchers for your burned backup discs to automatically trigger GOG offline installers upon disc insertion.",
         btn_launch_gog: "Open GOG Disc Creator (v7 Beta)",
+        gog_pill: "Flagship tool",
+        gog_feat_desc: "Turn your GOG offline installers into real, auto-starting backup discs: the tool builds the launcher, autorun files and cover banner for you – ready to burn.",
+        gog_f1: "Autostart on disc insert", gog_f2: "Runs locally in your browser, no uploads", gog_f3: "German / English",
         section_materials_title: "Materials & Supplies",
         section_materials_desc: "Tested papers, cardboards, and craft tools for optimal physical DIY results.",
         affiliate_tag: "Affiliate Link Collection",
@@ -748,17 +789,20 @@ With this studio, you can convert DRM-free games, indie titles, and your own bac
         section_covers_desc: "Druckfertige Cover-Art-Einleger für Hüllen klassischer Konsolen und geplante Formate.",
         card_dc_desc: "Design und Drucklayout für blaue Sega Dreamcast PAL Doppel-Hüllen mit Rücken-Markierungen.",
 		card_ps1_desc: "Passgenaue Front- und Rückseiteninlays für dicke europäische PlayStation 1 Hüllen.",
-		card_cd_desc: "Gestalte individuelle Cover-Inlays für CD-Jewel-Case-Spiele wie NTSC PS1, Dreamcast oder PC.",
+		card_cd_desc: "Gestalte individuelle Cover-Inlays für CD-Jewel-Case-Spiele wie NTSC PS1, Dreamcast oder PC – auch für Multi-Disc-Hüllen.",
 		card_dvd_desc: "Gestalte individuelle Cover-Inlays für DVD-Spielehüllen wie GameCube, PS2 oder Xbox 360.",
 		card_ps3_desc: "Gestalte individuelle Cover-Inlays für PS3, PS4 oder Playstation 5.",
         open_studio: "Studio öffnen",
         section_modules_title: "Craft Module & Studios",
-        section_modules_desc: "Eigenständige Bereiche für Anleitungen, Sticker, Verpackungen und Autostart-Generatoren.",
+        section_modules_desc: "Eigenständige Bereiche für Anleitungen, Sticker und Verpackungen.",
         card_booklet_desc: "Erstelle druckfertige mehrseitige Handbücher & Anleitungen mit automatischer Seitensortierung.",
         card_sticker_desc: "Präzise Aufkleber für Memory Cards und Cartridge-Ersatzsticker:",
         card_craft_desc: "Faltvorlagen & 3D-Dielines für Pappschachteln und Boxen:",
         card_gog_desc: "Erstelle Autostart-Skripte für gebrannte Backup-Discs, um deine offline GOG-Installationsdateien direkt bei Disc-Einwurf zu starten.",
         btn_launch_gog: "GOG Disc Creator öffnen (v7 Beta)",
+        gog_pill: "Herzstück",
+        gog_feat_desc: "Mach aus deinen GOG-Offline-Installern echte Backup-Discs mit Autostart: Das Tool erstellt Launcher, Autorun-Dateien und Cover-Banner – fertig zum Brennen.",
+        gog_f1: "Autostart beim Einlegen der Disc", gog_f2: "Läuft lokal im Browser, keine Uploads", gog_f3: "Deutsch / Englisch",
         section_materials_title: "Materialien & Empfehlungen",
         section_materials_desc: "Getestete Materialien, Papiere und Werkzeuge für beste DIY-Ergebnisse.",
         affiliate_tag: "Affiliate Link Sammlung",
