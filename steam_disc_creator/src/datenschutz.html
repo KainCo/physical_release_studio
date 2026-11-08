@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Datenschutzerklärung – Steam Disc Creator</title>
+<!--
+  Datenschutzerklärung für den Steam Disc Creator (eigenständige Seite, keine externen Ressourcen).
+  SPDX-License-Identifier: GPL-3.0-or-later
+  Hinweis für Forks und eigene Installationen: Abschnitt "Verantwortlicher" und "Hosting" an den
+  eigenen Betrieb anpassen. Dieser Text ist keine Rechtsberatung.
+-->
+<style>
+:root{--bg:#090d16;--card:#111726;--border:#1f293d;--text:#f1f5f9;--muted:#94a3b8;--accent:#3b82f6}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+a{color:#60a5fa}a:hover{color:#93c5fd}
+.wrap{max-width:820px;margin:0 auto;padding:0 16px}
+header{border-bottom:1px solid var(--border);background:rgba(9,13,22,.9)}
+header .wrap{display:flex;justify-content:space-between;align-items:center;gap:12px;height:60px}
+.lang{display:flex;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:3px;font:700 12px ui-monospace,Menlo,Consolas,monospace}
+.lang button{border:0;background:none;color:var(--muted);padding:5px 10px;border-radius:7px;cursor:pointer}
+.lang button[aria-pressed=true]{background:var(--accent);color:#fff}
+main{padding:28px 0 48px}
+h1{font-size:26px;margin:0 0 4px}
+h2{font-size:17px;margin:0 0 8px}
+.asof{color:var(--muted);font:13px ui-monospace,Menlo,Consolas,monospace;margin:0 0 20px}
+section{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;margin:0 0 14px}
+section p{margin:0 0 10px}section p:last-child{margin:0}
+ul{margin:6px 0 10px;padding-left:20px}
+code{background:#0b1020;border:1px solid var(--border);border-radius:6px;padding:1px 6px;font-size:13px}
+footer{border-top:1px solid var(--border);padding:20px 0;color:var(--muted);font-size:13px;text-align:center}
+footer a{margin:0 8px}
+:root[lang=de] .en,:root[lang=en] .de{display:none}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <a href="index.html"><span class="de">← Zurück zum Tool</span><span class="en">← Back to the tool</span></a>
+  <div class="lang" role="group" aria-label="Language"><button type="button" id="l-en" aria-pressed="false">EN</button><button type="button" id="l-de" aria-pressed="true">DE</button></div>
+</div></header>
+
+<main><div class="wrap">
+
+<!-- ===================== DEUTSCH ===================== -->
+<div class="de">
+  <h1>Datenschutzerklärung</h1>
+  <p class="asof">Steam Disc Creator · Stand: November 2026</p>
+
+  <section>
+    <h2>1. Kurz gesagt</h2>
+    <p>Der Steam Disc Creator arbeitet vollständig lokal in Ihrem Browser. Ordner und Dateien, die Sie auswählen, werden <strong>nicht hochgeladen</strong>. Wir setzen keine Cookies, kein Tracking und keine Analyse-Dienste ein und laden keine Schriften, Skripte oder Bilder von Dritten nach. Beim reinen Aufruf der Seite verarbeitet der Hosting-Anbieter technisch bedingt Ihre IP-Adresse (siehe Abschnitt 3).</p>
+  </section>
+
+  <section>
+    <h2>2. Verantwortlicher</h2>
+    <p>Verantwortlich ist KainCo Productions. Anschrift und Kontaktmöglichkeiten finden Sie im <a href="https://kainc0.github.io/Impressum/" target="_blank" rel="noopener noreferrer">Impressum</a>.</p>
+  </section>
+
+  <section>
+    <h2>3. Hosting (GitHub Pages)</h2>
+    <p>Diese Seite wird über <strong>GitHub Pages</strong> ausgeliefert (Anbieter: GitHub, Inc., 88 Colin P Kelly Jr St, San Francisco, CA 94107, USA). Beim Aufruf erfasst GitHub technisch bedingt Server-Logfiles einschließlich Ihrer IP-Adresse. Details: <a href="https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement" target="_blank" rel="noopener noreferrer">Datenschutzerklärung von GitHub</a>.</p>
+    <p>Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einer sicheren und zuverlässigen Auslieferung der Seite). Eine Übermittlung in die USA kann nicht ausgeschlossen werden; zu den eingesetzten Garantien informiert GitHub in seiner Datenschutzerklärung. Wir speichern selbst keine Logfiles und haben keinen Zugriff darauf; die Speicherdauer richtet sich nach den Richtlinien von GitHub.</p>
+    <p>Wenn Sie das Tool von GitHub Releases oder aus dem Quellcode-Repository herunterladen, gelten für den Download ebenfalls die Bedingungen von GitHub.</p>
+  </section>
+
+  <section>
+    <h2>4. Lokaler Speicher (Local Storage)</h2>
+    <p>Wir speichern in Ihrem Browser ausschließlich Ihre gewählte Sprache (Schlüssel <code>prs_lang</code>). Der Eintrag ist für die von Ihnen gewünschte Funktion unbedingt erforderlich (§ 25 Abs. 2 Nr. 2 TDDDG), wird nicht an uns übertragen und bleibt auf Ihrem Gerät. Sie können ihn jederzeit in Ihrem Browser löschen.</p>
+  </section>
+
+  <section>
+    <h2>5. Verarbeitung im Tool</h2>
+    <p>Der gewählte Spielordner wird ausschließlich lokal auf Ihrem Gerät gelesen. Ordnernamen, Dateinamen, Pfade und Dateiinhalte werden nicht an uns oder an Dritte übertragen. Das Gleiche gilt für Ihr Banner-Bild und eine optionale Steam-Manifestdatei.</p>
+    <p>Die Hinweise zum Kopierschutz entstehen <strong>lokal</strong> aus den Dateinamen im Ordner und aus den Abschnittsnamen der Programmdateien. Es findet kein Abgleich mit einer Online-Datenbank statt und es wird keine Anfrage an Dritte gesendet. Die Hinweise sind unverbindlich und ersetzen keine Prüfung.</p>
+    <p>Das erzeugte Paket (Ordner oder ZIP-Dateien) wird auf Ihrem Gerät erstellt. Es wird nichts an uns übermittelt.</p>
+  </section>
+
+  <section>
+    <h2>6. Der erzeugte Installer (Launcher.exe)</h2>
+    <p>Der Installer baut von sich aus <strong>keine Internetverbindung</strong> auf und enthält keine Telemetrie. Er arbeitet nur mit lokalen Dateien. Auf Ihrem Rechner kann er Folgendes anlegen:</p>
+    <ul>
+      <li>die Spieldateien im von Ihnen gewählten Zielordner, dazu <code>uninstall.exe</code> und <code>prs_uninstall.log</code> (Liste der angelegten Dateien für die Deinstallation);</li>
+      <li>einen Eintrag unter „Apps &amp; Features“ in der Windows-Registrierung (nur für den aktuellen Benutzer, <code>HKEY_CURRENT_USER</code>), damit eine vorhandene Installation erkannt und deinstalliert werden kann;</li>
+      <li>auf Wunsch Verknüpfungen auf dem Desktop und im Startmenü;</li>
+      <li>im Steam-Modus: lesender Zugriff auf den Steam-Pfad in der Registrierung und die Datei <code>libraryfolders.vdf</code>, um Bibliotheksordner vorzuschlagen; die mitgelieferte oder eine einfache selbst erzeugte Datei <code>appmanifest_&lt;AppID&gt;.acf</code> im Ordner <code>steamapps</code>; die Datei <code>steam_appid.txt</code> neben der Programmdatei, wenn eine AppID angegeben wurde und die Datei fehlt.</li>
+    </ul>
+    <p>Diese Angaben verlassen Ihren Rechner nicht. Beim Start eines Spiels über Steam wird nur eine <code>steam://</code>-Adresse an den Steam-Client übergeben; dessen eigene Datenverarbeitung unterliegt den Bedingungen von Valve.</p>
+    <p>Optional mitinstallierte Komponenten (z. B. Visual C++, DirectX, .NET) sind Programme Dritter, die erst nach Ihrer Auswahl und mit Administratorabfrage ausgeführt werden. Für deren Verhalten ist der jeweilige Hersteller verantwortlich.</p>
+  </section>
+
+  <section>
+    <h2>7. Links zu externen Angeboten</h2>
+    <p>Das Tool enthält einen Link zu PCGamingWiki (pcgamingwiki.com), über den Sie nachschlagen können, ob ein Spiel DRM-frei ist. Eine Verbindung zu PCGamingWiki entsteht <strong>erst, wenn Sie den Link aktiv anklicken</strong>. Die dabei übermittelte Spiel-ID oder der Titel dient nur der Suche. Ab dem Klick gelten die Datenschutzbestimmungen von PCGamingWiki. Wir erhalten dadurch keine Daten über Sie.</p>
+  </section>
+
+  <section>
+    <h2>8. Ihre Rechte</h2>
+    <p>Sie haben im Rahmen der gesetzlichen Vorgaben das Recht auf Auskunft (Art. 15 DSGVO), Berichtigung (Art. 16), Löschung (Art. 17), Einschränkung der Verarbeitung (Art. 18), Datenübertragbarkeit (Art. 20) sowie Widerspruch gegen Verarbeitungen auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO (Art. 21). Zudem können Sie sich bei einer Datenschutz-Aufsichtsbehörde beschweren (Art. 77 DSGVO).</p>
+    <p>Da wir selbst keine personenbezogenen Daten speichern, können wir Auskünfte in der Regel nur zu Angaben geben, die uns durch Ihre Kontaktaufnahme vorliegen. Für die Server-Logfiles wenden Sie sich bitte an GitHub. Für Anliegen zum Datenschutz erreichen Sie uns über die Kontaktdaten im Impressum.</p>
+  </section>
+</div>
+
+<!-- ===================== ENGLISH ===================== -->
+<div class="en">
+  <h1>Privacy Policy</h1>
+  <p class="asof">Steam Disc Creator · As of: November 2026</p>
+
+  <section>
+    <h2>1. In short</h2>
+    <p>The Steam Disc Creator runs entirely locally in your browser. Folders and files you select are <strong>not uploaded</strong>. We use no cookies, no tracking and no analytics, and we load no fonts, scripts or images from third parties. When you simply open the page, the hosting provider processes your IP address for technical reasons (see section 3).</p>
+  </section>
+
+  <section>
+    <h2>2. Controller</h2>
+    <p>The controller is KainCo Productions. Address and contact details are in the <a href="https://kainc0.github.io/Impressum/" target="_blank" rel="noopener noreferrer">Legal Notice</a>.</p>
+  </section>
+
+  <section>
+    <h2>3. Hosting (GitHub Pages)</h2>
+    <p>This page is delivered via <strong>GitHub Pages</strong> (provider: GitHub, Inc., 88 Colin P Kelly Jr St, San Francisco, CA 94107, USA). When you open it, GitHub records server log files including your IP address for technical reasons. Details: <a href="https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement" target="_blank" rel="noopener noreferrer">GitHub's privacy statement</a>.</p>
+    <p>The legal basis is Art. 6(1)(f) GDPR (legitimate interest in delivering the page securely and reliably). A transfer to the USA cannot be ruled out; GitHub describes the safeguards it uses in its privacy statement. We do not store any log files ourselves and have no access to them; retention follows GitHub's policies.</p>
+    <p>If you download the tool from GitHub Releases or from the source repository, GitHub's terms also apply to the download.</p>
+  </section>
+
+  <section>
+    <h2>4. Local storage</h2>
+    <p>The only thing stored in your browser is your chosen language (key <code>prs_lang</code>). It is strictly necessary for the function you requested (Section 25(2) no. 2 TDDDG), is not transmitted to us and stays on your device. You can delete it in your browser at any time.</p>
+  </section>
+
+  <section>
+    <h2>5. Processing in the tool</h2>
+    <p>The game folder you choose is only read locally on your device. Folder names, file names, paths and file contents are not transmitted to us or to third parties. The same applies to your banner image and an optional Steam manifest file.</p>
+    <p>The copy-protection hints are produced <strong>locally</strong> from the file names in the folder and from the section names of the executables. There is no comparison with an online database and no request is sent to third parties. The hints are non-binding and are no substitute for checking.</p>
+    <p>The generated package (folder or ZIP files) is created on your device. Nothing is sent to us.</p>
+  </section>
+
+  <section>
+    <h2>6. The generated installer (Launcher.exe)</h2>
+    <p>The installer does <strong>not open an internet connection</strong> on its own and contains no telemetry. It only works with local files. On your computer it may create:</p>
+    <ul>
+      <li>the game files in the target folder you choose, plus <code>uninstall.exe</code> and <code>prs_uninstall.log</code> (a list of created files used for uninstalling);</li>
+      <li>an entry under "Apps &amp; features" in the Windows registry (current user only, <code>HKEY_CURRENT_USER</code>) so that an existing installation can be detected and uninstalled;</li>
+      <li>optionally, shortcuts on the desktop and in the Start menu;</li>
+      <li>in Steam mode: read access to the Steam path in the registry and to <code>libraryfolders.vdf</code> to suggest library folders; the bundled or a simple self-generated <code>appmanifest_&lt;AppID&gt;.acf</code> in the <code>steamapps</code> folder; the file <code>steam_appid.txt</code> next to the program file if an AppID was given and the file is missing.</li>
+    </ul>
+    <p>This information does not leave your computer. When a game is started through Steam, only a <code>steam://</code> address is handed to the Steam client; its own data processing is governed by Valve's terms.</p>
+    <p>Optionally installed components (e.g. Visual C++, DirectX, .NET) are third-party programs that only run after you select them and with an administrator prompt. Their respective vendors are responsible for their behaviour.</p>
+  </section>
+
+  <section>
+    <h2>7. Links to external services</h2>
+    <p>The tool contains a link to PCGamingWiki (pcgamingwiki.com) where you can look up whether a game is DRM-free. A connection to PCGamingWiki is only made <strong>once you actively click the link</strong>. The game ID or title passed along is used only for the search. From the click on, PCGamingWiki's privacy terms apply. We receive no data about you through it.</p>
+  </section>
+
+  <section>
+    <h2>8. Your rights</h2>
+    <p>Within the framework of the law you have the right of access (Art. 15 GDPR), rectification (Art. 16), erasure (Art. 17), restriction of processing (Art. 18), data portability (Art. 20) and to object to processing based on Art. 6(1)(f) GDPR (Art. 21). You can also lodge a complaint with a data protection supervisory authority (Art. 77 GDPR).</p>
+    <p>Since we do not store personal data ourselves, we can usually only provide information on details we hold because you contacted us. For the server log files, please contact GitHub. For privacy matters you can reach us via the contact details in the Legal Notice.</p>
+  </section>
+</div>
+
+</div></main>
+
+<footer><div class="wrap">
+  <a href="https://kainc0.github.io/Impressum/" target="_blank" rel="noopener noreferrer"><span class="de">Impressum</span><span class="en">Legal Notice</span></a>
+  <a href="index.html"><span class="de">Zum Tool</span><span class="en">To the tool</span></a>
+</div></footer>
+
+<script>
+(function () {
+  var lang = null;
+  try { lang = localStorage.getItem('prs_lang'); } catch (e) {}
+  if (lang !== 'de' && lang !== 'en') lang = (navigator.language || 'de').toLowerCase().indexOf('de') === 0 ? 'de' : 'en';
+  function set(l) {
+    document.documentElement.lang = l;
+    document.title = l === 'en' ? 'Privacy Policy – Steam Disc Creator' : 'Datenschutzerklärung – Steam Disc Creator';
+    document.getElementById('l-en').setAttribute('aria-pressed', l === 'en');
+    document.getElementById('l-de').setAttribute('aria-pressed', l === 'de');
+    try { localStorage.setItem('prs_lang', l); } catch (e) {}
+  }
+  document.getElementById('l-de').onclick = function () { set('de'); };
+  document.getElementById('l-en').onclick = function () { set('en'); };
+  set(lang);
+})();
+</script>
+</body>
+</html>
