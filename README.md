@@ -65,6 +65,7 @@ Whether you are restoring original cases from damaged secondhand finds, creating
 
 ### 🚀 GOG AutoLauncher & Extra Tools
 - **GOG AutoLauncher:** Standalone auto-run wrappers for PC releases.
+- **Steam Disc Creator:** Splits a game folder across several discs or USB sticks; a Windows installer merges it again (with uninstaller, optional runtimes, Steam-library mode). Local copy-protection hints only, no database. Source: `steam_disc_creator/`, tool: `studios/Steam_Disc_Creator/`.
 - **Materials & Affiliate Hub:** Recommended paper types (photopaper GSM specs), cutting tools, adhesive supplies, and replacement case sources.
 
 ---

@@ -124,6 +124,23 @@
     @media (max-width: 767px) { .gog-hero .gh-art { display: none; } }
 
 
+    /* Kopfbereich: Menü klappt schon unter 1120 px ein, damit nichts seitlich überläuft (Tablet/Handy).
+       Auf dem Handy bleiben Sprachwahl, Ko-fi-Symbol und Menü sichtbar; PayPal steht im Menü. */
+    @media (max-width: 1119px) {
+      header nav { display: none !important; }
+      #mobile-menu-btn { display: inline-flex !important; }
+      #mobile-menu:not(.hidden) { display: block !important; }
+    }
+    @media (min-width: 1120px) {
+      #mobile-menu-btn, #mobile-menu { display: none !important; }
+    }
+    @media (max-width: 639px) {
+      .kofi-label, .prs-paypal { display: none !important; }
+    }
+    @media (max-width: 359px) {
+      #mobile-menu-btn { padding: 4px !important; }
+    }
+
     /* header: Discord shows only its icon on narrow desktop widths so the nav never overflows */
     @media (max-width: 1023px) { .nav-discord-label { display: none; } }
     @media (max-width: 899px) { .nav-discord { display: none; } }
@@ -192,6 +209,11 @@
           <span>GOG Disc Creator</span>
         </a>
 
+        <a href="#steam-disc-creator" class="px-3 py-2 rounded-lg hover:text-white hover:bg-dark-hover flex items-center gap-2 transition-colors">
+          <i class="fa-brands fa-steam text-brand-accent"></i>
+          <span>Steam Disc Creator</span>
+        </a>
+
         <a href="#materials" class="px-3 py-2 rounded-lg hover:text-white hover:bg-dark-hover flex items-center gap-2 transition-colors">
           <i class="fa-solid fa-cart-shopping text-emerald-400"></i>
           <span data-i18n="nav_materials">Materials</span>
@@ -220,16 +242,16 @@
 
         <!-- PayPal Button -->
         <a href="https://paypal.me/kainco" target="_blank" rel="noopener noreferrer" 
-           class="inline-flex items-center gap-1.5 bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/40 text-blue-400 font-bold text-xs px-2.5 py-2 rounded-xl transition-all hover:scale-105">
+           class="prs-paypal inline-flex items-center gap-1.5 bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/40 text-blue-400 font-bold text-xs px-2.5 py-2 rounded-xl transition-all hover:scale-105">
           <i class="fa-brands fa-paypal"></i>
           <span class="hidden xl:inline">PayPal</span>
         </a>
 
         <!-- Ko-fi Support Button -->
-        <a href="https://ko-fi.com/kainco" target="_blank" rel="noopener noreferrer" 
+        <a href="https://ko-fi.com/kainco" target="_blank" rel="noopener noreferrer" aria-label="Ko-fi" 
            class="inline-flex items-center gap-1.5 bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white font-bold text-xs px-3 py-2 rounded-xl shadow-lg shadow-red-500/20 hover:scale-105 transition-all">
           <i class="fa-solid fa-mug-hot"></i>
-          <span data-i18n="btn_kofi">Support on Ko-fi</span>
+          <span class="kofi-label" data-i18n="btn_kofi">Support on Ko-fi</span>
         </a>
 
         <!-- Mobile Menu Toggle Button -->
@@ -246,6 +268,7 @@
       <a href="#sticker-studio" class="block px-3 py-2 rounded-lg hover:bg-dark-hover text-sm">Sticker Studio</a>
       <a href="#craft-studio" class="block px-3 py-2 rounded-lg hover:bg-dark-hover text-sm">Craft Studio</a>
       <a href="#gog-disc-creator" class="block px-3 py-2 rounded-lg hover:bg-dark-hover text-sm">GOG Disc Creator</a>
+      <a href="#steam-disc-creator" class="block px-3 py-2 rounded-lg hover:bg-dark-hover text-sm">Steam Disc Creator</a>
       <div class="border-t border-dark-border my-2"></div>
       <a href="https://paypal.me/kainco" target="_blank" rel="noopener noreferrer" class="block px-3 py-2 rounded-lg hover:bg-dark-hover text-sm text-blue-400">PayPal Spende</a>
       <a href="#materials" class="block px-3 py-2 rounded-lg hover:bg-dark-hover text-sm" data-i18n="nav_materials">Materials</a>
@@ -327,6 +350,26 @@
         </a>
       </div>
       <div class="gh-art" aria-hidden="true"><i class="fa-solid fa-compact-disc"></i></div>
+    </div>
+  </section>
+
+  <!-- ==================== FEATURED: STEAM DISC CREATOR ==================== -->
+  <section id="steam-disc-creator" class="px-4 sm:px-6 lg:px-8 pt-8">
+    <div class="gog-hero">
+      <div>
+        <span class="gh-pill"><i class="fa-brands fa-steam"></i> <span data-i18n="steam_pill">New tool</span> · BETA</span>
+        <h2>Steam Disc Creator</h2>
+        <p data-i18n="steam_feat_desc">Split a game folder across CDs, DVDs, Blu-rays or USB sticks. A small Windows installer puts it back together, adds an uninstaller and can also install the required runtimes. Copy-protection hints are created locally from the file names – without any database.</p>
+        <ul>
+          <li><i class="fa-solid fa-layer-group"></i><span data-i18n="steam_f1">Splits across several discs</span></li>
+          <li><i class="fa-solid fa-lock"></i><span data-i18n="steam_f2">Runs locally in your browser, no uploads</span></li>
+          <li><i class="fa-solid fa-language"></i><span data-i18n="steam_f3">6 installer languages</span></li>
+        </ul>
+        <a href="studios/Steam_Disc_Creator/Physical-Release-Studio-Steam-Disc-Creator.html" class="gh-cta">
+          <i class="fa-solid fa-rocket"></i> <span data-i18n="btn_launch_steam">Open Steam Disc Creator (Beta)</span>
+        </a>
+      </div>
+      <div class="gh-art" aria-hidden="true"><i class="fa-brands fa-steam"></i></div>
     </div>
   </section>
 
@@ -752,6 +795,10 @@
         gog_pill: "Flagship tool",
         gog_feat_desc: "Turn your GOG offline installers into real, auto-starting backup discs: the tool builds the launcher, autorun files and cover banner for you – ready to burn.",
         gog_f1: "Autostart on disc insert", gog_f2: "Runs locally in your browser, no uploads", gog_f3: "German / English",
+        steam_pill: "New tool",
+        steam_feat_desc: "Split a game folder across CDs, DVDs, Blu-rays or USB sticks. A small Windows installer puts it back together, adds an uninstaller and can also install the required runtimes. Copy-protection hints are created locally from the file names – without any database.",
+        steam_f1: "Splits across several discs", steam_f2: "Runs locally in your browser, no uploads", steam_f3: "6 installer languages",
+        btn_launch_steam: "Open Steam Disc Creator (Beta)",
         section_materials_title: "Materials & Supplies",
         section_materials_desc: "Tested papers, cardboards, and craft tools for optimal physical DIY results.",
         affiliate_tag: "Affiliate Link Collection",
@@ -803,6 +850,10 @@ With this studio, you can convert DRM-free games, indie titles, and your own bac
         gog_pill: "Herzstück",
         gog_feat_desc: "Mach aus deinen GOG-Offline-Installern echte Backup-Discs mit Autostart: Das Tool erstellt Launcher, Autorun-Dateien und Cover-Banner – fertig zum Brennen.",
         gog_f1: "Autostart beim Einlegen der Disc", gog_f2: "Läuft lokal im Browser, keine Uploads", gog_f3: "Deutsch / Englisch",
+        steam_pill: "Neues Tool",
+        steam_feat_desc: "Teile einen Spieleordner auf CDs, DVDs, Blu-rays oder USB-Sticks auf. Ein kleiner Windows-Installer fügt ihn wieder zusammen, bringt einen Deinstaller mit und installiert auf Wunsch die nötigen Laufzeiten. Hinweise zum Kopierschutz entstehen lokal aus den Dateinamen – ganz ohne Datenbank.",
+        steam_f1: "Teilt auf mehrere Discs auf", steam_f2: "Läuft lokal im Browser, keine Uploads", steam_f3: "6 Installer-Sprachen",
+        btn_launch_steam: "Steam Disc Creator öffnen (Beta)",
         section_materials_title: "Materialien & Empfehlungen",
         section_materials_desc: "Getestete Materialien, Papiere und Werkzeuge für beste DIY-Ergebnisse.",
         affiliate_tag: "Affiliate Link Sammlung",
@@ -826,11 +877,19 @@ Mit diesem Studio kannst du DRM-freie Spiele, Indie-Titel und eigene Backups in 
       }
     };
 
-    let currentLang = localStorage.getItem('prs_lang') || 'de';
+    // Sprache: gespeicherte Wahl, sonst Browsersprache (Deutsch -> Deutsch, alles andere -> Englisch)
+    function detectLang() {
+      let saved = null;
+      try { saved = localStorage.getItem('prs_lang'); } catch (e) {}
+      if (saved === 'de' || saved === 'en') return saved;
+      const nav = (navigator.languages && navigator.languages[0]) || navigator.language || '';
+      return /^de\b/i.test(nav) ? 'de' : 'en';
+    }
+    let currentLang = detectLang();
 
     function setLanguage(lang) {
       currentLang = lang;
-      localStorage.setItem('prs_lang', lang);
+      try { localStorage.setItem('prs_lang', lang); } catch (e) {}
 
       const btnEn = document.getElementById('lang-en');
       const btnDe = document.getElementById('lang-de');
