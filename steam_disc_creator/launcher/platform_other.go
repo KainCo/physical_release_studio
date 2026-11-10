@@ -63,7 +63,7 @@ func specialDir(kind string) string {
 
 func launchFile(path, dir string) error { return nil }
 
-func runInstaller(path, args, dir string) (int, error) {
+func runInstaller(path, args, dir string, skip <-chan struct{}) (int, error) {
 	if os.Getenv("PRS_REDIST_FAIL") != "" {
 		return 1603, nil
 	}

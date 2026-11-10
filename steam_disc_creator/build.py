@@ -79,11 +79,17 @@ def main():
         sys.exit('Fehler: core.js enthaelt "</script" und kann nicht inline eingebettet werden')
     exe = read(exe_path, 'rb')
     ico = read(os.path.join(SRC, 'autorun.ico'), 'rb')
+    # Lizenzdatei fuer jede Disc: Hinweis + GPL-3 + Go-Lizenz (ohne Namen/Anschrift)
+    lic = (read(os.path.join(SRC, 'license-header.txt')) + read(os.path.join(ROOT, 'LICENSE')) +
+           '\n\n================================================================================\n'
+           'THE GO PROGRAMMING LANGUAGE (standard library, linked into the installer)\n'
+           '================================================================================\n\n' +
+           read(os.path.join(SRC, 'third-party', 'go-LICENSE.txt'))).replace('\r\n', '\n').replace('\n', '\r\n').encode('utf-8')
 
     legal = read(os.path.join(SRC, 'legal-note.js'))
     if '</script' in legal.lower():
         sys.exit('Fehler: legal-note.js enthaelt "</script" und kann nicht inline eingebettet werden')
-    fonts = []
+    fonts = ['/* Copyright 2020 The Inter Project Authors (https://github.com/rsms/inter); Copyright 2020 The JetBrains Mono Project Authors (https://github.com/JetBrains/JetBrainsMono). Licensed under the SIL Open Font License 1.1 (see SCHRIFTEN-LIZENZ.txt). */']
     for family, fn, weight in (('Inter', 'Inter-subset.woff', '400 800'), ('JetBrains Mono', 'JetBrainsMono-subset.woff', '400 700')):
         data = base64.b64encode(read(os.path.join(SRC, 'fonts', fn), 'rb')).decode('ascii')
         fonts.append("@font-face{font-family:'%s';src:url(data:font/woff;base64,%s) format('woff');font-weight:%s;font-style:normal;font-display:swap}" % (family, data, weight))
@@ -94,6 +100,7 @@ def main():
     html = once(html, '/*__CORE_JS__*/', core)
     html = once(html, '__LAUNCHER_B64__', base64.b64encode(exe).decode('ascii'))
     html = once(html, '__ICO_B64__', base64.b64encode(ico).decode('ascii'))
+    html = once(html, '__LICENSE_B64__', base64.b64encode(lic).decode('ascii'))
     with open(os.path.join(DIST, 'index.html'), 'w', encoding='utf-8', newline='\n') as f:
         f.write(html)
 

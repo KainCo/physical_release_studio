@@ -47,13 +47,13 @@ func buildDiscs(t *testing.T) (roots []string, orig map[string][]byte, ini strin
 	fmt.Fprintf(&sb, "F=%d|data\\readme.txt\nS=1|0|%d|%s|Game\\data\\readme.txt\n", len(rd), len(rd), crc(rd))
 	big := orig["data\\big.bin"]
 	p1, p2, p3 := big[:300000], big[300000:500000], big[500000:]
-	write(2, "Game\\data\\big.bin.prs1", p1)
-	write(3, "Game\\data\\big.bin.prs2", p2)
-	write(3, "Game\\data\\big.bin.prs3", p3)
+	write(2, "Game\\data\\big.bin.part1", p1)
+	write(3, "Game\\data\\big.bin.part2", p2)
+	write(3, "Game\\data\\big.bin.part3", p3)
 	fmt.Fprintf(&sb, "F=%d|data\\big.bin\n", len(big))
-	fmt.Fprintf(&sb, "S=2|0|%d|%s|Game\\data\\big.bin.prs1\n", len(p1), crc(p1))
-	fmt.Fprintf(&sb, "S=3|300000|%d|%s|Game\\data\\big.bin.prs2\n", len(p2), crc(p2))
-	fmt.Fprintf(&sb, "S=3|500000|%d|%s|Game\\data\\big.bin.prs3\n", len(p3), crc(p3))
+	fmt.Fprintf(&sb, "S=2|0|%d|%s|Game\\data\\big.bin.part1\n", len(p1), crc(p1))
+	fmt.Fprintf(&sb, "S=3|300000|%d|%s|Game\\data\\big.bin.part2\n", len(p2), crc(p2))
+	fmt.Fprintf(&sb, "S=3|500000|%d|%s|Game\\data\\big.bin.part3\n", len(p3), crc(p3))
 	rv := orig["_CommonRedist\\vc.exe"]
 	write(1, "Game\\_CommonRedist\\vc.exe", rv)
 	fmt.Fprintf(&sb, "F=%d|_CommonRedist\\vc.exe\nS=1|0|%d|%s|Game\\_CommonRedist\\vc.exe\n", len(rv), len(rv), crc(rv))
@@ -169,7 +169,7 @@ func TestExistingFolderIsNeverWiped(t *testing.T) {
 func TestCorruptSegmentDetectedAndRetry(t *testing.T) {
 	roots, orig, _ := buildDiscs(t)
 	cfg, _ := loadConfig(roots[0])
-	part := filepath.Join(roots[2], "Game", "data", "big.bin.prs2")
+	part := filepath.Join(roots[2], "Game", "data", "big.bin.part2")
 	good, _ := os.ReadFile(part)
 	bad := append([]byte(nil), good...)
 	bad[10] ^= 0xff

@@ -14,7 +14,7 @@ import (
 	"strings"
 )
 
-const logName = "prs_uninstall.log"
+const logName = "uninstall.lst"
 
 var (
 	// ErrCancelled wird zurückgegeben, wenn der Nutzer abbricht.
@@ -48,7 +48,7 @@ func openLog(dest string, cfg *Config) (*LogWriter, error) {
 	}
 	lw := &LogWriter{f: f, w: bufio.NewWriter(f)}
 	if statErr != nil { // neue Datei: Kopfzeilen
-		lw.Add("H", "PRS-LOG 1")
+		lw.Add("H", "LST 1")
 		lw.Add("T", cfg.Title)
 		lw.Add("P", cfg.PackageID)
 		lw.Add("E", cfg.Exe)

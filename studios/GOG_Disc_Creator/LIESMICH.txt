@@ -1,24 +1,32 @@
 Physical Release Studio - GOG Disc Creator (V7)
 
 Inhalt
+- SCHRIFTEN-LIZENZ.txt : Lizenztexte (SIL OFL 1.1) der eingebetteten Schriften Inter und JetBrains Mono.
 - Physical-Release-Studio-GOG-Disc-Creator.html : Browser-Tool (Deutsch/Englisch umschaltbar), lokale Verarbeitung, keine Uploads.
-- GOGAutoLauncher.exe : Windows-10/11-x64-Launcher (mit Disc-Symbol, mehrsprachig).
+  Die Datei startet auch allein: Schriften (Inter, JetBrains Mono, SIL OFL), Launcher und Symbol sind eingebettet.
+- Launcher.exe : Windows-10/11-x64-Launcher (mit Disc-Symbol, mehrsprachig).
 - launcher/ (im Repo-Hauptordner, nicht in diesem Ordner): Go-Quellcode, Core-Tests, Icon-Generator (tools/mkrsrc).
+
+Rechtliches / Neutralität
+- Dieses Tool umgeht keinen Kopierschutz und ist nicht dafür gedacht, einen Kopierschutz zu umgehen oder zu entfernen.
+- Vor dem Erstellen muss ein Haken (rechtlicher Hinweis) gesetzt werden, sonst wird nichts erstellt.
+- Launcher und Disc-Dateien enthalten keine Namen: Launcher.exe, launcher.ini, DISC_N.txt, LICENSE.txt (GPL-3.0 + Go-Lizenz ohne Namen/Link).
+- GOG und GOG.COM sind Marken der GOG sp. z o.o.; keine Verbindung zu dieser Firma.
 
 Neu in V7
 - Seitensprache Deutsch/Englisch (Standard: Browsersprache, wird gemerkt). README_BURNING.txt kommt in der Seitensprache.
 - Launcher-Sprache folgt NUR der Windows-Sprache: Englisch, Deutsch, Polnisch, Französisch, Spanisch, Italienisch (sonst Englisch).
   Die Übersetzungen pl/fr/es/it stammen von mir und sollten von Muttersprachlern geprüft werden.
 - Disc-Symbol in der EXE (Fenster, Taskleiste, Explorer). Ohne eigenes Icon wird dasselbe Symbol auch als autorun.ico auf ALLEN Discs genutzt.
-- Cover: Steam-Header-Banner (ca. 2,15:1), unverändert und ohne Zuschnitt, keine Regler mehr. Seite zeigt Empfehlung (920x430+, min. 764 px breit) und die echte Größe mit Warnungen.
+- Cover: breites Header-Banner (ca. 2,15:1), unverändert und ohne Zuschnitt, keine Regler mehr. Seite zeigt Empfehlung (920x430+, min. 764 px breit) und die echte Größe mit Warnungen.
   Der Launcher passt die Bannerhöhe dem Bild an (begrenzt) und zeigt den ganzen Banner.
 - Spieltitel unter dem Banner: standardmäßig AN, per Checkbox abschaltbar (ShowTitle in der INI).
 - cover.jpg entfällt (wurde nicht benutzt), Hinweis-Box-Layoutfehler im HTML behoben.
 
 Build
 - cd launcher (Repo-Hauptordner); go run tools/mkrsrc/main.go (Icon + .syso neu erzeugen)
-- GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -H windowsgui" -o GOGAutoLauncher.exe .
-- python3 patch_pe.py GOGAutoLauncher.exe ; danach ggf. signieren ; danach in die HTML einbetten (EMBEDDED_GOG_LAUNCHER_B64).
+- GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -H windowsgui" -o Launcher.exe .
+- python3 patch_pe.py Launcher.exe ; danach ggf. signieren ; danach in die HTML einbetten (EMBEDDED_GOG_LAUNCHER_B64).
 
 Wichtig
 - Das neue Launcher-Layout (dynamische Bannerhöhe, Icon, Sprachen) wurde unter Linux kompiliert und die Core-Logik getestet, aber NICHT auf echtem Windows ausprobiert. Bitte einmal mit einer gebrannten/gemounteten Disc testen.

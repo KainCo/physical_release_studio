@@ -37,6 +37,15 @@ type RedistEntry struct {
 	Label string
 }
 
+// ExtraEntry ist eine Zusatzdatei auf Disc 1 (Handbuch, Soundtrack ...), die als Schaltfläche angeboten wird.
+type ExtraEntry struct {
+	Path  string
+	Label string
+}
+
+// maxExtras ist die Zahl der Schaltflächen, die der Launcher zeigt.
+const maxExtras = 5
+
 // Config ist der Inhalt der launcher.ini.
 type Config struct {
 	Title     string
@@ -48,6 +57,7 @@ type Config struct {
 	DiscCount int
 	Files     []FileEntry
 	Redist    []RedistEntry
+	Extras    []ExtraEntry
 
 	// Steam-Modus: Die Dateien werden in eine Steam-Bibliothek kopiert; gestartet wird über Steam.
 	Mode          string // "" oder "folder" = normaler Ordner, "steam" = Steam-Bibliothek
@@ -147,6 +157,13 @@ func ParseConfig(r io.Reader) (*Config, error) {
 					return nil, fmt.Errorf("ungültige Zeile S=%s", val)
 				}
 				cur.Segs = append(cur.Segs, Seg{Disc: disc, Offset: off, Size: size, CRC: uint32(crc), Rel: p[4]})
+			}
+		case "extras":
+			if strings.ToUpper(key) == "X" && len(cfg.Extras) < maxExtras {
+				p := strings.SplitN(val, "|", 2)
+				if len(p) == 2 && strings.TrimSpace(p[1]) != "" {
+					cfg.Extras = append(cfg.Extras, ExtraEntry{Path: p[0], Label: strings.TrimSpace(p[1])})
+				}
 			}
 		case "redist":
 			if strings.ToUpper(key) == "R" {

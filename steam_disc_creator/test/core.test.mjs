@@ -105,6 +105,7 @@ test('plan: Kapazitaeten der Medien sind plausibel', () => {
   assert.ok(m.dvd5 > 4.69e9 && m.dvd5 < 4.71e9);
   assert.ok(m.bd25 > 25.0e9 && m.bd25 < 25.1e9);
   assert.ok(m.cd700 > m.cd650);
+  assert.ok(m.cd800 > m.cd700);
 });
 
 // ---------- launcher.ini ----------
@@ -129,7 +130,7 @@ test('fsName / Marker / Autorun', () => {
   assert.equal(PRS.fsName('Half-Life: Source?'), 'Half-Life - Source');
   assert.equal(PRS.fsName('  a/b\\c|d.  '), 'a-b-c-d');
   assert.equal(PRS.fsName('???'), 'Game');
-  assert.equal(PRS.markerName(3), 'PHYSICAL_RELEASE_DISC_3.txt');
+  assert.equal(PRS.markerName(3), 'DISC_3.txt');
   assert.match(PRS.markerText('abc', 2, 4, 'T'), /^PackageID=abc\r\nDisc=2\r\nCount=4\r\nTitle=T\r\n$/);
   assert.match(PRS.autorunInf('Mein Spiel', 'Launcher.exe'), /open=Launcher\.exe[\s\S]*icon=autorun\.ico/);
 });
@@ -268,4 +269,28 @@ test('buildIni: AppID steht auch im Ordner-Modus (ohne Mode=steam); ungueltige A
   assert.ok(!b.some((l) => l.startsWith('SteamAppID')));
   const c = PRS.buildIni({ ...base, mode: 'folder', steamAppId: '12\r\n[Files]' }).split('\r\n');
   assert.ok(!c.some((l) => l.startsWith('SteamAppID')) && c.filter((l) => l === '[Files]').length === 1);
+});
+
+test('plan: Extras (firstExtra) belegen nur Disc 1', () => {
+  const files = [{ path: 'a.bin', size: 600e6 }, { path: 'b.bin', size: 600e6 }];
+  const base = PRS.plan(files, { capacity: 737280000, reserve: 65536 });
+  const ex = PRS.plan(files, { capacity: 737280000, reserve: 65536, firstExtra: 100e6 });
+  assert.equal(base.discs.length, 2);
+  assert.equal(ex.discs.length, 2);
+  assert.ok(ex.discs[0].used >= 100e6);
+  assert.throws(() => PRS.plan(files, { capacity: 737280000, reserve: 65536, firstExtra: 800e6 }));
+});
+
+test('buildIni: [Extras] mit Namen, ohne Zeileneinschleusung und maximal 5 Eintraege', () => {
+  const files = [{ path: 'g.exe', size: 10 }];
+  const plan = PRS.plan(files, { capacity: 1_000_000, reserve: 4096 });
+  plan.discs.forEach((d) => d.segs.forEach((s) => { s.crc = 1; }));
+  const base = { title: 'T', exe: 'g.exe', pkgId: 'abcdef0123456789', dirName: 'T', banner: '', showTitle: true, discCount: 1, files, plan, redist: [] };
+  const none = PRS.buildIni(base);
+  assert.ok(!none.includes('[Extras]'));
+  const ex = [{ path: 'Extras\\Manual.pdf', label: 'Hand|buch\r\n[Files]' }, ...[1, 2, 3, 4, 5].map((i) => ({ path: 'Extras\\f' + i, label: 'F' + i }))];
+  const lines = PRS.buildIni({ ...base, extras: ex }).split('\r\n');
+  assert.equal(lines.filter((l) => l.startsWith('X=')).length, 5);
+  assert.equal(lines.filter((l) => l === '[Files]').length, 1, 'keine eingeschleuste Sektion');
+  assert.ok(lines.includes('X=Extras\\Manual.pdf|Hand buch [Files]'));
 });

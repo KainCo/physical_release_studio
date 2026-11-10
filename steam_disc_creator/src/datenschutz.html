@@ -81,7 +81,7 @@ footer a{margin:0 8px}
     <h2>6. Der erzeugte Installer (Launcher.exe)</h2>
     <p>Der Installer baut von sich aus <strong>keine Internetverbindung</strong> auf und enthält keine Telemetrie. Er arbeitet nur mit lokalen Dateien. Auf Ihrem Rechner kann er Folgendes anlegen:</p>
     <ul>
-      <li>die Spieldateien im von Ihnen gewählten Zielordner, dazu <code>uninstall.exe</code> und <code>prs_uninstall.log</code> (Liste der angelegten Dateien für die Deinstallation);</li>
+      <li>die Spieldateien im von Ihnen gewählten Zielordner, dazu <code>uninstall.exe</code> und <code>uninstall.lst</code> (Liste der angelegten Dateien für die Deinstallation);</li>
       <li>einen Eintrag unter „Apps &amp; Features“ in der Windows-Registrierung (nur für den aktuellen Benutzer, <code>HKEY_CURRENT_USER</code>), damit eine vorhandene Installation erkannt und deinstalliert werden kann;</li>
       <li>auf Wunsch Verknüpfungen auf dem Desktop und im Startmenü;</li>
       <li>im Steam-Modus: lesender Zugriff auf den Steam-Pfad in der Registrierung und die Datei <code>libraryfolders.vdf</code>, um Bibliotheksordner vorzuschlagen; die mitgelieferte oder eine einfache selbst erzeugte Datei <code>appmanifest_&lt;AppID&gt;.acf</code> im Ordner <code>steamapps</code>; die Datei <code>steam_appid.txt</code> neben der Programmdatei, wenn eine AppID angegeben wurde und die Datei fehlt.</li>
@@ -140,7 +140,7 @@ footer a{margin:0 8px}
     <h2>6. The generated installer (Launcher.exe)</h2>
     <p>The installer does <strong>not open an internet connection</strong> on its own and contains no telemetry. It only works with local files. On your computer it may create:</p>
     <ul>
-      <li>the game files in the target folder you choose, plus <code>uninstall.exe</code> and <code>prs_uninstall.log</code> (a list of created files used for uninstalling);</li>
+      <li>the game files in the target folder you choose, plus <code>uninstall.exe</code> and <code>uninstall.lst</code> (a list of created files used for uninstalling);</li>
       <li>an entry under "Apps &amp; features" in the Windows registry (current user only, <code>HKEY_CURRENT_USER</code>) so that an existing installation can be detected and uninstalled;</li>
       <li>optionally, shortcuts on the desktop and in the Start menu;</li>
       <li>in Steam mode: read access to the Steam path in the registry and to <code>libraryfolders.vdf</code> to suggest library folders; the bundled or a simple self-generated <code>appmanifest_&lt;AppID&gt;.acf</code> in the <code>steamapps</code> folder; the file <code>steam_appid.txt</code> next to the program file if an AppID was given and the file is missing.</li>

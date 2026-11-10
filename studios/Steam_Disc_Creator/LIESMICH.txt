@@ -1,9 +1,10 @@
 Physical Release Studio - Steam Disc Creator (Beta)
 
 Inhalt
+- SCHRIFTEN-LIZENZ.txt : Lizenztexte (SIL OFL 1.1) der eingebetteten Schriften Inter und JetBrains Mono.
 - Physical-Release-Studio-Steam-Disc-Creator.html : Browser-Tool (Deutsch/Englisch umschaltbar), lokale Verarbeitung, keine Uploads.
   Die Datei startet auch allein: Schriften, Launcher und Symbol sind eingebettet.
-- SteamDiscLauncher.exe : Windows-10/11-x64-Installer (Launcher), derselbe wie in der HTML eingebettet.
+- Launcher.exe : Windows-10/11-x64-Installer (Launcher), derselbe wie in der HTML eingebettet.
 - steam_disc_creator/ (im Repo-Hauptordner, nicht in diesem Ordner): kompletter Quellcode (Go-Launcher, Kernlogik, Tests, build.py).
 
 Was das Tool macht
@@ -12,18 +13,24 @@ Was das Tool macht
 - Erkennt eine vorhandene Installation und bietet dann "Spiel starten" statt "Spiel installieren".
 - Installiert auf Wunsch Zusatzkomponenten (Visual C++, DirectX, .NET), die im Spielordner liegen; später auch per Button.
 - Zwei Installationsarten: "Normaler Ordner" oder "Steam-Bibliothek" (steamapps\common, mit appmanifest).
-- Legt steam_appid.txt an, wenn die AppID bekannt ist und die Datei fehlt.
+- Es wird KEINE steam_appid.txt angelegt. Im Steam-Modus wird nur ein appmanifest erzeugt, falls es fehlt (nie überschrieben).
 - Hinweise zum Kopierschutz entstehen nur lokal aus Dateinamen und Programmdateien. Ein Hinweis ist kein Beweis, ein fehlender auch nicht.
   Der Link zu PCGamingWiki wird erst nach einem Klick geöffnet.
-- Das Tool verändert keine Spieldateien und entfernt keinen Kopierschutz.
+- Das Tool verändert keine Spieldateien. Es umgeht keinen Kopierschutz und ist nicht dafür gedacht, einen Kopierschutz zu umgehen oder zu entfernen.
+- Vor dem Erstellen muss ein Haken (rechtlicher Hinweis) gesetzt werden, sonst wird nichts erstellt.
+- Launcher und Disc-Dateien enthalten keine Namen (DISC_N.txt, .partN, uninstall.lst, LICENSE.txt). Steam ist eine Marke von Valve; keine Verbindung zu dieser Firma.
 
 Build
 - python3 steam_disc_creator/build.py   (Repo-Hauptordner; führt Tests aus, baut dist/Launcher.exe und dist/index.html)
 - danach dist/index.html als studios/Steam_Disc_Creator/Physical-Release-Studio-Steam-Disc-Creator.html
-  und dist/Launcher.exe als studios/Steam_Disc_Creator/SteamDiscLauncher.exe hierher kopieren.
+  und dist/Launcher.exe als studios/Steam_Disc_Creator/Launcher.exe hierher kopieren.
 
 Wichtig
 - Windows-Tests bisher: Teilung, Installation, Deinstallation und "Spiel starten" mit Black Mesa und Legend of Grimrock.
-  Das selbst erzeugte appmanifest im Steam-Modus ist NICHT abschließend getestet: Steam kann trotzdem nach dem Ordner fragen oder Dateien prüfen.
+  Das Steam-Modus-appmanifest wurde von Hand mit Legend of Grimrock getestet (Spiel erscheint als installiert); der neue Installer selbst wurde nur unter Linux getestet.
 - Die Übersetzungen pl/fr/es/it im Installer stammen von mir und sollten von Muttersprachlern geprüft werden.
 - Unsignierte EXE: SmartScreen/Virenscanner-Hinweise möglich. USB-AutoRun nicht zuverlässig.
+
+Extras
+- Zusatzdateien (Handbuch, Soundtrack ...) kommen auf Disc 1 in den Ordner Extras. Für Dateien mit einem Namen zeigt der Launcher bis zu 5 Schaltflächen auf der Startseite (nur wenn die Disc eingelegt ist).
+- Beim Warten auf Komponenten (Visual C++, DirectX ...) zeigt der Installer "Komponente X von Y" und bietet "Überspringen" an.

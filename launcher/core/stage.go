@@ -13,7 +13,7 @@ import (
 var ErrCancelled = errors.New("cancelled")
 
 // MarkerName is the file in the root of every disc that identifies it.
-func MarkerName(disc int) string { return "PHYSICAL_RELEASE_DISC_" + strconv.Itoa(disc) + ".txt" }
+func MarkerName(disc int) string { return "DISC_" + strconv.Itoa(disc) + ".txt" }
 
 // IsDiscRoot reports whether root holds disc number `disc` of this release.
 func IsDiscRoot(c *Config, root string, disc int) bool {

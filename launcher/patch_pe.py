@@ -1,6 +1,6 @@
 # Setzt IMAGE_FILE_REMOVABLE_RUN_FROM_SWAP (0x0400) und IMAGE_FILE_NET_RUN_FROM_SWAP (0x0800).
 # Windows kopiert die EXE dann beim Start vom Datentraeger in die Auslagerungsdatei -> Disc-Wechsel ist unkritisch.
-# Aufruf nach dem Build: python patch_pe.py GOGAutoLauncher.exe
+# Aufruf nach dem Build: python patch_pe.py Launcher.exe
 import struct, sys
 p = sys.argv[1]
 d = bytearray(open(p, 'rb').read())

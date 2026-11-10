@@ -1,3 +1,3 @@
-module github.com/KainCo/physical_release_studio/launcher
+module disclauncher
 
 go 1.23

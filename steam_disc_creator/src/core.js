@@ -34,6 +34,7 @@
   PRS.MEDIA = [
     { id: 'cd650', bytes: 681984000, kind: 'disc' },
     { id: 'cd700', bytes: 737280000, kind: 'disc' },
+    { id: 'cd800', bytes: 829440000, kind: 'disc' }, // 90 min = 405000 Sektoren
     { id: 'dvd5', bytes: 4707319808, kind: 'disc' },
     { id: 'dvd9', bytes: 8543666176, kind: 'disc' },
     { id: 'bd25', bytes: 25025314816, kind: 'disc' },
@@ -85,6 +86,8 @@
       return d || items[a].fi - items[b].fi || items[a].part - items[b].part;
     });
     const discs = [];
+    if (opt.firstExtra > 0) discs.push({ used: opt.firstExtra, segs: [] }); // Extras liegen nur auf Disc 1
+    if (!unlimited && opt.firstExtra > usable) throw new Error('capacity');
     for (const idx of order) {
       const it = items[idx];
       const need = PRS.alloc(it.size);
@@ -104,10 +107,10 @@
     return { discs, usable, split, capacity, maxPart };
   };
 
-  // Pfad des Teils auf der Disc: Game\<Pfad>[.prsN]
+  // Pfad des Teils auf der Disc: Game\<Pfad>[.partN]
   PRS.discPath = function (file, seg) {
     const p = 'Game\\' + file.path.split('/').join('\\');
-    return seg.parts > 1 ? p + '.prs' + seg.part : p;
+    return seg.parts > 1 ? p + '.part' + seg.part : p;
   };
 
   // ---------- Konfiguration (launcher.ini) ----------
@@ -123,7 +126,7 @@
     if (o.banner) L.push('Banner=' + o.banner);
     L.push('ShowTitle=' + (o.showTitle ? 1 : 0));
     if (o.mode === 'steam') L.push('Mode=steam');
-    // Die AppID wird in beiden Modi gespeichert: Der Installer legt damit steam_appid.txt an, wenn sie fehlt.
+    // Die AppID wird in beiden Modi gespeichert (im Steam-Modus für das Manifest).
     if (/^\d{1,10}$/.test(o.steamAppId || '')) L.push('SteamAppID=' + o.steamAppId);
     if (o.mode === 'steam' && o.steamManifest) L.push('SteamManifest=' + o.steamManifest);
     L.push('[Disc]');
@@ -140,6 +143,10 @@
         L.push('S=' + s.disc + '|' + s.offset + '|' + s.size + '|' + PRS.hex8(s.crc) + '|' + PRS.discPath(f, s));
       }
     });
+    if (o.extras && o.extras.length) {
+      L.push('[Extras]');
+      for (const x of o.extras.slice(0, 5)) L.push('X=' + x.path.split('/').join('\\') + '|' + clean(x.label).replace(/\|/g, ' '));
+    }
     if (o.redist && o.redist.length) {
       L.push('[Redist]');
       for (const r of o.redist) L.push('R=' + r.path.split('/').join('\\') + '|' + clean(r.args) + '|' + clean(r.label));
@@ -153,7 +160,7 @@
     return Math.ceil(n * 1.15);
   };
 
-  PRS.markerName = (n) => 'PHYSICAL_RELEASE_DISC_' + n + '.txt';
+  PRS.markerName = (n) => 'DISC_' + n + '.txt';
   PRS.markerText = (pkgId, n, count, title) =>
     'PackageID=' + pkgId + '\r\nDisc=' + n + '\r\nCount=' + count + '\r\nTitle=' + clean(title) + '\r\n';
 
@@ -420,6 +427,12 @@
       }
     }
   };
+  PRS.writeBlobToDirectory = async function (dir, path, blob, cache, signal) {
+    await writeFile(dir, path, cache || new Map(), 'x', async (w) => { await eachChunk(blob, 0, blob.size, async (buf) => { await w.write(buf); }, signal); });
+  };
+  PRS.blobCrc = async function (blob, signal) {
+    let c = 0; await eachChunk(blob, 0, blob.size, (buf) => { c = PRS.crc32(buf, c); }, signal); return c;
+  };
   PRS.writeBytesToDirectory = async function (dir, path, bytes, cache) {
     await writeFile(dir, path, cache || new Map(), 'x', async (w) => { if (bytes.length) await w.write(bytes); });
   };
@@ -434,6 +447,7 @@
       { path: o.exeName, bytes: o.launcherBytes },
       { path: o.readmeName, bytes: enc.encode(o.readme) },
     ];
+    if (o.licenseBytes) list.push({ path: 'LICENSE.txt', bytes: o.licenseBytes });
     if (o.bannerName) list.push({ path: o.bannerName, bytes: o.bannerBytes });
     if (o.acfBytes) list.push({ path: 'extras\\appmanifest.acf', bytes: o.acfBytes });
     return list;
@@ -452,7 +466,7 @@
       '    Launcher.exe. You will be asked to insert further discs when needed (' + count + ' in total).',
       '    Only install the game if you own it legally. Burn with the UDF file system.',
       '',
-      'Created with Steam Disc Creator (Physical Release Studio) – GPL-3.0',
+      'Dieses Programm steht unter der GPL-3.0 / This program is licensed under the GPL-3.0 (siehe LICENSE.txt / see LICENSE.txt)',
       '',
     ].join('\r\n');
   };

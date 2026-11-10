@@ -52,7 +52,7 @@ func TestStageSingleDrive(t *testing.T) {
 	d := map[int]string{}
 	for i := 1; i <= 4; i++ {
 		d[i] = filepath.Join(tmp, fmt.Sprint("disc", i))
-		mk(filepath.Join(d[i], MarkerName(i)), []byte("PHYSICAL RELEASE STUDIO\r\nPackageID=abc123\r\n"))
+		mk(filepath.Join(d[i], MarkerName(i)), []byte("DISC PACKAGE\r\nPackageID=abc123\r\n"))
 	}
 	mk(filepath.Join(d[1], "setup.exe"), inst)
 	ini := "[Game]\nTitle=T\nInstaller=setup.exe\n[Disc]\nPackageID=abc123\nMediaCount=4\n[Staging]\nStagingBytes=" + fmt.Sprint(len(inst)+len(all)) + "\n[SplitFiles]\n"

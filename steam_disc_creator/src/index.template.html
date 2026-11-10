@@ -27,8 +27,7 @@ a:hover{color:#93c5fd}
 header.top{position:sticky;top:0;z-index:20;background:rgba(9,13,22,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
 header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;height:64px}
 .brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--text)}
-.logo{width:38px;height:38px;border-radius:11px;padding:2px;background:linear-gradient(135deg,#2563eb,#a855f7 55%,#ec4899);box-shadow:0 6px 16px -4px rgba(59,130,246,.5)}
-.logo span{display:flex;align-items:center;justify-content:center;width:100%;height:100%;border-radius:9px;background:var(--bg);font-size:20px}
+.logo{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#2563eb,#a855f7 55%,#ec4899);box-shadow:0 6px 16px -4px rgba(59,130,246,.5);display:grid;place-items:center;font-size:20px;line-height:1}
 .brand b{display:block;font-size:15px;font-weight:800;letter-spacing:.04em;line-height:1.1}
 .brand small{color:var(--accent);font-weight:700;font-size:11px;line-height:1;letter-spacing:.16em;text-transform:uppercase}
 .hub{color:var(--muted);text-decoration:none;font-size:13px;font-weight:600;padding:6px 10px;border:1px solid var(--border);border-radius:9px;margin-right:auto;margin-left:14px;background:var(--card)}
@@ -88,7 +87,7 @@ footer a{margin:0 8px}
 </head>
 <body>
 <header class="top"><div class="wrap">
-  <a class="brand" href="#top"><span class="logo"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.2"><circle cx="12" cy="12" r="9.5"/><circle cx="12" cy="12" r="3.2" fill="#3b82f6" stroke="none"/><path d="M12 5.2a6.8 6.8 0 0 1 6.8 6.8" stroke-linecap="round" stroke="#a855f7"/></svg></span><span><b>PHYSICAL RELEASE</b><small>Steam Disc Creator</small></span></a>
+  <a class="brand" href="#top"><span class="logo" aria-hidden="true">💿</span><span><b>PHYSICAL RELEASE</b><small>Steam Disc Creator</small></span></a>
   <a class="hub hidden" id="hubLink" href="../../index.html" data-i="hub">← Übersicht</a>
   <div class="lang" role="group" aria-label="Language"><button type="button" id="l-en" aria-pressed="false">EN</button><button type="button" id="l-de" aria-pressed="true">DE</button></div>
 </div></header>
@@ -100,6 +99,11 @@ footer a{margin:0 8px}
   <div class="box info" style="margin:0 0 16px">
     <b class="t" data-i="privT">Alles bleibt auf deinem Rechner</b>
     <span data-i="priv" class="small">Die Dateien werden ausschließlich lokal in deinem Browser gelesen. Es wird nichts hochgeladen, und das Tool lädt keine Inhalte von Dritten nach. Der erzeugte Installer baut ebenfalls keine Internetverbindung auf.</span>
+  </div>
+
+  <div class="box warn" style="margin:0 0 16px">
+    <b data-i="noCirc">Dieses Tool umgeht keinen Kopierschutz und ist nicht dafür gedacht, einen Kopierschutz zu umgehen oder zu entfernen.</b>
+    <span class="small" data-i="noCircX" style="display:block;margin-top:4px">Es verändert keine Spieldateien, sondern verpackt sie nur für Discs oder USB-Sticks (große Dateien werden geteilt und beim Installieren unverändert wieder zusammengesetzt). Gedacht ist es für private Sicherungskopien von Spielen, die du rechtmäßig besitzt. Das Tool enthält keine Spiele. Für Pakete, die Dritte damit erstellen oder weitergeben, ist der Autor nicht verantwortlich.</span>
   </div>
 
   <!-- 1 -->
@@ -159,6 +163,13 @@ footer a{margin:0 8px}
       <p class="muted small hidden" id="bannerInfo"></p>
       <label class="check hidden" id="showTitleL" style="margin-top:8px"><input type="checkbox" id="showTitle" checked><span data-i="showTitle">Titel unter dem Banner anzeigen</span></label>
     </div>
+
+    <div style="margin-top:16px"><label class="f" data-i="fExtras">Extras (optional)</label>
+      <p class="muted small" data-i="extrasH" style="margin:0 0 8px">Handbücher, Soundtrack, Artwork usw.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sec" type="button" id="exFiles" data-i="addFiles">Dateien hinzufügen</button><button class="btn sec" type="button" id="exFolder" data-i="addFolder">Ordner hinzufügen</button></div>
+      <input type="file" id="exFilesIn" multiple class="hidden"><input type="file" id="exFolderIn" webkitdirectory class="hidden">
+      <ul class="tight" id="exList" style="margin-top:8px"></ul>
+    </div>
   </section>
 
   <!-- 4 -->
@@ -189,6 +200,7 @@ footer a{margin:0 8px}
   <a id="fPriv" href="datenschutz.html" data-i="fPriv">Datenschutz</a>
   <span>GPL-3.0</span>
   <p style="margin:10px 0 0" data-i="fNote">Dieses Tool verändert keine Spieldateien und entfernt keinen Kopierschutz.</p>
+  <p style="margin:6px 0 0" data-i="fMark">Steam ist eine Marke der Valve Corporation. Alle genannten Namen und Marken gehören ihren jeweiligen Inhabern. Dieses Tool ist ein unabhängiges, nicht kommerzielles Hobbyprojekt und steht in keiner Verbindung zu Valve oder anderen Firmen.</p>
 </div></footer>
 
 <script>
@@ -201,6 +213,7 @@ footer a{margin:0 8px}
 'use strict';
 const LAUNCHER_B64 = "__LAUNCHER_B64__";
 const ICO_B64 = "__ICO_B64__";
+const LICENSE_B64 = "__LICENSE_B64__";
 const EXE_NAME = 'Launcher.exe';
 
 // ---------- Texte ----------
@@ -218,28 +231,31 @@ de: {
   steamApi:'steam_api.dll gefunden: Das allein sagt nichts, auch DRM-freie Spiele liefern sie oft mit.',
   pcgw:'Im PCGamingWiki nachschlagen ↗', pcgwNote:' – öffnet pcgamingwiki.com in einem neuen Tab. Erst nach deinem Klick wird eine Verbindung aufgebaut.',
   selfTest:'Der sicherste Test: Beende Steam und starte das Spiel direkt aus dem Spielordner. Startet es, ist es für dich ohne Steam nutzbar.',
-  ack:'Ich habe die Hinweise gelesen und besitze das Spiel rechtmäßig. Ich nutze das Medium nur privat bzw. mit Erlaubnis des Rechteinhabers.',
+  ack:'Ich besitze das Spiel rechtmäßig und nutze dieses Tool nur für private Sicherungskopien. Ich gebe die erstellten Datenträger nicht weiter und verkaufe sie nicht. Mir ist bewusst, dass das Tool keinen Kopierschutz umgeht und nicht dafür gedacht ist.',
+  noCirc:'Dieses Tool umgeht keinen Kopierschutz und ist nicht dafür gedacht, einen Kopierschutz zu umgehen oder zu entfernen.', noCircX:'Es verändert keine Spieldateien, sondern verpackt sie nur für Discs oder USB-Sticks (große Dateien werden geteilt und beim Installieren unverändert wieder zusammengesetzt). Gedacht ist es für private Sicherungskopien von Spielen, die du rechtmäßig besitzt. Das Tool enthält keine Spiele. Für Pakete, die Dritte damit erstellen oder weitergeben, ist der Autor nicht verantwortlich.',
+  fMark:'Steam ist eine Marke der Valve Corporation. Alle genannten Namen und Marken gehören ihren jeweiligen Inhabern. Dieses Tool ist ein unabhängiges, nicht kommerzielles Hobbyprojekt und steht in keiner Verbindung zu Valve oder anderen Firmen.',
   s3:'Einstellungen', fTitle:'Titel', fDir:'Ordnername bei der Installation', fExe:'Programmdatei (wird gestartet)', exeMore:'Weitere .exe-Dateien', exeNone:'Keine .exe gefunden – Modus „Steam-Bibliothek“ braucht trotzdem eine Auswahl',
   fMode:'Installationsart', mFolder:'Normaler Ordner', mFolderH:'Für Spiele, die ohne Steam laufen. „Spiel starten“ startet die Programmdatei direkt. Das Spiel erscheint nicht in Steam, und auf Rechnern mit Steam kann es trotzdem Steam starten.',
   mSteam:'Steam-Bibliothek', mSteamH:'Für Spiele, die Steam brauchen. Die Dateien landen in <code>steamapps\\common</code>, gestartet wird über Steam. Nötig sind der Steam-Client und ein Konto, dem das Spiel gehört.',
   fApp:'Steam-AppID (im Ordner-Modus optional)', fAcf:'appmanifest_….acf (optional)', acfH:'Optional. Die Manifest-Datei liegt in <code>steamapps</code> neben dem Ordner <code>common</code>. Ohne Datei erzeugt der Installer ein einfaches Manifest, damit Steam das Spiel als vorhanden erkennt. Ungetestet: Steam kann trotzdem eine Überprüfung der Dateien verlangen.',
   fRedist:'Zusatzkomponenten (optional im Installer)', redistNone:'Keine bekannten Installationsprogramme (Visual C++, DirectX, .NET …) gefunden.', redistH:'Der Installer fragt am Ende, ob diese Komponenten mitinstalliert werden sollen (Administratorabfrage). Später gibt es im Launcher außerdem den Button „Zusatzkomponenten installieren“. Parameter bei Bedarf anpassen.',
+  fExtras:'Extras (optional)', extrasH:'Handbücher, Soundtrack, Artwork usw. Sie werden auf Disc 1 in den Ordner Extras kopiert und nicht installiert. Für Einträge mit Namen zeigt der Launcher bis zu 5 Schaltflächen (Namen leeren = keine Schaltfläche).', extraBtn:'Name der Schaltfläche (leer = keine)', addFiles:'Dateien hinzufügen', addFolder:'Ordner hinzufügen', extraRm:'Entfernen', extraDup:'Übersprungen (schon vorhanden): {0}', 
   fBanner:'Banner / Cover (eigenes Bild, optional)', bannerH:'Verwende dein eigenes Bild (JPG oder PNG). Empfohlen sind mindestens 920 × 430 Pixel; der Installer skaliert auf 640 Pixel Breite.', bannerInfo:'Bild: {0} × {1} Pixel', bannerSmall:' – etwas klein, wirkt evtl. unscharf', showTitle:'Titel unter dem Banner anzeigen',
   s4:'Medium und Berechnung', fMedia:'Medium', fCustom:'Eigene Größe (GB)',
-  m_cd650:'CD-R 650 MB (74 min)', m_cd700:'CD-R 700 MB (80 min)', m_dvd5:'DVD (4,7 GB)', m_dvd9:'DVD DL (8,5 GB)', m_bd25:'Blu-ray (25 GB)', m_bd50:'Blu-ray DL (50 GB)', m_bd100:'Blu-ray XL (100 GB)', m_usb:'USB / Ordner (keine Teilung)', m_usb32:'USB mit FAT32 (Dateien max. 4 GB)', m_custom:'Eigene Größe …',
+  m_cd650:'CD-R 650 MB (74 min)', m_cd700:'CD-R 700 MB (80 min)', m_cd800:'CD-R 800 MB (90 min)', m_dvd5:'DVD (4,7 GB)', m_dvd9:'DVD DL (8,5 GB)', m_bd25:'Blu-ray (25 GB)', m_bd50:'Blu-ray DL (50 GB)', m_bd100:'Blu-ray XL (100 GB)', m_usb:'USB / Ordner (keine Teilung)', m_usb32:'USB mit FAT32 (Dateien max. 4 GB)', m_custom:'Eigene Größe …',
   cCap:'Kapazität', cUse:'Nutzbar je Disc', cRes:'Installer je Disc', cDiscs:'Anzahl Discs', cTotal:'Gesamtgröße', cLast:'Letzte Disc belegt', unlimited:'unbegrenzt',
   splitW:'{0} Datei(en) sind größer als ein Medium bzw. das Dateilimit und werden in Teile geteilt. Der Installer fügt sie wieder zusammen.', capErr:'Das Medium ist zu klein.', longPath:'{0} Pfad(e) sind länger als 200 Zeichen. Das kann beim Brennen oder Installieren Probleme machen.',
   tDisc:'Disc', tUsed:'Belegt', tFiles:'Teile', tFill:'Füllung',
   calcH:'Berechnet mit 2-KiB-Sektoren, Verzeichnis-Overhead pro Datei und 1 % Reserve. Brenne mit dem Dateisystem UDF (bei CDs ist ISO 9660/Joliet auf 64 Zeichen pro Name begrenzt).',
   s5:'Paket erstellen', build:'Erstellen', cancel:'Abbrechen',
   outDir:'Der Browser fragt nach einem Zielordner. Darin wird ein Ordner „{0}“ mit Disc1, Disc2 … angelegt. Wähle am besten einen leeren Ordner.', outZip:'Dein Browser kann keine Ordner schreiben. Es werden stattdessen ZIP-Dateien pro Disc erzeugt (Chrome oder Edge ist für große Spiele besser).',
-  needAck:'Bitte bestätige zuerst unter „DRM-Hinweise“, dass du das Spiel rechtmäßig besitzt.', needExe:'Bitte wähle die Programmdatei.', needApp:'Für den Steam-Modus wird die AppID (nur Ziffern) benötigt.', needTitle:'Bitte gib einen Titel an.',
+  needAck:'Bitte bestätige zuerst unter „DRM-Hinweise“ (rechtmäßiger Besitz, nur private Nutzung).', needExe:'Bitte wähle die Programmdatei.', needApp:'Für den Steam-Modus wird die AppID (nur Ziffern) benötigt.', needTitle:'Bitte gib einen Titel an.',
   working:'Schreibe {0} … {1} %', crc:'Berechne Prüfsummen … {0} %', zipping:'Erstelle ZIP für Disc {0} …', finishing:'Schreibe Installer-Dateien …',
   done:'Fertig! {0} Disc(s) erstellt.', doneDir:'Gespeichert in: {0}. Brenne den Inhalt jedes Ordners DiscN (nicht den Ordner selbst) auf eine eigene Disc, Dateisystem UDF. Legt man später Disc 1 ein, startet der Installer.',
   dlDisc:'Disc {0} herunterladen ({1})', abort:'Abgebrochen.', fail:'Fehler: {0}', blocked:'Dieser Ordner ist vom Browser gesperrt (z. B. Desktop, Dokumente, Downloads). Lege dort einen Unterordner an und wähle ihn.',
-  fImp:'Impressum', fPriv:'Datenschutz', fNote:'Dieses Tool verändert keine Spieldateien und entfernt keinen Kopierschutz.',
+  fImp:'Impressum', fPriv:'Datenschutz', fNote:'Dieses Tool verändert keine Spieldateien, umgeht keinen Kopierschutz und ist nicht dafür gedacht.',
   pg:'Seite „{0}“', files:'{0} Dateien',
-  appH:'Mit der AppID legt der Installer die Datei <code>steam_appid.txt</code> an, falls sie fehlt. Du findest die AppID in der Steam-Adresse des Spiels (store.steampowered.com/app/<b>…</b>).',
+  appH:'Die AppID braucht der Installer im Steam-Modus, damit Steam das Spiel als installiert erkennt. Du findest sie in der Steam-Adresse des Spiels (store.steampowered.com/app/<b>…</b>).',
   srcHint:'Source-Engine-Spiel erkannt: Solche Spiele laufen meist nur mit Steam. Empfohlen ist die Installationsart „Steam-Bibliothek“.',
   rtHint:'Die Programmdatei scheint ältere Laufzeiten zu brauchen ({0}), im Ordner liegen aber keine Installer dafür. Auf einem frischen Windows startet das Spiel dann eventuell nicht. Installiere sie bei Bedarf selbst.',
   rt_vc2005:'Visual C++ 2005',
@@ -263,28 +279,31 @@ en: {
   steamApi:'steam_api.dll found: this alone means nothing, DRM-free games often ship it too.',
   pcgw:'Look it up on PCGamingWiki ↗', pcgwNote:' – opens pcgamingwiki.com in a new tab. A connection is only made after you click.',
   selfTest:'The safest test: quit Steam and start the game directly from its folder. If it starts, it works for you without Steam.',
-  ack:'I have read the hints and I own the game legally. I only use the medium privately or with the rights holder\'s permission.',
+  ack:'I own the game legally and only use this tool for private backup copies. I will not pass on or sell the discs I create. I understand that the tool does not circumvent any copy protection and is not intended to.',
+  noCirc:'This tool does not circumvent any copy protection and is not intended to circumvent or remove any copy protection.', noCircX:'It does not modify game files; it only packages them for discs or USB sticks (large files are split and put back together unchanged during installation). It is intended for private backup copies of games you own legally. The tool contains no games. The author is not responsible for packages that third parties create or distribute with it.',
+  fMark:'Steam is a trademark of Valve Corporation. All names and trademarks mentioned belong to their respective owners. This tool is an independent, non-commercial hobby project and is not affiliated with Valve or any other company.',
   s3:'Settings', fTitle:'Title', fDir:'Folder name on installation', fExe:'Program file (is started)', exeMore:'Other .exe files', exeNone:'No .exe found – "Steam library" mode still needs a selection',
   fMode:'Installation type', mFolder:'Normal folder', mFolderH:'For games that run without Steam. "Play game" starts the program file directly. The game will not appear in Steam, and on computers with Steam it may still start Steam.',
   mSteam:'Steam library', mSteamH:'For games that need Steam. The files go to <code>steamapps\\common</code> and the game is started through Steam. You need the Steam client and an account that owns the game.',
   fApp:'Steam AppID (optional in folder mode)', fAcf:'appmanifest_….acf (optional)', acfH:'Optional. The manifest file is in <code>steamapps</code> next to the <code>common</code> folder. Without a file the installer creates a simple manifest so Steam sees the game as installed. Untested: Steam may still ask to verify the files.',
   fRedist:'Extra components (optional in the installer)', redistNone:'No known installers (Visual C++, DirectX, .NET …) found.', redistH:'At the end the installer asks whether to install these components as well (administrator prompt). The launcher also has an "Install required components" button later. Adjust the parameters if needed.',
+  fExtras:'Extras (optional)', extrasH:'Manuals, soundtrack, artwork etc. They are copied to disc 1 into the folder Extras and are not installed. For entries with a name the launcher shows up to 5 buttons (clear the name = no button).', extraBtn:'Button name (empty = none)', addFiles:'Add files', addFolder:'Add folder', extraRm:'Remove', extraDup:'Skipped (already added): {0}', 
   fBanner:'Banner / cover (your own image, optional)', bannerH:'Use your own image (JPG or PNG). At least 920 × 430 pixels is recommended; the installer scales it to 640 pixels wide.', bannerInfo:'Image: {0} × {1} pixels', bannerSmall:' – a bit small, may look blurry', showTitle:'Show the title below the banner',
   s4:'Medium and calculation', fMedia:'Medium', fCustom:'Custom size (GB)',
-  m_cd650:'CD-R 650 MB (74 min)', m_cd700:'CD-R 700 MB (80 min)', m_dvd5:'DVD (4.7 GB)', m_dvd9:'DVD DL (8.5 GB)', m_bd25:'Blu-ray (25 GB)', m_bd50:'Blu-ray DL (50 GB)', m_bd100:'Blu-ray XL (100 GB)', m_usb:'USB / folder (no splitting)', m_usb32:'USB with FAT32 (files max. 4 GB)', m_custom:'Custom size …',
+  m_cd650:'CD-R 650 MB (74 min)', m_cd700:'CD-R 700 MB (80 min)', m_cd800:'CD-R 800 MB (90 min)', m_dvd5:'DVD (4.7 GB)', m_dvd9:'DVD DL (8.5 GB)', m_bd25:'Blu-ray (25 GB)', m_bd50:'Blu-ray DL (50 GB)', m_bd100:'Blu-ray XL (100 GB)', m_usb:'USB / folder (no splitting)', m_usb32:'USB with FAT32 (files max. 4 GB)', m_custom:'Custom size …',
   cCap:'Capacity', cUse:'Usable per disc', cRes:'Installer per disc', cDiscs:'Number of discs', cTotal:'Total size', cLast:'Last disc used', unlimited:'unlimited',
   splitW:'{0} file(s) are larger than one medium or the file limit and will be split into parts. The installer joins them again.', capErr:'The medium is too small.', longPath:'{0} path(s) are longer than 200 characters. This can cause problems when burning or installing.',
   tDisc:'Disc', tUsed:'Used', tFiles:'Parts', tFill:'Fill',
   calcH:'Calculated with 2 KiB sectors, per-file directory overhead and a 1 % reserve. Burn with the UDF file system (on CDs, ISO 9660/Joliet limits names to 64 characters).',
   s5:'Create package', build:'Create', cancel:'Cancel',
   outDir:'Your browser will ask for a target folder. A folder "{0}" with Disc1, Disc2 … is created inside it. An empty folder is best.', outZip:'Your browser cannot write folders. ZIP files per disc are created instead (Chrome or Edge is better for large games).',
-  needAck:'Please confirm under "DRM hints" first that you own the game legally.', needExe:'Please choose the program file.', needApp:'Steam mode needs the AppID (digits only).', needTitle:'Please enter a title.',
+  needAck:'Please confirm under "DRM hints" first (legal ownership, private use only).', needExe:'Please choose the program file.', needApp:'Steam mode needs the AppID (digits only).', needTitle:'Please enter a title.',
   working:'Writing {0} … {1} %', crc:'Calculating checksums … {0} %', zipping:'Creating ZIP for disc {0} …', finishing:'Writing installer files …',
   done:'Done! {0} disc(s) created.', doneDir:'Saved in: {0}. Burn the contents of each DiscN folder (not the folder itself) to its own disc, UDF file system. Inserting disc 1 later starts the installer.',
   dlDisc:'Download disc {0} ({1})', abort:'Cancelled.', fail:'Error: {0}', blocked:'The browser blocks this folder (e.g. Desktop, Documents, Downloads). Create a subfolder there and choose it.',
-  fImp:'Legal notice', fPriv:'Privacy', fNote:'This tool does not modify game files and does not remove any copy protection.',
+  fImp:'Legal notice', fPriv:'Privacy', fNote:'This tool does not modify game files, does not circumvent any copy protection and is not intended to.',
   pg:'Page "{0}"', files:'{0} files',
-  appH:'With the AppID the installer creates <code>steam_appid.txt</code> if it is missing. You find the AppID in the game\'s Steam address (store.steampowered.com/app/<b>…</b>).',
+  appH:'In Steam mode the installer needs the AppID so that Steam recognises the game as installed. You find it in the game\'s Steam address (store.steampowered.com/app/<b>…</b>).',
   srcHint:'Source engine game detected: such games usually only run with Steam. The installation type "Steam library" is recommended.',
   rtHint:'The program file seems to need older runtimes ({0}), but the folder contains no installers for them. On a fresh Windows the game may not start. Install them yourself if needed.',
   rt_vc2005:'Visual C++ 2005',
@@ -321,10 +340,11 @@ function b64(s) { const b = atob(s), a = new Uint8Array(b.length); for (let i = 
 function el(tag, props, ...kids) { const e = document.createElement(tag); Object.assign(e, props || {}); kids.forEach((k) => e.append(k)); return e; }
 
 // ---------- Zustand ----------
-const S = { files: [], rootName: '', appId: '', names: null, peHits: [], redist: [], exeList: [], banner: null, acf: null, plan: null, abort: null, bannerBytes: null, srcEngine: false, runtime: [] };
+const S = { files: [], rootName: '', appId: '', names: null, peHits: [], redist: [], exeList: [], banner: null, acf: null, plan: null, abort: null, bannerBytes: null, srcEngine: false, runtime: [], extras: [] };
 let LAUNCHER = null, ICO = null;
 function launcherBytes() { return LAUNCHER || (LAUNCHER = b64(LAUNCHER_B64)); }
 function icoBytes() { return ICO || (ICO = b64(ICO_B64)); }
+let LIC; function licenseBytes() { return LIC || (LIC = b64(LICENSE_B64)); }
 
 // ---------- Schritt 1: Ordner lesen ----------
 async function walk(dir, prefix, out, onCount) {
@@ -444,12 +464,12 @@ function fillMedia() {
   sel.value = prev;
 }
 function media() {
-  const m = PRS.MEDIA.find((x) => x.id === $('media').value) || PRS.MEDIA[2];
+  const m = PRS.MEDIA.find((x) => x.id === $('media').value) || PRS.MEDIA.find((x) => x.id === 'dvd5');
   if (m.id === 'custom') return { ...m, bytes: Math.max(0.1, parseFloat($('customGB').value) || 4) * 1e9 };
   return m;
 }
 function reserveBytes() {
-  return launcherBytes().length + icoBytes().length + PRS.estimateIniBytes(S.files) + (S.bannerBytes ? S.bannerBytes.length : 0) + (S.acf ? S.acf.bytes.length : 0) + 65536;
+  return launcherBytes().length + icoBytes().length + licenseBytes().length + PRS.estimateIniBytes(S.files) + (S.bannerBytes ? S.bannerBytes.length : 0) + (S.acf ? S.acf.bytes.length : 0) + 65536;
 }
 let planTimer = 0;
 function updatePlan() { clearTimeout(planTimer); planTimer = setTimeout(doPlan, 60); }
@@ -459,7 +479,7 @@ function doPlan() {
   const total = S.files.reduce((a, f) => a + f.size, 0);
   const calc = $('calc'), warn = $('calcWarn'), tb = $('discTable'); calc.replaceChildren(); warn.replaceChildren(); tb.replaceChildren();
   let plan;
-  try { plan = PRS.plan(S.files.map((f) => ({ path: f.path, size: f.size })), { capacity: m.bytes, reserve: reserveBytes(), maxPart: m.maxPart }); }
+  try { plan = PRS.plan(S.files.map((f) => ({ path: f.path, size: f.size })), { capacity: m.bytes, reserve: reserveBytes(), maxPart: m.maxPart, firstExtra: extrasAlloc() }); }
   catch (e) { S.plan = null; warn.append(el('div', { className: 'box bad', textContent: t('capErr') })); $('build').disabled = true; return; }
   S.plan = plan; $('build').disabled = false;
   const last = plan.discs[plan.discs.length - 1];
@@ -476,6 +496,31 @@ function doPlan() {
     tb.append(el('tr', {}, el('td', { textContent: String(i + 1) }), el('td', { textContent: fmt(d.used) }), el('td', { textContent: String(d.segs.length) }), el('td', {}, bar)));
   });
   $('outHint').textContent = window.showDirectoryPicker ? t('outDir', PRS.fsName($('title').value || S.rootName)) : t('outZip');
+}
+
+// ---------- Extras ----------
+function extrasAlloc() { return S.extras.reduce((n, x) => n + PRS.alloc(x.blob.size), 0); }
+function renderExtras() {
+  const ul = $('exList'); ul.replaceChildren();
+  S.extras.forEach((x, i) => {
+    const b = el('button', { className: 'btn sec', type: 'button', textContent: t('extraRm'), style: 'padding:3px 10px;font-size:12px;margin-left:8px' });
+    b.onclick = () => { S.extras.splice(i, 1); renderExtras(); updatePlan(); };
+    const inp = el('input', { type: 'text', value: x.label || '', placeholder: t('extraBtn'), maxLength: 40, style: 'margin-left:8px;width:210px;max-width:100%' });
+    inp.oninput = () => { x.label = inp.value.replace(/[|\r\n]+/g, ' '); };
+    ul.append(el('li', {}, el('span', { textContent: x.path.replace(/^Extras\\/, '') + ' (' + fmt(x.blob.size) + ')' }), inp, b));
+  });
+}
+function addExtras(list) {
+  const seen = new Set(S.extras.map((x) => x.path.toLowerCase())); seen.add('extras\\appmanifest.acf'); const dup = [];
+  for (const f of list) {
+    const rel = (f.webkitRelativePath || f.name).split('/').join('\\');
+    const path = 'Extras\\' + rel;
+    if (seen.has(path.toLowerCase())) { dup.push(rel); continue; }
+    seen.add(path.toLowerCase()); S.extras.push({ path, blob: f, label: f.webkitRelativePath ? '' : f.name.replace(/\.[^.]+$/, '').slice(0, 40) });
+  }
+  S.extras.sort((a, b) => (a.path < b.path ? -1 : 1));
+  renderExtras(); updatePlan();
+  if (dup.length) alert(t('extraDup', dup.slice(0, 5).join(', ') + (dup.length > 5 ? ' …' : '')));
 }
 
 // ---------- Banner und Manifest ----------
@@ -526,12 +571,12 @@ async function build() {
   const pkgId = PRS.randomId();
   const cfg = {
     title, exe, pkgId, dirName: $('dirName').value.trim(), banner: S.banner ? S.banner.name : '', showTitle: $('showTitle').checked, discCount: plan.discs.length,
-    files, plan, redist: S.redist.filter((r) => r.on), mode: steam ? 'steam' : 'folder', steamAppId: appId, steamManifest: steam && S.acf ? 'extras\\appmanifest.acf' : '',
+    files, plan, extras: S.extras.filter((x) => x.label && x.label.trim()).slice(0, 5).map((x) => ({ path: x.path, label: x.label.trim() })), redist: S.redist.filter((r) => r.on), mode: steam ? 'steam' : 'folder', steamAppId: appId, steamManifest: steam && S.acf ? 'extras\\appmanifest.acf' : '',
   };
   S.abort = new AbortController(); const signal = S.abort.signal;
   $('build').disabled = true; $('cancel').classList.remove('hidden'); $('prog').classList.remove('hidden'); setProgress(0, '');
   try {
-    const extra = (ini, i) => PRS.extraFiles({ ini, pkgId, discCount: plan.discs.length, title, exeName: EXE_NAME, icoBytes: icoBytes(), launcherBytes: launcherBytes(), readmeName: 'README.txt', readme: PRS.readmeText(title, plan.discs.length), bannerName: S.banner ? S.banner.name : '', bannerBytes: S.bannerBytes, acfBytes: steam && S.acf ? S.acf.bytes : null }, i + 1);
+    const extra = (ini, i) => PRS.extraFiles({ ini, pkgId, discCount: plan.discs.length, title, exeName: EXE_NAME, icoBytes: icoBytes(), launcherBytes: launcherBytes(), licenseBytes: licenseBytes(), readmeName: 'README.txt', readme: PRS.readmeText(title, plan.discs.length), bannerName: S.banner ? S.banner.name : '', bannerBytes: S.bannerBytes, acfBytes: steam && S.acf ? S.acf.bytes : null }, i + 1);
     if (window.showDirectoryPicker) {
       let root;
       try { root = await window.showDirectoryPicker({ mode: 'readwrite' }); } catch (e) { if (e.name === 'AbortError') throw new Error('abort'); throw e; }
@@ -541,6 +586,7 @@ async function build() {
       setProgress(0.99, t('finishing'));
       const ini = PRS.buildIni({ ...cfg, files: files.map((f) => ({ path: f.path, size: f.size })) });
       for (let i = 0; i < discDirs.length; i++) { const cache = new Map(); for (const x of extra(ini, i)) await PRS.writeBytesToDirectory(discDirs[i], x.path, x.bytes, cache); }
+      { const cache = new Map(); for (const x of S.extras) await PRS.writeBlobToDirectory(discDirs[0], x.path, x.blob, cache, signal); }
       setProgress(1, '');
       res.append(el('div', { className: 'box info', textContent: t('done', plan.discs.length) + ' ' + t('doneDir', root.name + '\\' + PRS.fsName(title)) }));
     } else {
@@ -552,6 +598,7 @@ async function build() {
         setProgress(0.5 + 0.5 * i / plan.discs.length, t('zipping', i + 1));
         const entries = plan.discs[i].segs.map((s) => ({ name: PRS.discPath(sf[s.fi], s).split('\\').join('/'), size: s.size, crc: s.crc, blob: sf[s.fi].blob.slice(s.offset, s.offset + s.size) }));
         for (const x of extra(ini, i)) entries.push({ name: x.path.split('\\').join('/'), size: x.bytes.length, crc: PRS.crc32(x.bytes), blob: new Blob([x.bytes]) });
+        if (i === 0) for (const x of S.extras) entries.push({ name: x.path.split('\\').join('/'), size: x.blob.size, crc: await PRS.blobCrc(x.blob, signal), blob: x.blob });
         const zip = PRS.zipBlob(entries); const nm = PRS.fsName(title) + ' - Disc' + (i + 1) + '.zip';
         const b = el('button', { className: 'btn sec', type: 'button', textContent: t('dlDisc', i + 1, fmt(zip.size)) }); b.onclick = () => download(zip, nm); list.append(el('li', {}, b));
       }
@@ -572,6 +619,8 @@ $('title').oninput = (e) => { e.target.dataset.touched = '1'; updateLinks(); $('
 $('appId').oninput = () => { $('appId').value = $('appId').value.replace(/\D/g, ''); updateLinks(); };
 document.querySelectorAll('input[name=mode]').forEach((r) => { r.onchange = updateModeUi; });
 $('media').onchange = updatePlan; $('customGB').oninput = updatePlan;
+$('exFiles').onclick = () => $('exFilesIn').click(); $('exFolder').onclick = () => $('exFolderIn').click();
+$('exFilesIn').onchange = (e) => { addExtras([...e.target.files]); e.target.value = ''; }; $('exFolderIn').onchange = (e) => { addExtras([...e.target.files]); e.target.value = ''; };
 $('banner').onchange = onBanner; $('acf').onchange = onAcf;
 $('build').onclick = build; $('cancel').onclick = () => { if (S.abort) S.abort.abort(); };
 if (/\/studios\//i.test(location.pathname)) $('hubLink').classList.remove('hidden');

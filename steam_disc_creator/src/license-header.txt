@@ -1,0 +1,17 @@
+LICENSE / LIZENZ
+
+DE: Das Installationsprogramm auf diesem Datenträger (Launcher.exe und uninstall.exe) ist freie Software unter der
+    GNU General Public License Version 3 (siehe unten). Es enthält Teile der Programmiersprache Go (BSD-Lizenz, siehe
+    unten). Der Quelltext ist bei der Person erhältlich, die Ihnen diesen Datenträger gegeben hat, bzw. bei dem Anbieter, von dem
+    das Programm stammt. Für das Spiel selbst gelten ausschließlich die Rechte und Lizenzen seiner Inhaber.
+    Das Programm wird ohne jede Gewährleistung geliefert.
+
+EN: The installer on this disc (Launcher.exe and uninstall.exe) is free software under the GNU General Public License
+    version 3 (see below). It contains parts of the Go programming language (BSD license, see below). The source code is
+    available from the person who gave you this disc, or from the provider the program originates from. The game itself is
+    covered only by the rights and licenses of its owners. The program comes with ABSOLUTELY NO WARRANTY.
+
+================================================================================
+GNU GENERAL PUBLIC LICENSE, VERSION 3
+================================================================================
+

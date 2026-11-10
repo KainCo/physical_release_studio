@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func discMarkerName(n int) string { return fmt.Sprintf("PHYSICAL_RELEASE_DISC_%d.txt", n) }
+func discMarkerName(n int) string { return fmt.Sprintf("DISC_%d.txt", n) }
 
 // checkDisc prüft, ob in root die Marker-Datei der Disc n zu diesem Paket liegt.
 func checkDisc(root string, cfg *Config, n int) bool {

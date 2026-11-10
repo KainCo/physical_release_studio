@@ -128,6 +128,7 @@ const (
 	seeNoCloseProc  = 0x40
 	seeNoAsync      = 0x100
 	infinite        = 0xFFFFFFFF
+	waitTimeout     = 0x102
 	hkeyCurrentUser = 0x80000001
 	keyRead         = 0x20019
 	keyWrite        = 0x20006

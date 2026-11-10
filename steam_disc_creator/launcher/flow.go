@@ -2,6 +2,7 @@
 package main
 
 import (
+	"errors"
 	"io"
 	"os"
 	"path/filepath"
@@ -9,12 +10,17 @@ import (
 	"time"
 )
 
+// errSkipped meldet, dass der Nutzer das Warten auf eine Komponente übersprungen hat.
+var errSkipped = errors.New("übersprungen")
+
 // InstallOpts sind die Auswahlmöglichkeiten der Installation.
 type InstallOpts struct {
 	Desktop   bool
 	StartMenu bool
 	Redist    bool
-	SrcRoot   string // Stamm der Disc 1 (für optionale Zusatzdateien wie die Steam-Manifestdatei)
+	SrcRoot   string          // Stamm der Disc 1 (für optionale Zusatzdateien wie die Steam-Manifestdatei)
+	Step      func(i, n int)  // optional: meldet 'Komponente i von n' (i beginnt bei 1; i = n+1 am Ende)
+	Skip      <-chan struct{} // optional: wird geschlossen, wenn der Nutzer das Warten überspringen will
 }
 
 // exeDir liefert den Ordner der laufenden Programmdatei.
@@ -133,11 +139,6 @@ func PostInstall(cfg *Config, dest string, opts InstallOpts, status func(string)
 		}
 	}
 
-	// steam_appid.txt anlegen, wenn sie fehlt und die AppID bekannt ist (wird bei der Deinstallation wieder entfernt).
-	if rel := ensureSteamAppIDFile(cfg, dest); rel != "" {
-		lw.Add("F", rel)
-	}
-
 	title := fsName(cfg.Title)
 	if cfg.IsSteam() { // Verknüpfungen würden Steam umgehen
 		opts.Desktop, opts.StartMenu = false, false
@@ -167,7 +168,7 @@ func PostInstall(cfg *Config, dest string, opts InstallOpts, status func(string)
 	}
 
 	if opts.Redist {
-		redistFailed = RunRedist(cfg, dest, status)
+		redistFailed = RunRedistCtl(cfg, dest, status, opts.Step, opts.Skip)
 	}
 	return redistFailed
 }
@@ -175,31 +176,57 @@ func PostInstall(cfg *Config, dest string, opts InstallOpts, status func(string)
 // RunRedist startet die mitgelieferten Installationsprogramme für Zusatzkomponenten (Visual C++, DirectX ...)
 // aus dem Spielordner. Rückgabe: true, wenn mindestens eine Komponente nicht installiert werden konnte.
 func RunRedist(cfg *Config, dest string, status func(string)) (failed bool) {
+	return RunRedistCtl(cfg, dest, status, nil, nil)
+}
+
+// RunRedistCtl wie RunRedist, meldet aber zusätzlich den Fortschritt (step) und kann per skip übersprungen werden.
+// Ein Überspringen beendet nur das Warten; die gestartete Komponente wird nicht beendet. Es zählt als nicht installiert.
+func RunRedistCtl(cfg *Config, dest string, status func(string), step func(i, n int), skip <-chan struct{}) (failed bool) {
+	var items []RedistEntry
 	for _, r := range cfg.Redist {
 		rel, err := safeRel(r.Path)
 		if err != nil {
 			continue
 		}
-		full := filepath.Join(dest, rel)
-		if _, err := os.Stat(full); err != nil {
+		if _, err := os.Stat(filepath.Join(dest, rel)); err != nil {
 			continue
 		}
+		items = append(items, r)
+	}
+	n := len(items)
+	for i, r := range items {
+		rel, _ := safeRel(r.Path)
+		full := filepath.Join(dest, rel)
 		label := r.Label
 		if label == "" {
 			label = filepath.Base(full)
 		}
+		if skip != nil {
+			select {
+			case <-skip:
+				failed = true
+				continue
+			default:
+			}
+		}
+		if step != nil {
+			step(i+1, n)
+		}
 		if status != nil {
-			status(T("redistRun", label))
+			status(T("redistRunN", i+1, n, label))
 		}
 		prog, args := full, r.Args
 		if strings.EqualFold(filepath.Ext(full), ".msi") {
 			prog, args = "msiexec.exe", `/i "`+full+`" `+r.Args
 		}
-		code, err := runInstaller(prog, args, filepath.Dir(full))
+		code, err := runInstaller(prog, args, filepath.Dir(full), skip)
 		// 0 = ok, 3010 = Neustart nötig, 1638 = neuere Version vorhanden, 1641 = Neustart eingeleitet
 		if err != nil || !(code == 0 || code == 3010 || code == 1638 || code == 1641) {
 			failed = true
 		}
+	}
+	if step != nil {
+		step(n+1, n)
 	}
 	return failed
 }
@@ -246,4 +273,20 @@ func RunUninstall(dest string, askExtra func() bool) (title string, err error) {
 		deleteSelfLater(pending, dest, removeExtra && info.CreatedDest)
 	}
 	return info.Title, err
+}
+
+// AvailableExtras liefert die Extras, deren Datei im Stamm der Disc tatsächlich vorhanden ist
+// (nach der Installation von der Festplatte liegen sie nicht mehr daneben).
+func AvailableExtras(cfg *Config, root string) []ExtraEntry {
+	var out []ExtraEntry
+	for _, e := range cfg.Extras {
+		rel, err := safeRel(e.Path)
+		if err != nil {
+			continue
+		}
+		if st, err := os.Stat(filepath.Join(root, rel)); err == nil && !st.IsDir() {
+			out = append(out, e)
+		}
+	}
+	return out
 }

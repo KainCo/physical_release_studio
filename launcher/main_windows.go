@@ -1,8 +1,8 @@
 //go:build windows
 
-// GOGAutoLauncher - Physical Release Studio.
-// Build: GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -H windowsgui" -o GOGAutoLauncher.exe .
-// Then:  python patch_pe.py GOGAutoLauncher.exe   (run-from-swap flags, survives disc changes)
+// Disc launcher (GOG installers).
+// Build: GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -H windowsgui" -o Launcher.exe .
+// Then:  python patch_pe.py Launcher.exe   (run-from-swap flags, survives disc changes)
 package main
 
 import (
@@ -17,7 +17,7 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/KainCo/physical_release_studio/launcher/core"
+	"disclauncher/core"
 )
 
 const (
@@ -276,7 +276,7 @@ func invalidate() {
 	}
 }
 func msgBox(text string, flags uintptr) int {
-	r, _, _ := pMessage.Call(hwndMain, uintptr(unsafe.Pointer(u(text))), uintptr(unsafe.Pointer(u("Physical Release Studio"))), flags)
+	r, _, _ := pMessage.Call(hwndMain, uintptr(unsafe.Pointer(u(text))), uintptr(unsafe.Pointer(u(cfg.Title))), flags)
 	return int(r)
 }
 func errBox(text string) { msgBox(text, MB_OK|MB_ICONERROR) }
@@ -480,7 +480,7 @@ func draw(dc uintptr) {
 	sn := st.snap()
 	rect(dc, 0, 0, clientW, G.clientH, 0x00C0C0C0)
 	rect(dc, 0, 0, clientW, 30, 0x00800000)
-	text(dc, "Physical Release Studio", 8, 4, 620, 22, 0x00FFFFFF, 13, true, DT_LEFT|DT_VCENTER|DT_SINGLELINE)
+	text(dc, cfg.Title, 8, 4, 620, 22, 0x00FFFFFF, 13, true, DT_LEFT|DT_VCENTER|DT_SINGLELINE)
 	drawCover(dc)
 	if showTitle() {
 		text(dc, cfg.Title, 28, G.titleY, 764, 30, 0, 17, true, DT_CENTER|DT_VCENTER|DT_WORDBREAK)
@@ -530,8 +530,6 @@ func draw(dc uintptr) {
 		drawButton(dc, b, pressedID == b.id)
 	}
 	line(dc, 8, G.footerY, 812, G.footerY, 0x00808080)
-	text(dc, "PHYSICAL RELEASE STUDIO", 12, G.footerY+7, 430, 18, 0x00404040, 8, true, DT_LEFT|DT_VCENTER|DT_SINGLELINE)
-	text(dc, "KAINCO  •  DEDICATED TO GAMES", 480, G.footerY+7, 320, 18, 0x00404040, 8, false, DT_RIGHT|DT_VCENTER|DT_SINGLELINE)
 }
 func paint(hwnd uintptr) {
 	var ps PAINTSTRUCT
@@ -765,7 +763,7 @@ func startStaging(forced bool, tempParent string) {
 	invalidate()
 	go func() {
 		err := func() error {
-			dir, e := os.MkdirTemp(tempParent, "PhysicalReleaseStudio-Install-*")
+			dir, e := os.MkdirTemp(tempParent, "disc-install-*")
 			if e != nil {
 				return e
 			}
@@ -910,7 +908,7 @@ func wndProc(hwnd, m, w, l uintptr) uintptr {
 }
 
 func loadConfig() {
-	f, err := os.Open(filepath.Join(baseDir, "GOGAutoLauncher.ini"))
+	f, err := os.Open(filepath.Join(baseDir, "launcher.ini"))
 	if err != nil {
 		cfg = core.ParseINI(strings.NewReader(""))
 		return
@@ -946,7 +944,7 @@ func main() {
 	bigIcon, _, _ := pLoadImage.Call(inst, 1, IMAGE_ICON, cx, cx, 0) // resource id 1 = disc icon (rsrc_windows_amd64.syso)
 	smallIcon, _, _ := pLoadImage.Call(inst, 1, IMAGE_ICON, cs, cs, 0)
 	cur, _, _ := pLoadCur.Call(0, 32512) // IDC_ARROW
-	class := u("PhysicalReleaseStudioLauncher")
+	class := u("DiscLauncher")
 	wc := WNDCLASSEX{Size: uint32(unsafe.Sizeof(WNDCLASSEX{})), WndProc: syscall.NewCallback(wndProc), Instance: inst, Icon: bigIcon, IconSm: smallIcon, Cursor: cur, Background: 16, ClassName: class}
 	if r, _, _ := pRegister.Call(uintptr(unsafe.Pointer(&wc))); r == 0 {
 		return
@@ -964,7 +962,7 @@ func main() {
 	if y < 0 {
 		y = 0
 	}
-	hwndMain, _, _ = pCreate.Call(0, uintptr(unsafe.Pointer(class)), uintptr(unsafe.Pointer(u("Physical Release Studio - "+cfg.Title))), style|WS_VISIBLE, i32(x), i32(y), i32(ww), i32(wh), 0, 0, inst, 0)
+	hwndMain, _, _ = pCreate.Call(0, uintptr(unsafe.Pointer(class)), uintptr(unsafe.Pointer(u(cfg.Title))), style|WS_VISIBLE, i32(x), i32(y), i32(ww), i32(wh), 0, 0, inst, 0)
 	if hwndMain == 0 {
 		return
 	}

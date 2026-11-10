@@ -35,7 +35,7 @@ type Config struct {
 	Bins                              []SplitFile // optional quick mode: intact BINs in the disc root
 }
 
-// ParseINI reads GOGAutoLauncher.ini. Unknown keys are ignored.
+// ParseINI reads launcher.ini. Unknown keys are ignored.
 func ParseINI(r io.Reader) Config {
 	var c Config
 	sec := ""

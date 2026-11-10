@@ -81,24 +81,3 @@ func genManifest(cfg *Config, installDir string, now time.Time) string {
 	b.WriteString("}\n")
 	return b.String()
 }
-
-// ensureSteamAppIDFile legt steam_appid.txt neben der Programmdatei an, wenn sie fehlt und die AppID bekannt ist.
-// Eine vorhandene Datei bleibt unverändert. Rückgabe: relativer Pfad der neuen Datei (leer, wenn nichts angelegt wurde).
-func ensureSteamAppIDFile(cfg *Config, dest string) string {
-	if !steamIDRe.MatchString(cfg.SteamAppID) {
-		return ""
-	}
-	dir := filepath.Dir(exeFull(cfg, dest))
-	target := filepath.Join(dir, "steam_appid.txt")
-	if _, err := os.Stat(target); err == nil {
-		return ""
-	}
-	if err := os.WriteFile(target, []byte(cfg.SteamAppID), 0o644); err != nil {
-		return ""
-	}
-	rel, err := filepath.Rel(dest, target)
-	if err != nil || strings.HasPrefix(rel, "..") {
-		return ""
-	}
-	return rel
-}

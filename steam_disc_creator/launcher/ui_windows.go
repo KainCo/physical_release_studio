@@ -26,6 +26,7 @@ const (
 	idChkRedist, idDoInstall   = 215, 216
 	idBack, idBtnCancel        = 217, 218
 	idComp                     = 219
+	idExtra0                   = 230 // 230..234: Extras-Schaltflächen
 
 	wmAppProg  = wmApp + 1
 	wmAppDisc  = wmApp + 2
@@ -33,6 +34,7 @@ const (
 	wmAppDone  = wmApp + 4
 	wmAppState = wmApp + 5
 	wmAppComp  = wmApp + 6
+	wmAppStep  = wmApp + 7
 )
 
 const (
@@ -58,6 +60,10 @@ type finishMsg struct {
 }
 
 type ui struct {
+	extras   []ExtraEntry // nur Extras, die auf dieser Disc tatsächlich vorhanden sind
+	btnExtra [maxExtras]uintptr
+	skipCh   chan struct{} // wird geschlossen, wenn der Nutzer das Warten auf eine Komponente überspringt
+	inRedist bool
 	hwnd     uintptr
 	hInst    uintptr
 	font     uintptr
@@ -176,7 +182,7 @@ func (a *ui) run() {
 	if icon == 0 {
 		icon, _, _ = pLoadIcon.Call(0, idiApplication)
 	}
-	cls := u16("PRSLauncher")
+	cls := u16("DiscLauncher")
 	wc := wndClassEx{
 		WndProc: wndProcC, Instance: h, Icon: icon, IconSm: icon, Cursor: cursor,
 		Background: colorBtnFace + 1, ClassName: cls,
@@ -184,7 +190,11 @@ func (a *ui) run() {
 	wc.Size = uint32(unsafe.Sizeof(wc))
 	pRegisterClassEx.Call(uintptr(unsafe.Pointer(&wc)))
 
+	a.extras = a.availableExtras()
 	clientH := a.top + 214
+	if len(a.extras) > 0 {
+		clientH += 44
+	}
 	r := rect{0, 0, winW, int32(clientH)}
 	pAdjustWindowRect.Call(uintptr(unsafe.Pointer(&r)), uintptr(wsCaption|wsSysMenu|wsMinimizeBox), 0)
 	ww, wh := int(r.Right-r.Left), int(r.Bottom-r.Top)
@@ -247,6 +257,11 @@ func (a *ui) createControls() {
 	a.btnUn = a.mk("BUTTON", T("uninstall"), btn, 0, 430, t+110, 186, 34, idUn, 0)
 	a.btnExit = a.mk("BUTTON", T("exit"), btn, 0, 506, t+166, 110, 28, idExit, 0)
 	a.btnComp = a.mk("BUTTON", T("comps"), btn, 0, 24, t+166, 330, 28, idComp, 0)
+	for i, e := range a.extras {
+		n := len(a.extras)
+		w := (592 - (n-1)*8) / n
+		a.btnExtra[i] = a.mk("BUTTON", e.Label, btn, 0, 24+i*(w+8), t+212, w, 28, idExtra0+i, 0)
+	}
 	// Optionen
 	a.lblDest = a.mk("STATIC", T("installTo"), lbl, 0, 24, t+10, 592, 18, 111, 0)
 	a.edDest = a.mk("EDIT", "", wsTabStop|esAutoHScroll, wsExClientEdge, 24, t+30, 484, 24, idEdit, 0)
@@ -295,6 +310,9 @@ func (a *ui) showPage(p int) {
 	vis(p == pageHome && steam, a.lblSteam)
 	vis(p == pageHome && a.installed, a.btnRe, a.btnUn)
 	vis(p == pageHome && a.installed && len(a.cfg.Redist) > 0, a.btnComp)
+	for i := range a.extras {
+		vis(p == pageHome, a.btnExtra[i])
+	}
 	vis(p == pageOpts, a.lblDest, a.edDest, a.btnBrowse, a.lblSpace, a.btnDoInstall, a.btnBack)
 	vis(p == pageOpts && !steam, a.chkDesk, a.chkStart)
 	vis(p == pageOpts && len(a.cfg.Redist) > 0, a.chkRedist)
@@ -361,6 +379,13 @@ func (a *ui) onCommand(id int, code int) {
 		}()
 	case idExit:
 		pDestroyWindow.Call(a.hwnd)
+	case idExtra0, idExtra0 + 1, idExtra0 + 2, idExtra0 + 3, idExtra0 + 4:
+		if i := id - idExtra0; i < len(a.extras) {
+			full := filepath.Join(a.startDir, a.extras[i].Path)
+			if err := launchFile(full, filepath.Dir(full)); err != nil {
+				messageBox(a.hwnd, T("errGeneric", err.Error()), a.cfg.Title, mbOK|mbIconWarning)
+			}
+		}
 	case idEdit:
 		if code == enChange {
 			a.updateSpace()
@@ -375,9 +400,22 @@ func (a *ui) onCommand(id int, code int) {
 	case idDoInstall:
 		a.startInstall()
 	case idBtnCancel:
-		if a.cancel != nil {
-			a.cancel()
+		a.cancelOrSkip()
+	}
+}
+
+// cancelOrSkip bricht die Installation ab, oder überspringt – solange auf eine Komponente gewartet wird – nur diese Wartezeit.
+func (a *ui) cancelOrSkip() {
+	if a.inRedist && a.skipCh != nil {
+		select {
+		case <-a.skipCh:
+		default:
+			close(a.skipCh)
 		}
+		return
+	}
+	if a.cancel != nil {
+		a.cancel()
 	}
 }
 
@@ -450,6 +488,12 @@ func (a *ui) startInstall() {
 		Redist:    len(a.cfg.Redist) > 0 && sendMessage(a.chkRedist, bmGetCheck, 0, 0) == bstChecked,
 		SrcRoot:   a.srcRoot(),
 	}
+	a.skipCh = make(chan struct{})
+	a.inRedist = false
+	opts.Skip = a.skipCh
+	hw := a.hwnd
+	opts.Step = func(i, n int) { postMessage(hw, wmAppStep, uintptr(i), uintptr(n)) }
+	setText(a.btnCancel, T("cancel"))
 	ctx, cancel := context.WithCancel(context.Background())
 	a.cancel = cancel
 	setText(a.lblCopy, T("installing"))
@@ -553,6 +597,20 @@ func wndProc(hwnd, msg, wp, lp uintptr) uintptr {
 		setText(a.lblCopy, T("copying", file))
 		setText(a.lblPct, fmt.Sprintf("%d %%    %s / %s", pct/10, humanSize(done), humanSize(total)))
 		return 0
+	case wmAppStep:
+		i, n := int(wp), int(lp)
+		if i <= n && n > 0 {
+			a.inRedist = true
+			sendMessage(a.pbar, pbmSetPos, uintptr((i-1)*1000/n), 0)
+			setText(a.btnCancel, T("skip"))
+			setText(a.lblPct, T("redistWait"))
+		} else {
+			a.inRedist = false
+			sendMessage(a.pbar, pbmSetPos, 1000, 0)
+			setText(a.btnCancel, T("cancel"))
+			setText(a.lblPct, "")
+		}
+		return 0
 	case wmAppState:
 		a.mu.Lock()
 		s := a.statusText
@@ -616,9 +674,7 @@ func wndProc(hwnd, msg, wp, lp uintptr) uintptr {
 		return 0
 	case wmClose:
 		if a.page == pageProg {
-			if a.cancel != nil {
-				a.cancel()
-			}
+			a.cancelOrSkip()
 			return 0
 		}
 		pDestroyWindow.Call(hwnd)
@@ -666,3 +722,5 @@ func (a *ui) drawTitle(hdc uintptr, y int, color uintptr, shadow bool) {
 	pDrawText.Call(hdc, uintptr(unsafe.Pointer(txt)), 0xFFFFFFFF, uintptr(unsafe.Pointer(&rc)), dtLeft|dtVCenter|dtSingleLine|dtEndEllipsis)
 	pSelectObject.Call(hdc, old)
 }
+
+func (a *ui) availableExtras() []ExtraEntry { return AvailableExtras(a.cfg, a.startDir) }

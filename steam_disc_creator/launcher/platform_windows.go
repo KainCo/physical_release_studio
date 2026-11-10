@@ -15,7 +15,7 @@ import (
 	"unsafe"
 )
 
-const uninstallKey = `Software\Microsoft\Windows\CurrentVersion\Uninstall\PRS_`
+const uninstallKey = `Software\Microsoft\Windows\CurrentVersion\Uninstall\DiscPkg_`
 
 func driveRoots() []string {
 	m, _, _ := pGetLogicalDrives.Call()
@@ -131,7 +131,6 @@ func regRegister(cfg *Config, dest string, sizeKB int64, uninstall string) error
 	regSetStr(h, "InstallLocation", dest)
 	regSetStr(h, "UninstallString", `"`+uninstall+`" /uninstall`)
 	regSetStr(h, "DisplayIcon", exeFull(cfg, dest))
-	regSetStr(h, "Publisher", "Physical Release Studio")
 	regSetDword(h, "EstimatedSize", uint32(sizeKB))
 	regSetDword(h, "NoModify", 1)
 	regSetDword(h, "NoRepair", 1)
@@ -246,7 +245,7 @@ func launchFile(path, dir string) error {
 }
 
 // runInstaller startet eine Komponente (Visual C++, DirectX, ...) mit Administratorabfrage und wartet.
-func runInstaller(path, args, dir string) (int, error) {
+func runInstaller(path, args, dir string, skip <-chan struct{}) (int, error) {
 	sei := shellExecInfo{
 		Mask: seeNoCloseProc | seeNoAsync,
 		Verb: u16("runas"),
@@ -266,7 +265,20 @@ func runInstaller(path, args, dir string) (int, error) {
 		return 0, nil
 	}
 	defer pCloseHandle.Call(sei.Process)
-	pWaitForSingle.Call(sei.Process, infinite)
+	for {
+		// alle 250 ms nachsehen, ob die Komponente fertig ist oder der Nutzer überspringen will
+		r, _, _ := pWaitForSingle.Call(sei.Process, 250)
+		if r != waitTimeout {
+			break
+		}
+		if skip != nil {
+			select {
+			case <-skip:
+				return -2, errSkipped
+			default:
+			}
+		}
+	}
 	var code uint32
 	pGetExitCode.Call(sei.Process, uintptr(unsafe.Pointer(&code)))
 	return int(int32(code)), nil

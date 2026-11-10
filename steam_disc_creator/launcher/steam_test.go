@@ -183,8 +183,8 @@ func TestSteamModeGeneratesManifestWhenNoneProvided(t *testing.T) {
 			t.Errorf("Manifest enthält %q nicht:\n%s", want, txt)
 		}
 	}
-	if id, err := os.ReadFile(filepath.Join(dest, "bin", "steam_appid.txt")); err != nil || string(id) != "12345" {
-		t.Fatalf("steam_appid.txt fehlt oder falsch: %q %v", id, err)
+	if _, err := os.Stat(filepath.Join(dest, "bin", "steam_appid.txt")); err == nil {
+		t.Fatal("der Installer darf keine steam_appid.txt anlegen")
 	}
 	if info, err := ReadLog(dest); err != nil || !info.Steam {
 		t.Fatalf("Steam-Modus fehlt im Protokoll: %+v %v", info, err)
@@ -195,12 +195,9 @@ func TestSteamModeGeneratesManifestWhenNoneProvided(t *testing.T) {
 	if _, err := os.Stat(acf); err == nil {
 		t.Fatal("erzeugtes Manifest muss bei der Deinstallation entfernt werden")
 	}
-	if _, err := os.Stat(filepath.Join(dest, "bin", "steam_appid.txt")); err == nil {
-		t.Fatal("angelegte steam_appid.txt muss bei der Deinstallation entfernt werden")
-	}
 }
 
-func TestAppIDFileInFolderModeAndNeverOverwritten(t *testing.T) {
+func TestNeverCreatesSteamAppIDFile(t *testing.T) {
 	roots, _, ini := buildDiscs(t)
 	writeIniAll(t, roots, strings.Replace(ini, "ShowTitle=1\n", "ShowTitle=1\nSteamAppID=777\n", 1))
 	cfg, err := loadConfig(roots[0])
@@ -214,24 +211,18 @@ func TestAppIDFileInFolderModeAndNeverOverwritten(t *testing.T) {
 		t.Fatal(err)
 	}
 	PostInstall(cfg, dest, InstallOpts{SrcRoot: roots[0]}, nil)
-	f := filepath.Join(dest, "bin", "steam_appid.txt")
-	if b, err := os.ReadFile(f); err != nil || string(b) != "777" {
-		t.Fatalf("steam_appid.txt: %q %v", b, err)
+	if _, err := os.Stat(filepath.Join(dest, "bin", "steam_appid.txt")); err == nil {
+		t.Fatal("der Installer darf keine steam_appid.txt anlegen")
 	}
 	if info, _ := ReadLog(dest); info.Steam {
 		t.Fatal("im Ordner-Modus darf kein Steam-Flag gesetzt sein")
 	}
-	// Eine vorhandene Datei bleibt unverändert und wird bei der Deinstallation nicht angefasst.
-	dest2 := filepath.Join(t.TempDir(), "Spiel2")
-	if err := Install(context.Background(), cfg, dest2, hooksFor(cfg, roots)); err != nil {
-		t.Fatal(err)
-	}
-	f2 := filepath.Join(dest2, "bin", "steam_appid.txt")
-	os.WriteFile(f2, []byte("ORIG"), 0o644)
-	PostInstall(cfg, dest2, InstallOpts{SrcRoot: roots[0]}, nil)
-	RunUninstall(dest2, func() bool { return false })
-	if b, err := os.ReadFile(f2); err != nil || string(b) != "ORIG" {
-		t.Fatalf("vorhandene steam_appid.txt wurde verändert oder gelöscht: %q %v", b, err)
+	// Eine vorhandene Datei gehört zum Spiel: Sie bleibt unverändert und wird bei der Deinstallation nur entfernt, wenn sie mitkopiert wurde.
+	f := filepath.Join(dest, "bin", "steam_appid.txt")
+	os.WriteFile(f, []byte("ORIG"), 0o644)
+	RunUninstall(dest, func() bool { return false })
+	if b, err := os.ReadFile(f); err != nil || string(b) != "ORIG" {
+		t.Fatalf("fremde steam_appid.txt wurde verändert oder gelöscht: %q %v", b, err)
 	}
 }
 

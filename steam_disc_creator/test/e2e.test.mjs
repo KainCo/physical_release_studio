@@ -56,7 +56,7 @@ const bytes = (n, seed) => { const r = rng(seed), b = Buffer.alloc(n); for (let 
 const sha = (p) => crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex');
 
 // Spiel-Ordner mit schwierigen Dateien anlegen
-const CAP = 1_000_000, RESERVE = 4096;
+const CAP = 1_000_000, RESERVE = 8192; // Platz fuer die Zusatzdateien (Marker, INI, LICENSE.txt ...)
 const MAXPART = PRS.plan([{ path: 'x', size: 1 }], { capacity: CAP, reserve: RESERVE }).maxPart;
 const GAME_FILES = [
   ['game.exe', 5000], ['data/big.pak', 2_600_000], ['data/exact.bin', MAXPART], ['data/exactplus1.bin', MAXPART + 1],
@@ -85,7 +85,7 @@ async function makePackage(name, { mode = 'folder', appId = '', acf = null } = {
     files: files.map((f) => ({ path: f.path, size: f.size })), plan, redist, mode, steamAppId: appId, steamManifest: acf ? 'extras\\appmanifest.acf' : '' });
   for (let i = 0; i < plan.discs.length; i++) {
     const cache = new Map();
-    const extra = PRS.extraFiles({ ini, pkgId, discCount: plan.discs.length, title, exeName: 'Launcher.exe', icoBytes: Buffer.from('ICO'), launcherBytes: Buffer.from('MZ-test'),
+    const extra = PRS.extraFiles({ ini, pkgId, discCount: plan.discs.length, title, exeName: 'Launcher.exe', icoBytes: Buffer.from('ICO'), licenseBytes: Buffer.from('LIC'), launcherBytes: Buffer.from('MZ-test'),
       readmeName: 'README.txt', readme: PRS.readmeText(title, plan.discs.length), bannerName: '', bannerBytes: null, acfBytes: acf }, i + 1);
     for (const x of extra) await PRS.writeBytesToDirectory(discDirs[i], x.path, x.bytes, cache);
   }
@@ -112,7 +112,7 @@ test('Paket wird auf mehrere Discs verteilt, geteilte Dateien entstehen', async 
   assert.ok(p.plan.split.length >= 2);
   // jede Disc hat Marker, ini, autorun
   for (let i = 0; i < p.discs.length; i++) {
-    for (const f of ['launcher.ini', 'autorun.inf', 'autorun.ico', 'Launcher.exe', 'README.txt', PRS.markerName(i + 1)]) assert.ok(fs.existsSync(path.join(p.discs[i], f)), f + ' fehlt auf Disc ' + (i + 1));
+    for (const f of ['launcher.ini', 'autorun.inf', 'autorun.ico', 'Launcher.exe', 'README.txt', 'LICENSE.txt', PRS.markerName(i + 1)]) assert.ok(fs.existsSync(path.join(p.discs[i], f)), f + ' fehlt auf Disc ' + (i + 1));
     // Kein Disc-Inhalt ueberschreitet die Kapazitaet
     const used = listAll(p.discs[i]).reduce((a, f) => a + PRS.alloc(fs.statSync(path.join(p.discs[i], f)).size), 0);
     assert.ok(used <= CAP, `Disc ${i + 1}: ${used} > ${CAP}`);
@@ -136,10 +136,10 @@ test('Installation von mehreren Discs ist Byte fuer Byte identisch; Deinstallati
   }
   // Installiert-Erkennung (Ersatz fuer die Registry) und Deinstallations-Protokoll
   assert.equal(fs.readFileSync(path.join(env.PRS_STATE_DIR, p.pkgId), 'utf8'), dest);
-  assert.ok(fs.existsSync(path.join(dest, 'prs_uninstall.log')));
+  assert.ok(fs.existsSync(path.join(dest, 'uninstall.lst')));
   assert.ok(fs.existsSync(path.join(dest, 'uninstall.exe')));
-  // Es liegen keine Teildateien (.prsN) im Zielordner
-  assert.ok(!listAll(dest).some((f) => /\.prs\d+$/.test(f)));
+  // Es liegen keine Teildateien (.partN) im Zielordner
+  assert.ok(!listAll(dest).some((f) => /\.part\d+$/.test(f)));
 
   const u = runCli(['uninstall', dest], env);
   assert.equal(u.code, 0, u.out);
@@ -167,10 +167,10 @@ test('Beschaedigte Disc wird erkannt, nichts wird als fertig gemeldet', async (t
   // ein Byte in einem Teil der grossen Datei kippen
   let flipped = null;
   for (const d of p.discs) {
-    const f = path.join(d, 'Game', 'data', 'big.pak.prs2');
+    const f = path.join(d, 'Game', 'data', 'big.pak.part2');
     if (fs.existsSync(f)) { const b = fs.readFileSync(f); b[1000] ^= 0xff; fs.writeFileSync(f, b); flipped = f; }
   }
-  assert.ok(flipped, 'Teil big.pak.prs2 nicht gefunden');
+  assert.ok(flipped, 'Teil big.pak.part2 nicht gefunden');
   const r = runCli(['install', dest, ...p.discs], envFor(p.base));
   assert.equal(r.code, 1);
   assert.match(r.out, /big\.pak/);
@@ -219,24 +219,15 @@ test('Steam-Modus: vorhandenes appmanifest wird nie ueberschrieben', async (t) =
   assert.equal(fs.readFileSync(path.join(lib, 'steamapps', 'appmanifest_620.acf'), 'utf8'), 'ORIGINAL', 'fremdes Manifest darf nicht geloescht werden');
 });
 
-test('Ordner-Modus mit AppID: steam_appid.txt wird angelegt und beim Deinstallieren entfernt', async (t) => {
+test('Der Installer legt niemals eine steam_appid.txt an (Ordner- und Steam-Modus, mit AppID)', async (t) => {
   if (!GO_OK) return t.skip('Go fehlt');
-  const p = await makePackage('appid', { mode: 'folder', appId: '207170' });
-  const dest = path.join(p.base, 'Installiert', 'Spiel');
-  const env = envFor(p.base);
-  const r = runCli(['install', dest, ...p.discs], env);
-  assert.equal(r.code, 0, r.out);
-  assert.equal(fs.readFileSync(path.join(dest, 'steam_appid.txt'), 'utf8'), '207170');
-  assert.equal(runCli(['uninstall', dest], env).code, 0);
-  assert.ok(!fs.existsSync(path.join(dest, 'steam_appid.txt')) && !fs.existsSync(dest), 'alles sollte entfernt sein');
-});
-
-test('Ordner-Modus ohne AppID: es wird keine steam_appid.txt erfunden', async (t) => {
-  if (!GO_OK) return t.skip('Go fehlt');
-  const p = await makePackage('noappid', { mode: 'folder' });
-  const dest = path.join(p.base, 'Installiert', 'Spiel');
-  assert.equal(runCli(['install', dest, ...p.discs], envFor(p.base)).code, 0);
-  assert.ok(!fs.existsSync(path.join(dest, 'steam_appid.txt')));
+  for (const mode of ['folder', 'steam']) {
+    const p = await makePackage('appid-' + mode, { mode, appId: '207170' });
+    const dest = mode === 'steam' ? path.join(p.base, 'Lib', 'steamapps', 'common', 'Spiel') : path.join(p.base, 'Installiert', 'Spiel');
+    const r = runCli(['install', dest, ...p.discs], envFor(p.base));
+    assert.equal(r.code, 0, r.out);
+    assert.ok(!listAll(dest).some((f) => /steam_appid\.txt$/i.test(f)), mode + ': steam_appid.txt darf nicht angelegt werden');
+  }
 });
 
 test('Steam-Modus ohne Manifest-Datei: Installer erzeugt ein Manifest und entfernt es wieder', async (t) => {
@@ -252,7 +243,6 @@ test('Steam-Modus ohne Manifest-Datei: Installer erzeugt ein Manifest und entfer
   const info = PRS.parseAcf(fs.readFileSync(manifest, 'utf8'));
   assert.equal(info.appid, '207170');
   assert.equal(info.installdir, 'Legend of Grimrock');
-  assert.equal(fs.readFileSync(path.join(dest, 'steam_appid.txt'), 'utf8'), '207170');
   assert.equal(runCli(['uninstall', dest], env).code, 0);
   assert.ok(!fs.existsSync(manifest), 'erzeugtes Manifest sollte entfernt sein');
 });
