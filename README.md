@@ -68,10 +68,16 @@ Whether you are restoring original cases from damaged secondhand finds, creating
 ### ✂️ Craft Studio *(In Development)*
 - Printable fold-out templates for cardboard Big Boxes, Nintendo cartridge boxes, and protective slipcases.
 
-### 🚀 GOG AutoLauncher & Extra Tools
-- **Disc launcher (GOG tool):** Standalone auto-run wrappers for PC releases.
-- **Steam Disc Creator:** Splits a game folder across several discs or USB sticks; a Windows installer merges it again (with uninstaller, optional runtimes, Steam-library mode). Local copy-protection hints only, no database. Source: `steam_disc_creator/`, tool: `studios/Steam_Disc_Creator/`.
-- **Materials & Affiliate Hub:** Recommended paper types (photopaper GSM specs), cutting tools, adhesive supplies, and replacement case sources.
+### 🚀 GOG Disc Creator
+- Builds a classic PC game CD/DVD edition from an offline game installer you own: auto-run launcher, optional cover and banner, extra buttons (manuals, soundtrack, patches), and automatic splitting across several discs.
+- Runs entirely in your browser; the installer files are packaged unchanged. Tool: `studios/GOG_Disc_Creator/`, launcher source: `launcher/`.
+
+### 🎮 Steam Disc Creator
+- Splits a game folder across several discs or USB sticks; a Windows installer merges it again (with uninstaller, optional runtimes such as Visual C++ and DirectX, up to 5 extra buttons, and a Steam-library mode).
+- Local copy-protection hints only, no database; nothing is uploaded. Tool: `studios/Steam_Disc_Creator/`, source: `steam_disc_creator/`.
+
+### 🛒 Materials & Affiliate Hub
+- Recommended paper types (photopaper GSM specs), cutting tools, adhesive supplies, and replacement case sources.
 
 ---
 
