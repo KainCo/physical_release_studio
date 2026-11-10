@@ -1,3 +1,9 @@
+> **Beide Tools (GOG Disc Creator und Steam Disc Creator) umgehen keinen Kopierschutz und sind nicht dafür gedacht, einen Kopierschutz zu umgehen oder zu entfernen.**
+> **Both tools (GOG Disc Creator and Steam Disc Creator) do not circumvent any copy protection and are not intended to circumvent or remove any copy protection.**
+>
+> Die Tools verändern keine Spieldateien, sondern verpacken sie nur für Discs oder USB-Sticks. Sie enthalten keine Spiele. Nur für den privaten Gebrauch und für Sicherungskopien rechtmäßig erworbener Spiele. Alle Namen und Marken (z. B. GOG, Steam) gehören ihren Inhabern; unabhängiges, nicht kommerzielles Hobbyprojekt ohne Verbindung zu diesen Firmen. Für Pakete und Inhalte, die Dritte damit erstellen oder weitergeben, ist der Autor nicht verantwortlich. /
+> The tools do not modify game files; they only package them for discs or USB sticks. They contain no games. For private use and backup copies of games you own legally only. All names and trademarks (e.g. GOG, Steam) belong to their owners; independent non-commercial hobby project, not affiliated with these companies. The author is not responsible for packages or content that third parties create or distribute with them. Third-party licenses: see `THIRD-PARTY-LICENSES.md`.
+
 <p align="center">
   <img src="Logo.svg" alt="Physical Release Studio Logo" width="280">
 </p>
@@ -64,7 +70,7 @@ Whether you are restoring original cases from damaged secondhand finds, creating
 - Printable fold-out templates for cardboard Big Boxes, Nintendo cartridge boxes, and protective slipcases.
 
 ### 🚀 GOG AutoLauncher & Extra Tools
-- **GOG AutoLauncher:** Standalone auto-run wrappers for PC releases.
+- **Disc launcher (GOG tool):** Standalone auto-run wrappers for PC releases.
 - **Steam Disc Creator:** Splits a game folder across several discs or USB sticks; a Windows installer merges it again (with uninstaller, optional runtimes, Steam-library mode). Local copy-protection hints only, no database. Source: `steam_disc_creator/`, tool: `studios/Steam_Disc_Creator/`.
 - **Materials & Affiliate Hub:** Recommended paper types (photopaper GSM specs), cutting tools, adhesive supplies, and replacement case sources.
 
