@@ -25,10 +25,6 @@
   </a>
 </p>
 
-<p align="center">
-  <b>Beide Disc-Tools (GOG &amp; Steam Disc Creator) umgehen keinen Kopierschutz und sind nicht dafür gedacht, einen Kopierschutz zu umgehen oder zu entfernen.</b><br>
-  <b>Both disc tools (GOG &amp; Steam Disc Creator) do not circumvent any copy protection and are not intended to circumvent or remove any copy protection.</b>
-</p>
 
 ---
 
