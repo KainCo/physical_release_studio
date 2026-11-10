@@ -1,9 +1,3 @@
-> **Beide Tools (GOG Disc Creator und Steam Disc Creator) umgehen keinen Kopierschutz und sind nicht dafür gedacht, einen Kopierschutz zu umgehen oder zu entfernen.**
-> **Both tools (GOG Disc Creator and Steam Disc Creator) do not circumvent any copy protection and are not intended to circumvent or remove any copy protection.**
->
-> Die Tools verändern keine Spieldateien, sondern verpacken sie nur für Discs oder USB-Sticks. Sie enthalten keine Spiele. Nur für den privaten Gebrauch und für Sicherungskopien rechtmäßig erworbener Spiele. Alle Namen und Marken (z. B. GOG, Steam) gehören ihren Inhabern; unabhängiges, nicht kommerzielles Hobbyprojekt ohne Verbindung zu diesen Firmen. Für Pakete und Inhalte, die Dritte damit erstellen oder weitergeben, ist der Autor nicht verantwortlich. /
-> The tools do not modify game files; they only package them for discs or USB sticks. They contain no games. For private use and backup copies of games you own legally only. All names and trademarks (e.g. GOG, Steam) belong to their owners; independent non-commercial hobby project, not affiliated with these companies. The author is not responsible for packages or content that third parties create or distribute with them. Third-party licenses: see `THIRD-PARTY-LICENSES.md`.
-
 <p align="center">
   <img src="Logo.svg" alt="Physical Release Studio Logo" width="280">
 </p>
@@ -29,6 +23,11 @@
   <a href="https://ko-fi.com/kainco" target="_blank">
     <img src="https://img.shields.io/badge/Ko--fi-Buy%20me%20a%20coffee-ff5e5b?style=for-the-badge&logo=ko-fi&logoColor=white" alt="Ko-fi">
   </a>
+</p>
+
+<p align="center">
+  <b>Beide Disc-Tools (GOG &amp; Steam Disc Creator) umgehen keinen Kopierschutz und sind nicht dafür gedacht, einen Kopierschutz zu umgehen oder zu entfernen.</b><br>
+  <b>Both disc tools (GOG &amp; Steam Disc Creator) do not circumvent any copy protection and are not intended to circumvent or remove any copy protection.</b>
 </p>
 
 ---
@@ -128,7 +127,13 @@ Physical Release Studio is an open-source layout utility designed for game prese
 - This project does **not** host, distribute, or bundle any copyrighted game artwork, logos, or ROMs.
 - Users are solely responsible for ensuring they have the legal right or license to use any third-party image assets uploaded to the studio.
 - For private use only. These templates are not intended for selling or distributing protected works.
-- All trademarks and brand names belong to their respective owners.
+- All trademarks and brand names (e.g. GOG, Steam) belong to their respective owners. This is an independent, non-commercial hobby project and is not affiliated with these companies.
+
+### Disc tools (GOG & Steam Disc Creator)
+
+- **EN:** The tools do not modify game files; they only package them for discs or USB sticks. They contain no games and do not circumvent any copy protection. They are intended for private use and for backup copies of games you own legally. The author is not responsible for packages or content that third parties create or distribute with them.
+- **DE:** Die Tools verändern keine Spieldateien, sondern verpacken sie nur für Discs oder USB-Sticks. Sie enthalten keine Spiele und umgehen keinen Kopierschutz. Gedacht sind sie für den privaten Gebrauch und für Sicherungskopien rechtmäßig erworbener Spiele. Für Pakete und Inhalte, die Dritte damit erstellen oder weitergeben, ist der Autor nicht verantwortlich.
+- Third-party licenses / Lizenzen Dritter: see [`THIRD-PARTY-LICENSES.md`](THIRD-PARTY-LICENSES.md).
 
 ---
 
