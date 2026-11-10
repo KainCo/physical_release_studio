@@ -133,8 +133,9 @@ Physical Release Studio is an open-source layout utility designed for game prese
 
 ### Disc tools (GOG & Steam Disc Creator)
 
-- **EN:** The tools do not modify game files; they only package them for discs or USB sticks. They contain no games and do not circumvent any copy protection. They are intended for private use and for backup copies of games you own legally. The author is not responsible for packages or content that third parties create or distribute with them.
-- **DE:** Die Tools verändern keine Spieldateien, sondern verpacken sie nur für Discs oder USB-Sticks. Sie enthalten keine Spiele und umgehen keinen Kopierschutz. Gedacht sind sie für den privaten Gebrauch und für Sicherungskopien rechtmäßig erworbener Spiele. Für Pakete und Inhalte, die Dritte damit erstellen oder weitergeben, ist der Autor nicht verantwortlich.
+- **EN:** The tools do not modify game files; they only package them for discs or USB sticks. They contain no games. **They do not circumvent any copy protection and are not intended to circumvent or remove any copy protection.** They are intended for private use and for backup copies of games you own legally. The author is not responsible for packages or content that third parties create or distribute with them.
+
+- **DE:** Die Tools verändern keine Spieldateien, sondern verpacken sie nur für Discs oder USB-Sticks. Sie enthalten keine Spiele. **Sie umgehen keinen Kopierschutz und sind nicht dafür gedacht, einen Kopierschutz zu umgehen oder zu entfernen.** Gedacht sind sie für den privaten Gebrauch und für Sicherungskopien rechtmäßig erworbener Spiele. Für Pakete und Inhalte, die Dritte damit erstellen oder weitergeben, ist der Autor nicht verantwortlich.
 - Third-party licenses / Lizenzen Dritter: see [`THIRD-PARTY-LICENSES.md`](THIRD-PARTY-LICENSES.md).
 
 ---
