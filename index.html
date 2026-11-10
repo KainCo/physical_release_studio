@@ -122,6 +122,21 @@
     .gog-hero .gh-cta:hover { transform: translateY(-2px); filter: brightness(1.1); }
     .gog-hero .gh-art { display: flex; align-items: center; justify-content: center; font-size: 7rem; color: rgba(216, 180, 254, 0.9); filter: drop-shadow(0 0 30px rgba(168, 85, 247, 0.5)); }
     @media (max-width: 767px) { .gog-hero .gh-art { display: none; } }
+    .gog-hero.steam { border-color: rgba(102, 192, 244, 0.45);
+      background: linear-gradient(135deg, rgba(27, 40, 56, 0.95) 0%, rgba(42, 71, 94, 0.55) 100%), #0e1822;
+      box-shadow: 0 20px 50px -20px rgba(26, 159, 255, 0.35); }
+    .gog-hero.steam .gh-pill { background: rgba(102, 192, 244, 0.16); color: #9fd8f7; border-color: rgba(102, 192, 244, 0.4); }
+    .gog-hero.steam li i { color: #66c0f4; }
+    .gog-hero.steam .gh-cta { background: linear-gradient(90deg, #1a9fff 0%, #2a6fa5 100%); box-shadow: 0 10px 25px -8px rgba(26, 159, 255, 0.55); }
+    .gog-hero.steam .gh-art { color: rgba(159, 216, 247, 0.9); filter: drop-shadow(0 0 30px rgba(26, 159, 255, 0.4)); }
+    .hero-duo { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 72rem; margin: 0 auto; }
+    @media (min-width: 900px) { .hero-duo { grid-template-columns: 1fr 1fr; } }
+    .hero-duo .gog-hero { grid-template-columns: 1fr; padding: 28px 26px; max-width: none; margin: 0; align-items: stretch; }
+    .hero-duo .gog-hero .gh-art { display: none; }
+    .hero-duo .gog-hero > div:first-child { display: flex; flex-direction: column; height: 100%; align-items: flex-start; }
+    .hero-duo .gog-hero ul { margin-bottom: 22px; }
+    .hero-duo .gog-hero .gh-cta { margin-top: auto; }
+    .hero-duo .gog-hero h2 { font-size: 1.6rem; }
 
 
     /* Kopfbereich: Menü klappt schon unter 1120 px ein, damit nichts seitlich überläuft (Tablet/Handy).
@@ -318,15 +333,15 @@
       <!-- STATUS-ÜBERSICHT UNTERHALB DER MISSION-BOX -->
       <div class="mt-6 max-w-3xl mx-auto grid grid-cols-2 sm:grid-cols-3 gap-4">
         <div class="bg-dark-card/80 border border-dark-border rounded-xl p-4 text-center backdrop-blur-md">
-          <div class="text-2xl font-extrabold text-emerald-400">5</div>
+          <div class="text-2xl font-extrabold text-emerald-400" id="statReady">5</div>
           <div class="text-xs text-slate-400 mt-1 font-mono">Studios Online</div>
         </div>
         <div class="bg-dark-card/80 border border-dark-border rounded-xl p-4 text-center backdrop-blur-md">
-          <div class="text-2xl font-extrabold text-amber-400">6</div>
+          <div class="text-2xl font-extrabold text-amber-400" id="statBeta">7</div>
           <div class="text-xs text-slate-400 mt-1 font-mono">(BETA) Studios</div>
         </div>
         <div class="bg-dark-card/80 border border-dark-border rounded-xl p-4 text-center backdrop-blur-md col-span-2 sm:col-span-1">
-          <div class="text-2xl font-extrabold text-slate-400">10+</div>
+          <div class="text-2xl font-extrabold text-slate-400" id="statDev">10+</div>
           <div class="text-xs text-slate-400 mt-1 font-mono">In Development</div>
         </div>
       </div>
@@ -334,10 +349,11 @@
   </section>
 
   <!-- ==================== FEATURED: GOG DISC CREATOR ==================== -->
-  <section id="gog-disc-creator" class="px-4 sm:px-6 lg:px-8 pt-12">
-    <div class="gog-hero">
+  <section class="px-4 sm:px-6 lg:px-8 pt-12">
+   <div class="hero-duo">
+    <div id="gog-disc-creator" class="gog-hero">
       <div>
-        <span class="gh-pill"><i class="fa-solid fa-star"></i> <span data-i18n="gog_pill">Flagship tool</span> · v7 BETA</span>
+        <span class="gh-pill st-beta"><i class="fa-solid fa-star"></i> <span data-i18n="gog_pill">Flagship tool</span> · BETA v7</span>
         <h2>GOG Disc Creator</h2>
         <p data-i18n="gog_feat_desc">Turn your GOG offline installers into real, auto-starting backup discs: the tool builds the launcher, autorun files and cover banner for you – ready to burn.</p>
         <ul>
@@ -351,13 +367,11 @@
       </div>
       <div class="gh-art" aria-hidden="true"><i class="fa-solid fa-compact-disc"></i></div>
     </div>
-  </section>
 
-  <!-- ==================== FEATURED: STEAM DISC CREATOR ==================== -->
-  <section id="steam-disc-creator" class="px-4 sm:px-6 lg:px-8 pt-8">
-    <div class="gog-hero">
+    <!-- ==================== FEATURED: STEAM DISC CREATOR ==================== -->
+    <div id="steam-disc-creator" class="gog-hero steam">
       <div>
-        <span class="gh-pill"><i class="fa-solid fa-compact-disc"></i> <span data-i18n="steam_pill">New tool</span> · BETA</span>
+        <span class="gh-pill st-beta"><i class="fa-solid fa-compact-disc"></i> <span data-i18n="steam_pill">New tool</span> · BETA v1</span>
         <h2>Steam Disc Creator</h2>
         <p data-i18n="steam_feat_desc">Split a game folder across CDs, DVDs, Blu-rays or USB sticks. A small Windows installer puts it back together, adds an uninstaller and can also install the required runtimes. Copy-protection hints are created locally from the file names – without any database.</p>
         <ul>
@@ -366,11 +380,12 @@
           <li><i class="fa-solid fa-language"></i><span data-i18n="steam_f3">6 installer languages</span></li>
         </ul>
         <a href="studios/Steam_Disc_Creator/Physical-Release-Studio-Steam-Disc-Creator.html" class="gh-cta">
-          <i class="fa-solid fa-rocket"></i> <span data-i18n="btn_launch_steam">Open Steam Disc Creator (Beta)</span>
+          <i class="fa-solid fa-gamepad"></i> <span data-i18n="btn_launch_steam">Open Steam Disc Creator (Beta v1)</span>
         </a>
       </div>
       <div class="gh-art" aria-hidden="true"><i class="fa-solid fa-compact-disc"></i></div>
     </div>
+   </div>
   </section>
 
   <!-- ==================== MAIN GRID & STUDIOS VIEW ==================== -->
@@ -607,7 +622,7 @@
               <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center">
                 <i class="fa-solid fa-book-open text-xl"></i>
               </div>
-              <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">BETA</span>
+              <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 st-beta">BETA</span>
             </div>
             <h3 class="text-lg font-bold text-white">Booklet Studio</h3>
             <p class="text-slate-400 text-sm mt-2 leading-relaxed" data-i18n="card_booklet_desc">
@@ -657,7 +672,7 @@
               <div class="w-12 h-12 rounded-xl bg-orange-500/10 border border-orange-500/20 text-orange-400 flex items-center justify-center">
                 <i class="fa-solid fa-box text-xl"></i>
               </div>
-              <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">BETA</span>
+              <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 st-beta">BETA</span>
             </div>
             <h3 class="text-lg font-bold text-white">Craft Studio</h3>
             <p class="text-slate-400 text-sm mt-2 leading-relaxed mb-3" data-i18n="card_craft_desc">
@@ -805,7 +820,7 @@
         steam_pill: "New tool",
         steam_feat_desc: "Split a game folder across CDs, DVDs, Blu-rays or USB sticks. A small Windows installer puts it back together, adds an uninstaller and can also install the required runtimes. Copy-protection hints are created locally from the file names – without any database.",
         steam_f1: "Splits across several discs", steam_f2: "Runs locally in your browser, no uploads", steam_f3: "6 installer languages",
-        btn_launch_steam: "Open Steam Disc Creator (Beta)",
+        btn_launch_steam: "Open Steam Disc Creator (Beta v1)",
         section_materials_title: "Materials & Supplies",
         section_materials_desc: "Tested papers, cardboards, and craft tools for optimal physical DIY results.",
         affiliate_tag: "Affiliate Link Collection",
@@ -863,7 +878,7 @@ With this studio, you can convert DRM-free games, indie titles, and your own bac
         steam_pill: "Neues Tool",
         steam_feat_desc: "Teile einen Spieleordner auf CDs, DVDs, Blu-rays oder USB-Sticks auf. Ein kleiner Windows-Installer fügt ihn wieder zusammen, bringt einen Deinstaller mit und installiert auf Wunsch die nötigen Laufzeiten. Hinweise zum Kopierschutz entstehen lokal aus den Dateinamen – ganz ohne Datenbank.",
         steam_f1: "Teilt auf mehrere Discs auf", steam_f2: "Läuft lokal im Browser, keine Uploads", steam_f3: "6 Installer-Sprachen",
-        btn_launch_steam: "Steam Disc Creator öffnen (Beta)",
+        btn_launch_steam: "Steam Disc Creator öffnen (Beta v1)",
         section_materials_title: "Materialien & Empfehlungen",
         section_materials_desc: "Getestete Materialien, Papiere und Werkzeuge für beste DIY-Ergebnisse.",
         affiliate_tag: "Affiliate Link Sammlung",
@@ -897,6 +912,14 @@ Mit diesem Studio kannst du DRM-freie Spiele, Indie-Titel und eigene Backups in 
     }
     let currentLang = detectLang();
 
+    // Zählt die Studios anhand ihrer Status-Kennzeichen (Ready / BETA / In Development)
+    function countStatus() {
+      const n = (sel) => document.querySelectorAll(sel).length;
+      const set = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = String(v); };
+      set('statReady', n('.badge-ready-text'));
+      set('statBeta', n('.st-beta'));
+      set('statDev', n('.badge-planned-text'));
+    }
     function setLanguage(lang) {
       currentLang = lang;
       try { localStorage.setItem('prs_lang', lang); } catch (e) {}
@@ -928,6 +951,7 @@ Mit diesem Studio kannst du DRM-freie Spiele, Indie-Titel und eigene Backups in 
         el.textContent = i18n[lang].planned_badge;
       });
 
+      countStatus();
       startTypewriter();
     }
 
