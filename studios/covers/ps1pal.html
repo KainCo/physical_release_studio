@@ -369,6 +369,15 @@
     .frame-back { width: 400px; height: 299px; }
     .frame-front { width: 300px; height: 305px; }
 
+    /* Optional split mode: left spine | center | right spine (Breite der Spines einstellbar) */
+    .back-group { display: flex; align-items: stretch; justify-content: center; }
+    .frame-spine { display: none; height: 299px; flex: none; }
+    .spine-ph { writing-mode: vertical-rl; font-size: 0.6rem; letter-spacing: 0.1em; white-space: nowrap; }
+    .back-group.split { border: 2px solid var(--border); border-radius: 6px; overflow: hidden; width: 404px; margin: 0 auto; }
+    .back-group.split .frame-spine { display: block; }
+    .back-group.split .frame-container { border: 0; border-radius: 0; }
+    .back-group.split .frame-container.active-target { box-shadow: none; outline: 2px solid var(--brand); outline-offset: -2px; }
+
     .frame-container.active-target {
       border-color: var(--brand);
       box-shadow: 0 0 15px rgba(37, 99, 235, 0.4);
@@ -509,7 +518,7 @@
 
     <div class="upload-cards">
       <div class="upload-card active" id="card-back" onclick="selectTab('back')">
-        <label for="file-back" data-i18n="ps1_back_label">📷 Back Cover Image</label>
+        <label for="file-back" id="lbl-back" data-i18n="ps1_back_label">📷 Back Cover Image</label>
         <input type="file" id="file-back" accept="image/*" onchange="loadFile(event, 'back')">
         
         <div id="dpi-container-back" class="dpi-container">
@@ -549,11 +558,56 @@
           </div>
         </div>
       </div>
+
+
+      <div class="upload-card" id="card-spineL" onclick="selectTab('spineL')" style="display: none;">
+        <label for="file-spineL" data-i18n="ps1_spineL_label">📷 Spine</label>
+        <input type="file" id="file-spineL" accept="image/*" onchange="loadFile(event, 'spineL')">
+        
+        <div id="dpi-container-spineL" class="dpi-container">
+          <div id="dpi-badge-spineL" class="dpi-badge"></div>
+          <div class="dpi-scale-wrapper">
+            <div class="scale-segment scale-red"></div>
+            <div class="scale-segment scale-yellow"></div>
+            <div class="scale-segment scale-green"></div>
+            <div id="dpi-marker-spineL" class="scale-marker" style="left: 0%;"></div>
+          </div>
+          <div class="scale-labels">
+            <span>0</span>
+            <span data-i18n="sc_good">150 (Good)</span>
+            <span data-i18n="sc_ideal">300 (Ideal)</span>
+            <span>400+</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="upload-card" id="card-spineR" onclick="selectTab('spineR')" style="display: none;">
+        <label for="file-spineR" data-i18n="ps1_spineR_label">📷 Spine</label>
+        <input type="file" id="file-spineR" accept="image/*" onchange="loadFile(event, 'spineR')">
+        
+        <div id="dpi-container-spineR" class="dpi-container">
+          <div id="dpi-badge-spineR" class="dpi-badge"></div>
+          <div class="dpi-scale-wrapper">
+            <div class="scale-segment scale-red"></div>
+            <div class="scale-segment scale-yellow"></div>
+            <div class="scale-segment scale-green"></div>
+            <div id="dpi-marker-spineR" class="scale-marker" style="left: 0%;"></div>
+          </div>
+          <div class="scale-labels">
+            <span>0</span>
+            <span data-i18n="sc_good">150 (Good)</span>
+            <span data-i18n="sc_ideal">300 (Ideal)</span>
+            <span>400+</span>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="tabs">
       <button class="tab-btn active" id="tab-back" onclick="selectTab('back')" data-i18n="tab_edit_back">Edit: Back Cover</button>
       <button class="tab-btn" id="tab-front" onclick="selectTab('front')" data-i18n="tab_edit_front">Edit: Front Cover</button>
+      <button class="tab-btn" id="tab-spineL" onclick="selectTab('spineL')" style="display: none;" data-i18n="tab_edit_spineL">Edit: Spine L</button>
+      <button class="tab-btn" id="tab-spineR" onclick="selectTab('spineR')" style="display: none;" data-i18n="tab_edit_spineR">Edit: Spine R</button>
     </div>
 
     <div class="controls-grid">
@@ -618,6 +672,14 @@
           <input type="checkbox" id="showGuidelines" checked>
           <span data-i18n="opt_crop_marks">Print crop marks / guidelines</span>
         </label>
+        <label style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; cursor: pointer; color: #fbbf24; margin-top: 8px;">
+          <input type="checkbox" id="enableSpines" onchange="toggleSplitSpines(this.checked)">
+          <span data-i18n="opt_split_spines">Upload spines separately (left / right)</span>
+        </label>
+        <label id="spineWidthWrap" style="display: none; align-items: center; gap: 6px; font-size: 0.75rem; margin-top: 6px;">
+          <span data-i18n="lbl_spine_w">Spine width (cm)</span>
+          <input type="number" id="spineWidth" min="0.3" max="2" step="0.05" value="1.2" style="width: 64px; padding: 3px;" oninput="updateSpineWidth()">
+        </label>
       </div>
     </div>
 
@@ -626,10 +688,20 @@
 
   <div class="preview-wrapper">
     <div style="text-align: center;">
-      <div style="font-size: 0.8rem; font-weight: bold; margin-bottom: 6px;" data-i18n="prev_back">Back Cover (16.3 × 12.2 cm)</div>
-      <div class="frame-container frame-back active-target" id="frame-back" onclick="selectTab('back')">
-        <div class="placeholder" id="ph-back" data-i18n="ph_select_back">Select file above</div>
-        <img id="img-back" class="cover-img" style="display:none;" alt="Back">
+      <div id="prev-lbl-back" style="font-size: 0.8rem; font-weight: bold; margin-bottom: 6px;" data-i18n="prev_back">Back Cover (16.3 × 12.2 cm)</div>
+      <div class="back-group" id="back-group">
+        <div class="frame-container frame-spine" id="frame-spineL" onclick="selectTab('spineL')">
+          <div class="placeholder spine-ph" id="ph-spineL" data-i18n="ph_spineL">SPINE L</div>
+          <img id="img-spineL" class="cover-img" style="display:none;" alt="Spine left">
+        </div>
+        <div class="frame-container frame-back active-target" id="frame-back" onclick="selectTab('back')">
+          <div class="placeholder" id="ph-back" data-i18n="ph_select_back">Select file above</div>
+          <img id="img-back" class="cover-img" style="display:none;" alt="Back">
+        </div>
+        <div class="frame-container frame-spine" id="frame-spineR" onclick="selectTab('spineR')">
+          <div class="placeholder spine-ph" id="ph-spineR" data-i18n="ph_spineR">SPINE R</div>
+          <img id="img-spineR" class="cover-img" style="display:none;" alt="Spine right">
+        </div>
       </div>
     </div>
 
@@ -693,7 +765,16 @@
         prev_back: "Back Cover (16.3 × 12.2 cm)", prev_front: "Front Cover (12.5 × 12.7 cm)",
         btn_print_now: "Print Now / Save PDF", btn_close: "Close",
         dpi_great: "Excellent (300+ DPI standard)", dpi_good: "Good ({p}% of ideal)", dpi_low: "Low quality (< 150 DPI)",
-        alert_img: "Please select at least one image!"
+        alert_img: "Please select at least one image!",
+        opt_split_spines: "Upload spines separately (left / right)",
+        lbl_spine_w: "Spine width (cm)",
+        ps1_back_center_label: "📷 Back Cover – Center (without spines)",
+        ps1_spineL_label: "📷 Spine left",
+        ps1_spineR_label: "📷 Spine right",
+        tab_edit_back_center: "Edit: Back (Center)",
+        tab_edit_spineL: "Edit: Spine L", tab_edit_spineR: "Edit: Spine R",
+        prev_back_split: "Back Cover – Center + Spines (16.3 × 12.2 cm)",
+        ph_spineL: "SPINE L", ph_spineR: "SPINE R",
       },
       de: {
         nav_index: "Zurück zur Übersicht",
@@ -717,7 +798,16 @@
         prev_back: "Rückseite (16,3 × 12,2 cm)", prev_front: "Vorderseite (12,5 × 12,7 cm)",
         btn_print_now: "Jetzt drucken / Als PDF speichern", btn_close: "Schließen",
         dpi_great: "Sehr gut (300+ DPI Standard)", dpi_good: "Gut ({p} % vom Ideal)", dpi_low: "Geringe Qualität (< 150 DPI)",
-        alert_img: "Bitte wähle mindestens ein Bild aus!"
+        alert_img: "Bitte wähle mindestens ein Bild aus!",
+        opt_split_spines: "Spines separat hochladen (links / rechts)",
+        lbl_spine_w: "Breite der Spines (cm)",
+        ps1_back_center_label: "📷 Rückseite – Mitte (ohne Spines)",
+        ps1_spineL_label: "📷 Spine links",
+        ps1_spineR_label: "📷 Spine rechts",
+        tab_edit_back_center: "Bearbeiten: Rück (Mitte)",
+        tab_edit_spineL: "Bearbeiten: Spine L", tab_edit_spineR: "Bearbeiten: Spine R",
+        prev_back_split: "Rückseite – Mitte + Spines (16,3 × 12,2 cm)",
+        ph_spineL: "RÜCKEN L", ph_spineR: "RÜCKEN R",
       }
     };
 
@@ -746,7 +836,7 @@
           el.textContent = i18n[lang][key];
         }
       });
-      ['back', 'front'].forEach(k => { if (state[k] && state[k].loaded) calculateAndDisplayDPI(k); });
+      ['back', 'front', 'spineL', 'spineR'].forEach(k => { if (state[k] && state[k].loaded) calculateAndDisplayDPI(k); });
     }
 
     let activeTarget = 'back';
@@ -754,18 +844,67 @@
 
     const state = {
       back: { x: 0, y: 0, scale: 1, baseFitScale: 1, userZoom: 1, rotation: 0, flipX: 1, loaded: false, targetCmW: 16.3, targetCmH: 12.2 },
-      front: { x: 0, y: 0, scale: 1, baseFitScale: 1, userZoom: 1, rotation: 0, flipX: 1, loaded: false, targetCmW: 12.5, targetCmH: 12.7 }
+      front: { x: 0, y: 0, scale: 1, baseFitScale: 1, userZoom: 1, rotation: 0, flipX: 1, loaded: false, targetCmW: 12.5, targetCmH: 12.7 },
+      spineL: { x: 0, y: 0, scale: 1, baseFitScale: 1, userZoom: 1, rotation: 0, flipX: 1, loaded: false, targetCmW: 1.2, targetCmH: 12.2 },
+      spineR: { x: 0, y: 0, scale: 1, baseFitScale: 1, userZoom: 1, rotation: 0, flipX: 1, loaded: false, targetCmW: 1.2, targetCmH: 12.2 }
     };
+    const BACK_W_CM = 16.3, BACK_PX = 400;
 
     function selectTab(target) {
       activeTarget = target;
-      document.getElementById('tab-back').classList.toggle('active', target === 'back');
-      document.getElementById('tab-front').classList.toggle('active', target === 'front');
-      document.getElementById('card-back').classList.toggle('active', target === 'back');
-      document.getElementById('card-front').classList.toggle('active', target === 'front');
-      document.getElementById('frame-back').classList.toggle('active-target', target === 'back');
-      document.getElementById('frame-front').classList.toggle('active-target', target === 'front');
+      ['back', 'front', 'spineL', 'spineR'].forEach(t => {
+        const tab = document.getElementById(`tab-${t}`);
+        const card = document.getElementById(`card-${t}`);
+        const frame = document.getElementById(`frame-${t}`);
+        if (tab) tab.classList.toggle('active', t === target);
+        if (card) card.classList.toggle('active', t === target);
+        if (frame) frame.classList.toggle('active-target', t === target);
+      });
       updateControls();
+    }
+
+    function refit(key) {
+      if (!state[key].loaded) return;
+      const prev = activeTarget;
+      activeTarget = key;
+      fitImage();
+      activeTarget = prev;
+      updateControls();
+    }
+
+    // Spines getrennt: Mitte + linker/rechter Rücken (Breite einstellbar)
+    function isSplit() { return document.getElementById('enableSpines').checked; }
+    function spineCm() {
+      const v = parseFloat(document.getElementById('spineWidth').value);
+      return isFinite(v) ? Math.min(Math.max(v, 0.3), 2) : 1.2;
+    }
+    function layoutSplit() {
+      const on = isSplit();
+      const sp = spineCm();
+      const spPx = Math.round(sp * BACK_PX / BACK_W_CM);
+      const back = document.getElementById('frame-back');
+      ['spineL', 'spineR'].forEach(k => {
+        document.getElementById(`frame-${k}`).style.width = spPx + 'px';
+        state[k].targetCmW = sp;
+      });
+      back.style.width = (on ? BACK_PX - 2 * spPx : BACK_PX) + 'px';
+      state.back.targetCmW = on ? +(BACK_W_CM - 2 * sp).toFixed(2) : BACK_W_CM;
+      ['back', 'spineL', 'spineR'].forEach(k => { if (state[k].loaded) { refit(k); calculateAndDisplayDPI(k); } });
+    }
+    function updateSpineWidth() { layoutSplit(); }
+    function toggleSplitSpines(on) {
+      ['spineL', 'spineR'].forEach(k => {
+        document.getElementById(`card-${k}`).style.display = on ? 'block' : 'none';
+        document.getElementById(`tab-${k}`).style.display = on ? 'block' : 'none';
+      });
+      document.getElementById('spineWidthWrap').style.display = on ? 'flex' : 'none';
+      document.getElementById('back-group').classList.toggle('split', on);
+      document.getElementById('lbl-back').setAttribute('data-i18n', on ? 'ps1_back_center_label' : 'ps1_back_label');
+      document.getElementById('tab-back').setAttribute('data-i18n', on ? 'tab_edit_back_center' : 'tab_edit_back');
+      document.getElementById('prev-lbl-back').setAttribute('data-i18n', on ? 'prev_back_split' : 'prev_back');
+      if (!on && (activeTarget === 'spineL' || activeTarget === 'spineR')) selectTab('back');
+      setLanguage(currentLang);
+      layoutSplit();
     }
 
     function calculateAndDisplayDPI(target) {
@@ -932,7 +1071,7 @@
       calculateAndDisplayDPI(activeTarget);
     }
 
-    ['back', 'front'].forEach(key => {
+    ['back', 'front', 'spineL', 'spineR'].forEach(key => {
       const frame = document.getElementById(`frame-${key}`);
       let startX, startY, isDragging = false;
 
@@ -964,7 +1103,9 @@
     });
 
     function preparePrint() {
-      if (!state.back.loaded && !state.front.loaded) {
+      const split = isSplit();
+      const hasBack = state.back.loaded || (split && (state.spineL.loaded || state.spineR.loaded));
+      if (!hasBack && !state.front.loaded) {
         alert(i18n[currentLang].alert_img);
         return;
       }
@@ -972,33 +1113,52 @@
       const drawGuidelines = document.getElementById('showGuidelines').checked;
 
       function renderCanvas(key, targetW, targetH) {
-        if (!state[key].loaded) return null;
+        const spinePx = Math.round((spineCm() / BACK_W_CM) * targetW);
+        const parts = (key === 'back' && split)
+          ? [
+              { k: 'back',   x0: spinePx,           w: targetW - 2 * spinePx },
+              { k: 'spineL', x0: 0,                 w: spinePx },
+              { k: 'spineR', x0: targetW - spinePx, w: spinePx }
+            ].filter(p => state[p.k].loaded)
+          : (state[key].loaded ? [{ k: key, x0: 0, w: targetW }] : []);
+        if (!parts.length) return null;
+
         const canvas = document.getElementById(`canvas-${key}`);
         const ctx = canvas.getContext('2d');
-        const img = document.getElementById(`img-${key}`);
-        const s = state[key];
-        const frame = document.getElementById(`frame-${key}`);
-
         canvas.width = targetW;
         canvas.height = targetH;
         ctx.clearRect(0, 0, targetW, targetH);
 
-        const scaleFactor = targetW / frame.clientWidth;
-        ctx.save();
-        ctx.translate(targetW / 2 + s.x * scaleFactor, targetH / 2 + s.y * scaleFactor);
-        ctx.rotate((s.rotation * Math.PI) / 180);
-        ctx.scale(s.scale * s.flipX * scaleFactor, s.scale * scaleFactor);
-        ctx.drawImage(img, -img.naturalWidth / 2, -img.naturalHeight / 2);
-        ctx.restore();
+        parts.forEach(p => {
+          const img = document.getElementById(`img-${p.k}`);
+          const s = state[p.k];
+          const frame = document.getElementById(`frame-${p.k}`);
+          const scaleFactor = p.w / frame.clientWidth;
+          ctx.save();
+          ctx.beginPath();
+          ctx.rect(p.x0, 0, p.w, targetH);
+          ctx.clip();
+          ctx.translate(p.x0 + p.w / 2 + s.x * scaleFactor, targetH / 2 + s.y * scaleFactor);
+          ctx.rotate((s.rotation * Math.PI) / 180);
+          ctx.scale(s.scale * s.flipX * scaleFactor, s.scale * scaleFactor);
+          ctx.drawImage(img, -img.naturalWidth / 2, -img.naturalHeight / 2);
+          ctx.restore();
+        });
 
         if (drawGuidelines) {
           ctx.save();
           ctx.strokeStyle = '#94a3b8';
           ctx.lineWidth = 3;
           ctx.strokeRect(0, 0, targetW, targetH);
+          if (key === 'back' && split) {
+            ctx.setLineDash([8, 8]);
+            ctx.beginPath();
+            ctx.moveTo(spinePx, 0); ctx.lineTo(spinePx, targetH);
+            ctx.moveTo(targetW - spinePx, 0); ctx.lineTo(targetW - spinePx, targetH);
+            ctx.stroke();
+          }
           ctx.restore();
         }
-
         return canvas.toDataURL('image/png');
       }
 
