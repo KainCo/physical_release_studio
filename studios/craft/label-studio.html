@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Physical Release Studio — Cart Label Studio</title>
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="../../assets/vendor/fontawesome/css/all.min.css">
+  
+  <!-- Lokale Schriften (Inter & JetBrains Mono), kein Google-Fonts-Abruf -->
+  <link rel="stylesheet" href="../../assets/fonts/fonts.css">
+
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: #111726;
+      --border: #1f293d;
+      --hover: #1a2336;
+      --brand: #2563eb;
+      --brand-accent: #a855f7;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px;
+    }
+
+    header {
+      width: 100%;
+      max-width: 1024px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 20px;
+      background: rgba(9, 13, 22, 0.9);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: white;
+    }
+
+    .brand-title i {
+      font-size: 1.5rem;
+      color: #3b82f6;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .lang-switcher {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 2px;
+      display: flex;
+    }
+
+    .lang-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 4px 10px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      font-family: 'JetBrains Mono', monospace;
+      cursor: pointer;
+      border-radius: 6px;
+    }
+
+    .lang-btn.active {
+      background: var(--brand);
+      color: white;
+    }
+
+    .btn-index {
+      background: var(--card-bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-index:hover {
+      border-color: var(--brand);
+    }
+
+    .ui-container {
+      width: 100%;
+      max-width: 1024px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      margin-bottom: 24px;
+    }
+
+    .header-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .sub-title {
+      font-size: 0.8rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    .upload-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 650px) {
+      .upload-cards { grid-template-columns: 1fr; }
+    }
+
+    .upload-card {
+      background: var(--bg);
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    .upload-card.active {
+      border-color: var(--brand);
+    }
+
+    .upload-card label {
+      display: block;
+      font-weight: bold;
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+      cursor: pointer;
+    }
+
+    .upload-card input[type="file"] {
+      width: 100%;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* DPI Quality Scale */
+    .dpi-container {
+      display: none;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    .dpi-badge {
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .dpi-badge.green { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .dpi-badge.yellow { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .dpi-badge.red { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+
+    .dpi-scale-wrapper {
+      position: relative;
+      width: 100%;
+      background: #1f293d;
+      height: 8px;
+      border-radius: 4px;
+      overflow: hidden;
+      display: flex;
+    }
+
+    .scale-segment { height: 100%; }
+    .scale-red { width: 37.5%; background: #ef4444; }
+    .scale-yellow { width: 37.5%; background: #f59e0b; }
+    .scale-green { width: 25%; background: #10b981; }
+
+    .scale-marker {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: #fff;
+      transform: translateX(-50%);
+      transition: left 0.3s ease;
+    }
+
+    .scale-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.65rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      background: var(--bg);
+      padding: 4px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      background: var(--brand);
+      color: white;
+    }
+
+    .controls-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      background: var(--bg);
+      padding: 16px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+
+    .control-group label {
+      font-size: 0.75rem;
+      font-weight: bold;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .btn-small {
+      padding: 6px 10px;
+      font-size: 0.75rem;
+      font-family: 'JetBrains Mono', monospace;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .btn-small:hover {
+      border-color: var(--brand);
+    }
+
+    /* Position Nudge Pad Grid */
+    .nudge-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+      width: 110px;
+      margin: 0 auto;
+    }
+
+    .nudge-grid button {
+      padding: 6px;
+      font-size: 0.75rem;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .nudge-grid button:hover {
+      border-color: var(--brand);
+    }
+
+    .btn-print {
+      width: 100%;
+      background: #10b981;
+      color: white;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .btn-print:hover {
+      background: #059669;
+    }
+
+    .preview-wrapper {
+      display: flex;
+      gap: 24px;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      width: 100%;
+      max-width: 1024px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 32px 16px;
+      border-radius: 16px;
+    }
+
+    .frame-container {
+      position: relative;
+      background: var(--bg);
+      border: 2px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    .frame-container.active-target {
+      border-color: var(--brand);
+      box-shadow: 0 0 15px rgba(37, 99, 235, 0.4);
+    }
+
+    .cover-img {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform-origin: center center;
+      pointer-events: none;
+    }
+
+    .placeholder {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-align: center;
+      pointer-events: none;
+    }
+
+    #printScreen {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: white;
+      z-index: 9999;
+      padding: 10px;
+      overflow: auto;
+    }
+
+    /* ==========================================================================
+       OPTIMIERTER A4 HOCHKANT DRUCK-BLOCK (PORTRAIT - EXAKTE PS1 PAL MAßE)
+       ========================================================================== */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 0mm !important;
+      }
+
+      html, body {
+        width: 210mm !important;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: visible !important;
+        background: white !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      header, .ui-container, .preview-wrapper, canvas, footer, .no-print {
+        display: none !important;
+      }
+
+      #printScreen {
+        display: block !important;
+        position: static !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 210mm !important;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: visible !important;
+        background: white !important;
+      }
+
+      .print-container {
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
+        gap: 8mm !important;
+        width: 210mm !important;
+        height: auto !important;
+        margin: 0 auto !important;
+        padding: 8mm 0 0 0 !important;
+        box-sizing: border-box !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+
+      .print-container img {
+        display: block !important;
+        max-width: none !important;
+        max-height: none !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+    }
+  
+    /* Cart Label Studio */
+    .select-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: end; margin-bottom: 16px; }
+    .select-row label.fld { display: flex; flex-direction: column; gap: 4px; font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: .04em; font-weight: 600; }
+    .select-row select, .select-row input[type=number] {
+      background: var(--bg); color: var(--text); border: 1px solid var(--border);
+      border-radius: 8px; padding: 9px 10px; font-size: 0.9rem; min-width: 220px;
+    }
+    .select-row input[type=number] { min-width: 90px; width: 100px; }
+    .label-info { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 14px; font-family: 'JetBrains Mono', monospace; }
+    .label-info .tag { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 0.7rem; margin-left: 6px; }
+    .tag.ok { background: rgba(16,185,129,.15); color: #34d399; border: 1px solid rgba(16,185,129,.3); }
+    .tag.warn { background: rgba(245,158,11,.15); color: #fbbf24; border: 1px solid rgba(245,158,11,.3); }
+    .frame-label { border-color: var(--brand); box-shadow: 0 0 15px rgba(37,99,235,.4); }
+    .frame-label .fold-line { position: absolute; left: 0; right: 0; border-top: 1px dashed rgba(251,191,36,.9); pointer-events: none; z-index: 3; display: none; }
+    .upload-cards.single { grid-template-columns: 1fr; max-width: 560px; }
+    @media print {
+      .print-container.sheet {
+        display: grid !important; flex-direction: initial !important;
+        justify-content: center !important; align-content: start !important;
+        align-items: start !important; padding-top: 10mm !important; height: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="../../index.html" class="btn-index">
+      <i class="fa-solid fa-arrow-left"></i>
+      <span data-i18n="nav_index">Back to Overview</span>
+    </a>
+
+    <a href="#" class="brand-title">
+      <i class="fa-solid fa-compact-disc"></i>
+      <div>
+        <div style="font-weight: 800; font-size: 1rem;">PHYSICAL RELEASE</div>
+        <div style="font-size: 0.7rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">Cart Label Studio <p>&copy; 2026 KainCo. All rights reserved.</p></div>
+      </div>
+    </a>
+
+    <div class="header-actions">
+      <div class="lang-switcher">
+        <button id="lang-en" onclick="setLanguage('en')" class="lang-btn active">EN</button>
+        <button id="lang-de" onclick="setLanguage('de')" class="lang-btn">DE</button>
+      </div>
+	
+	    <!-- PayPal Button mit dynamischem Text via data-i18n -->
+      <a href="https://paypal.me/kainco" target="_blank" rel="noopener noreferrer" 
+         style="background: #0070ba; color: white; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
+        <i class="fa-brands fa-paypal"></i> <span data-i18n="btn_donation">Donation</span>
+      </a>
+	    <!-- Ko-Fi Button -->
+      <a href="https://ko-fi.com/kainco" target="_blank" rel="noopener noreferrer" 
+         style="background: #ff5e5b; color: white; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
+        <i class="fa-solid fa-mug-hot"></i> Support
+      </a>
+    </div>
+  </header>
+
+  <div class="ui-container">
+    <div class="header-title" data-i18n="title">Cartridge Label Studio</div>
+    <div class="sub-title" data-i18n="sub">Choose a console, upload your artwork and print the label in its original size.</div>
+
+    <div class="select-row">
+      <label class="fld"><span data-i18n="lbl_console">Console / cartridge</span>
+        <select id="consoleSel" onchange="onConsoleChange()"></select></label>
+      <label class="fld" id="wrapCW" style="display:none;"><span data-i18n="lbl_w">Width (mm)</span><input type="number" id="customW" min="10" max="200" step="0.5" value="50" oninput="onConsoleChange()"></label>
+      <label class="fld" id="wrapCH" style="display:none;"><span data-i18n="lbl_h">Height (mm)</span><input type="number" id="customH" min="10" max="280" step="0.5" value="40" oninput="onConsoleChange()"></label>
+    </div>
+    <div class="label-info" id="labelInfo"></div>
+
+    <div class="upload-cards single">
+      <div class="upload-card active" id="card-label">
+        <label for="file-label" data-i18n="lbl_upload">📷 Label artwork</label>
+        <input type="file" id="file-label" accept="image/*" onchange="loadFile(event)">
+        <div id="dpi-container-label" class="dpi-container">
+          <div id="dpi-badge-label" class="dpi-badge"></div>
+          <div class="dpi-scale-wrapper">
+            <div class="scale-segment scale-red"></div>
+            <div class="scale-segment scale-yellow"></div>
+            <div class="scale-segment scale-green"></div>
+            <div id="dpi-marker-label" class="scale-marker" style="left: 0%;"></div>
+          </div>
+          <div class="scale-labels">
+            <span>0</span>
+            <span data-i18n="sc_good">150 (Good)</span>
+            <span data-i18n="sc_ideal">300 (Ideal)</span>
+            <span>400+</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls-grid">
+      <div class="control-group">
+        <label data-i18n="lbl_rotation">Rotation & Flip</label>
+        <div class="btn-row">
+          <button class="btn-small" onclick="rotate(0)">0°</button>
+          <button class="btn-small" onclick="rotate(-90)">-90°</button>
+          <button class="btn-small" onclick="rotate(90)">+90°</button>
+          <button class="btn-small" onclick="rotate(180)">180°</button>
+          <button class="btn-small" onclick="toggleFlip()">↔️ Flip</button>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label for="zoomInput" data-i18n="lbl_zoom">Granular Zoom (%)</label>
+        <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 6px;">
+          <input type="range" id="zoomSlider" min="10" max="300" step="0.1" value="100" style="flex: 1;" oninput="updateZoom(this.value)">
+          <input type="number" id="zoomInput" min="10" max="300" step="0.1" value="100" style="width: 60px; padding: 4px; background: var(--bg); border: 1px solid var(--border); color: white; border-radius: 4px;" oninput="updateZoom(this.value)">
+        </div>
+        <div class="btn-row">
+          <button class="btn-small" style="flex: 1;" onclick="stepZoom(-1)">-1%</button>
+          <button class="btn-small" style="flex: 1;" onclick="stepZoom(-0.1)">-0.1%</button>
+          <button class="btn-small" style="flex: 1;" onclick="stepZoom(0.1)">+0.1%</button>
+          <button class="btn-small" style="flex: 1;" onclick="stepZoom(1)">+1%</button>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <label style="margin: 0;" data-i18n="lbl_nudge">Nudge Position</label>
+          <div class="btn-row" style="gap: 2px;">
+            <button id="step-1" class="btn-small" style="padding: 2px 6px; background: var(--brand);" onclick="setNudgeStep(1)">1px</button>
+            <button id="step-5" class="btn-small" style="padding: 2px 6px;" onclick="setNudgeStep(5)">5px</button>
+            <button id="step-10" class="btn-small" style="padding: 2px 6px;" onclick="setNudgeStep(10)">10px</button>
+          </div>
+        </div>
+        <div class="nudge-grid">
+          <div></div>
+          <button onclick="nudge(0, -1)"><i class="fa-solid fa-arrow-up"></i></button>
+          <div></div>
+          <button onclick="nudge(-1, 0)"><i class="fa-solid fa-arrow-left"></i></button>
+          <button style="color: var(--brand); font-weight: bold;" onclick="resetPos()">•</button>
+          <button onclick="nudge(1, 0)"><i class="fa-solid fa-arrow-right"></i></button>
+          <div></div>
+          <button onclick="nudge(0, 1)"><i class="fa-solid fa-arrow-down"></i></button>
+          <div></div>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label data-i18n="lbl_alignment">Alignment & Print</label>
+        <div class="btn-row" style="margin-bottom: 8px;">
+          <button class="btn-small" style="flex: 1;" onclick="fitImage()" data-i18n="btn_fit">Fit</button>
+          <button class="btn-small" style="flex: 1;" onclick="resetTransforms()" data-i18n="btn_reset">Reset</button>
+        </div>
+        <label style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; cursor: pointer;">
+          <input type="checkbox" id="showGuidelines" checked>
+          <span data-i18n="opt_crop_marks">Print cut outline / fold line</span>
+        </label>
+        <label style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; cursor: pointer; margin-top: 8px;">
+          <input type="checkbox" id="clipShape" checked>
+          <span data-i18n="opt_clip">Clip artwork to label shape</span>
+        </label>
+        <label style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; margin-top: 8px;">
+          <span data-i18n="lbl_copies">Copies</span>
+          <input type="number" id="copies" min="1" max="1" step="1" value="1" style="width: 60px; padding: 3px; background: var(--bg); border: 1px solid var(--border); color: white; border-radius: 4px;">
+          <span id="maxCopies" style="color: var(--text-muted);"></span>
+        </label>
+      </div>
+    </div>
+
+    <button class="btn-print" onclick="preparePrint()" data-i18n="btn_print">🖨️ Print / Save as PDF</button>
+  </div>
+
+  <div class="preview-wrapper">
+    <div style="text-align: center;">
+      <div id="prevLbl" style="font-size: 0.8rem; font-weight: bold; margin-bottom: 6px;"></div>
+      <div class="frame-container frame-label" id="frame-label">
+        <div class="placeholder" id="ph-label" data-i18n="ph_select">Select file above</div>
+        <img id="img-label" class="cover-img" style="display:none;" alt="Label">
+        <div class="fold-line" id="foldLine"></div>
+        <svg id="outlineSvg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:4;" preserveAspectRatio="none"><path id="outlinePath" d="" fill="none" stroke="#2563eb" stroke-width="4"/></svg>
+      </div>
+    </div>
+  </div>
+
+  <div id="printScreen">
+    <div style="padding: 10px; text-align: center; background: #f3f4f6; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap;" class="no-print">
+      <button onclick="window.print()" style="padding: 10px 20px; background: #10b981; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;" data-i18n="btn_print_now">Print Now / Save PDF</button>
+      <a href="https://paypal.me/kainco" target="_blank" rel="noopener noreferrer" style="background: #0070ba; color: white; padding: 8px 14px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-brands fa-paypal"></i> <span data-i18n="btn_donation">Donation</span></a>
+      <a href="https://ko-fi.com/kainco" target="_blank" rel="noopener noreferrer" style="background: #ff5e5b; color: white; padding: 8px 14px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-solid fa-mug-hot"></i> Support</a>
+      <button onclick="closePrint()" style="padding: 10px 20px; background: #6b7280; color: white; border: none; border-radius: 6px; cursor: pointer;" data-i18n="btn_close">Close</button>
+    </div>
+    <div class="print-container sheet" id="printSheet"></div>
+  </div>
+
+  <canvas id="canvas-label" style="display:none;"></canvas>
+
+  <script>
+    // Maße: https://consolemods.org/wiki/Cart_Labels (Breite x Höhe in mm; "ok" = laut Quelle getestet/bestätigt)
+    const LABELS = [
+      { id: 'gb',    name: 'Game Boy (DMG / Color)',     w: 42,   h: 37,   fold: 0,   r: 1.5,  ok: false },
+      { id: 'gba',   name: 'Game Boy Advance',           w: 43,   h: 22,   fold: 0,   r: 1,    ok: true  },
+      { id: 'nes',   name: 'NES',                        w: 55,   h: 97,   fold: 7,   r: 1,    ok: false },
+      { id: 'snes',  name: 'SNES',                       w: 82.5, h: 44,   fold: 7,   r: 3,    ok: true  },
+      { id: 'sfc',   name: 'Super Famicom',              w: 104,  h: 36,   fold: 0,   r: 3.8,  ok: false },
+      { id: 'n64',   name: 'Nintendo 64',                w: 54.5, h: 62.5, fold: 0,   r: 4,    rb: 3, arc: 162.5, ok: false },
+      { id: 'gen',   name: 'Sega Genesis / Mega Drive',  w: 74,   h: 67,   fold: 7,   r: 2,    ok: true  },
+      { id: '32x',   name: 'Sega 32X',                   w: 75,   h: 43,   fold: 0,   r: 3,    ok: true  },
+      { id: 'genmini', name: 'Sega Genesis Mini',        w: 41,   h: 37,   fold: 4,   r: 1.25, ok: true  },
+      { id: 'gpi',   name: 'Retroflag GPi Case',         w: 39,   h: 22,   fold: 0,   r: 1,    ok: true  },
+      { id: 'gpi2',  name: 'Retroflag GPi Case 2',       w: 39,   h: 10,   fold: 0,   r: 1,    ok: false },
+      { id: 'nespi4',name: 'Retroflag NESPi 4',          w: 36,   h: 74.8, fold: 3.5, r: 1,    ok: true  },
+      { id: 'custom',name: '__custom__',                 w: 50,   h: 40,   fold: 0,   r: 1,    ok: false }
+    ];
+
+    const i18n = {
+      en: {
+        nav_index: "Back to Overview",
+        title: "Cartridge Label Studio",
+        sub: "Choose a console, upload your artwork and print the label in its original size.",
+        lbl_console: "Console / cartridge", lbl_w: "Width (mm)", lbl_h: "Height (mm)", custom: "Custom size …",
+        lbl_upload: "📷 Label artwork",
+        lbl_rotation: "Rotation & Flip", lbl_zoom: "Granular Zoom (%)", lbl_alignment: "Alignment & Print",
+        lbl_nudge: "Nudge Position", lbl_copies: "Copies", max_copies: "(max. {n} per A4)",
+        btn_fit: "Fit", btn_reset: "Reset", btn_donation: "Donation",
+        opt_crop_marks: "Print cut outline / fold line",
+        opt_clip: "Clip artwork to label shape (off = full rectangle as bleed)",
+        btn_print: "🖨️ Print / Save as PDF", btn_print_now: "Print Now / Save PDF", btn_close: "Close",
+        ph_select: "Select artwork file above",
+        sc_good: "150 (Good)", sc_ideal: "300 (Ideal)",
+        dpi_great: "Excellent (300+ DPI standard)", dpi_good: "Good ({p}% of ideal)", dpi_low: "Low quality (< 150 DPI)",
+        alert_img: "Please select an image first!",
+        tag_ok: "tested", tag_warn: "not confirmed – test print first",
+        info_fold: "fold {f} mm", info_r: "corner radius {r} mm", info_arc: "curved top edge (Ø {d} mm)",
+        prev: "Label {n} ({w} × {h} mm)"
+      },
+      de: {
+        nav_index: "Zurück zur Übersicht",
+        title: "Modul-Label Studio",
+        sub: "Konsole wählen, Bild hochladen und das Label in Originalgröße drucken.",
+        lbl_console: "Konsole / Modul", lbl_w: "Breite (mm)", lbl_h: "Höhe (mm)", custom: "Eigene Größe …",
+        lbl_upload: "📷 Label-Bild",
+        lbl_rotation: "Drehung & Spiegeln", lbl_zoom: "Granularer Zoom (%)", lbl_alignment: "Ausrichtung & Druck",
+        lbl_nudge: "Position verschieben", lbl_copies: "Anzahl", max_copies: "(max. {n} pro A4)",
+        btn_fit: "Einpassen", btn_reset: "Zurücksetzen", btn_donation: "Spende",
+        opt_crop_marks: "Schnittlinie / Falzlinie drucken",
+        opt_clip: "Bild auf Labelform zuschneiden (aus = volles Rechteck als Überstand)",
+        btn_print: "🖨️ Drucken / Als PDF speichern", btn_print_now: "Jetzt drucken / Als PDF speichern", btn_close: "Schließen",
+        ph_select: "Wähle oben eine Bilddatei",
+        sc_good: "150 (Gut)", sc_ideal: "300 (Ideal)",
+        dpi_great: "Sehr gut (300+ DPI Standard)", dpi_good: "Gut ({p} % vom Ideal)", dpi_low: "Geringe Qualität (< 150 DPI)",
+        alert_img: "Bitte wähle zuerst ein Bild aus!",
+        tag_ok: "getestet", tag_warn: "nicht bestätigt – erst Testdruck machen",
+        info_fold: "Falz {f} mm", info_r: "Eckenradius {r} mm", info_arc: "gewölbte Oberkante (Ø {d} mm)",
+        prev: "Label {n} ({w} × {h} mm)"
+      }
+    };
+
+    let currentLang = 'en';
+    try { currentLang = localStorage.getItem('prs_lang') || 'en'; } catch (e) {}
+    let activeLabel = LABELS[0];
+    let currentNudgeStep = 1;
+    const state = { label: { x: 0, y: 0, scale: 1, baseFitScale: 1, userZoom: 1, rotation: 0, flipX: 1, loaded: false, targetCmW: 4.2, targetCmH: 3.7 } };
+    const T = (k) => i18n[currentLang][k];
+    const fmt = (n) => (Math.round(n * 100) / 100).toString().replace('.', currentLang === 'de' ? ',' : '.');
+
+    function labelName(l) { return l.id === 'custom' ? T('custom') : l.name; }
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      try { localStorage.setItem('prs_lang', lang); } catch (e) {}
+      document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+      document.getElementById('lang-de').classList.toggle('active', lang === 'de');
+      document.documentElement.lang = lang;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const k = el.getAttribute('data-i18n');
+        if (i18n[lang][k]) el.textContent = i18n[lang][k];
+      });
+      const sel = document.getElementById('consoleSel');
+      const cur = sel.value;
+      sel.innerHTML = '';
+      LABELS.forEach(l => {
+        const o = document.createElement('option');
+        o.value = l.id;
+        o.textContent = labelName(l) + (l.id === 'custom' ? '' : ` — ${fmt(l.w)} × ${fmt(l.h)} mm`);
+        sel.appendChild(o);
+      });
+      sel.value = cur || LABELS[0].id;
+      onConsoleChange(true);
+    }
+
+    function currentSize() {
+      if (activeLabel.id === 'custom') {
+        const w = Math.min(Math.max(parseFloat(document.getElementById('customW').value) || 50, 10), 200);
+        const h = Math.min(Math.max(parseFloat(document.getElementById('customH').value) || 40, 10), 280);
+        return { w, h };
+      }
+      return { w: activeLabel.w, h: activeLabel.h };
+    }
+
+    function onConsoleChange(keepFit) {
+      activeLabel = LABELS.find(l => l.id === document.getElementById('consoleSel').value) || LABELS[0];
+      const custom = activeLabel.id === 'custom';
+      document.getElementById('wrapCW').style.display = custom ? 'flex' : 'none';
+      document.getElementById('wrapCH').style.display = custom ? 'flex' : 'none';
+      const { w, h } = currentSize();
+      state.label.targetCmW = w / 10;
+      state.label.targetCmH = h / 10;
+
+      // Vorschau: maßstabsgetreues Seitenverhältnis
+      const ppm = Math.min(420 / w, 340 / h);
+      const frame = document.getElementById('frame-label');
+      frame.style.width = Math.round(w * ppm) + 'px';
+      frame.style.height = Math.round(h * ppm) + 'px';
+      const fold = document.getElementById('foldLine');
+      if (!custom && activeLabel.fold > 0) { fold.style.display = 'block'; fold.style.top = Math.round(activeLabel.fold * ppm) + 'px'; }
+      else fold.style.display = 'none';
+      const d = labelShape(ppm);
+      frame.style.border = '0';
+      frame.style.borderRadius = '0';
+      frame.style.boxShadow = 'none';
+      frame.style.clipPath = `path('${d}')`;
+      document.getElementById('outlineSvg').setAttribute('viewBox', `0 0 ${Math.round(w * ppm)} ${Math.round(h * ppm)}`);
+      document.getElementById('outlinePath').setAttribute('d', d);
+
+      document.getElementById('prevLbl').textContent = T('prev').replace('{n}', labelName(activeLabel)).replace('{w}', fmt(w)).replace('{h}', fmt(h));
+      let info = `${fmt(w)} × ${fmt(h)} mm`;
+      if (!custom) {
+        info += ` · ${T('info_r').replace('{r}', fmt(activeLabel.r) + (activeLabel.rb ? ' / ' + fmt(activeLabel.rb) : ''))}`;
+        if (activeLabel.arc) info += ` · ${T('info_arc').replace('{d}', fmt(activeLabel.arc * 2))}`;
+        if (activeLabel.fold) info += ` · ${T('info_fold').replace('{f}', fmt(activeLabel.fold))}`;
+        info += ` <span class="tag ${activeLabel.ok ? 'ok' : 'warn'}">${activeLabel.ok ? '✔ ' + T('tag_ok') : '⚠ ' + T('tag_warn')}</span>`;
+      }
+      document.getElementById('labelInfo').innerHTML = info;
+
+      // Max. Anzahl pro A4 (10 mm Rand, 4 mm Abstand)
+      const mx = maxFit(w, h);
+      const cp = document.getElementById('copies');
+      cp.max = mx.n;
+      if (parseInt(cp.value) > mx.n) cp.value = mx.n;
+      document.getElementById('maxCopies').textContent = T('max_copies').replace('{n}', mx.n);
+
+      if (state.label.loaded) { if (!keepFit) fitImage(); else { state.label.baseFitScale = calculateFitScale(); applyTransforms(); } calculateAndDisplayDPI(); }
+    }
+
+    function maxFit(w, h) {
+      const gap = 4, pw = 190, ph = 277;
+      const cols = Math.max(1, Math.floor((pw + gap) / (w + gap)));
+      const rows = Math.max(1, Math.floor((ph + gap) / (h + gap)));
+      return { cols, rows, n: cols * rows };
+    }
+
+    function calculateAndDisplayDPI() {
+      const img = document.getElementById('img-label');
+      const container = document.getElementById('dpi-container-label');
+      const badge = document.getElementById('dpi-badge-label');
+      const marker = document.getElementById('dpi-marker-label');
+      if (!img || !img.naturalWidth) return;
+      container.style.display = 'block';
+      const inW = state.label.targetCmW / 2.54, inH = state.label.targetCmH / 2.54;
+      const is90 = Math.abs(state.label.rotation % 180) === 90;
+      const iw = is90 ? img.naturalHeight : img.naturalWidth;
+      const ih = is90 ? img.naturalWidth : img.naturalHeight;
+      const dpi = Math.min(Math.round(iw / inW), Math.round(ih / inH));
+      badge.className = 'dpi-badge';
+      let pos;
+      if (dpi <= 150) pos = (dpi / 150) * 37.5;
+      else if (dpi < 300) pos = 37.5 + ((dpi - 150) / 150) * 37.5;
+      else pos = 75 + (Math.min(dpi - 300, 100) / 100) * 25;
+      marker.style.left = Math.min(Math.max(pos, 2), 98) + '%';
+      if (dpi >= 300) { badge.classList.add('green'); badge.innerHTML = `🟢 <b>${dpi} DPI</b> – ${T('dpi_great')}`; }
+      else if (dpi >= 150) { badge.classList.add('yellow'); badge.innerHTML = `🟡 <b>${dpi} DPI</b> – ${T('dpi_good').replace('{p}', Math.round(dpi / 300 * 100))}`; }
+      else { badge.classList.add('red'); badge.innerHTML = `🔴 <b>${dpi} DPI</b> – ${T('dpi_low')}`; }
+    }
+
+    function loadFile(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const img = document.getElementById('img-label');
+        img.onload = () => {
+          state.label.loaded = true;
+          document.getElementById('ph-label').style.display = 'none';
+          img.style.display = 'block';
+          fitImage();
+          calculateAndDisplayDPI();
+        };
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function calculateFitScale() {
+      const img = document.getElementById('img-label');
+      if (!img || !img.naturalWidth) return 1;
+      const frame = document.getElementById('frame-label');
+      const is90 = Math.abs(state.label.rotation % 180) === 90;
+      const w = is90 ? img.naturalHeight : img.naturalWidth;
+      const h = is90 ? img.naturalWidth : img.naturalHeight;
+      return Math.max(frame.clientWidth / w, frame.clientHeight / h);
+    }
+
+    function applyTransforms() {
+      const img = document.getElementById('img-label');
+      const s = state.label;
+      s.scale = s.baseFitScale * s.userZoom;
+      img.style.transform = `translate(calc(-50% + ${s.x}px), calc(-50% + ${s.y}px)) rotate(${s.rotation}deg) scale(${s.scale * s.flipX}, ${s.scale})`;
+      updateControls();
+    }
+
+    function updateControls() {
+      const val = parseFloat((state.label.userZoom * 100).toFixed(1));
+      document.getElementById('zoomSlider').value = val;
+      document.getElementById('zoomInput').value = val;
+    }
+
+    function toggleFlip() { state.label.flipX *= -1; applyTransforms(); }
+    function rotate(deg) { state.label.rotation = deg; state.label.baseFitScale = calculateFitScale(); applyTransforms(); calculateAndDisplayDPI(); }
+    function updateZoom(v) { const n = parseFloat(v); if (!isFinite(n)) return; state.label.userZoom = Math.min(Math.max(n, 10), 300) / 100; applyTransforms(); }
+    function stepZoom(d) { const p = Math.min(Math.max(state.label.userZoom * 100 + d, 10), 300); state.label.userZoom = parseFloat((p / 100).toFixed(3)); applyTransforms(); }
+    function setNudgeStep(step) {
+      currentNudgeStep = step;
+      [1, 5, 10].forEach(s => {
+        const b = document.getElementById(`step-${s}`);
+        b.style.background = s === step ? 'var(--brand)' : 'var(--card-bg)';
+        b.style.color = s === step ? 'white' : 'var(--text-muted)';
+      });
+    }
+    function nudge(dx, dy) { state.label.x += dx * currentNudgeStep; state.label.y += dy * currentNudgeStep; applyTransforms(); }
+    function resetPos() { state.label.x = 0; state.label.y = 0; applyTransforms(); }
+    function fitImage() { state.label.baseFitScale = calculateFitScale(); state.label.userZoom = 1; state.label.x = 0; state.label.y = 0; applyTransforms(); }
+    function resetTransforms() {
+      Object.assign(state.label, { x: 0, y: 0, userZoom: 1, rotation: 0, flipX: 1 });
+      state.label.baseFitScale = calculateFitScale();
+      applyTransforms(); calculateAndDisplayDPI();
+    }
+
+    (function dragSetup() {
+      const frame = document.getElementById('frame-label');
+      let sx, sy, drag = false;
+      const start = (e) => { if (!state.label.loaded) return; drag = true; const t = e.touches ? e.touches[0] : e; sx = t.clientX - state.label.x; sy = t.clientY - state.label.y; };
+      const move = (e) => { if (!drag) return; const t = e.touches ? e.touches[0] : e; state.label.x = t.clientX - sx; state.label.y = t.clientY - sy; applyTransforms(); };
+      const end = () => { drag = false; };
+      frame.addEventListener('touchstart', start, { passive: true });
+      frame.addEventListener('touchmove', move, { passive: true });
+      frame.addEventListener('touchend', end);
+      frame.addEventListener('mousedown', start);
+      window.addEventListener('mousemove', move);
+      window.addEventListener('mouseup', end);
+    })();
+
+    // Umriss als SVG-Pfad (Einheit beliebig): rt/rb = Eckenradius oben/unten, arc = Radius der gewölbten Oberkante
+    function shapePath(w, h, rt, rb, arc) {
+      const R = arc || 0;
+      const sag = R ? R - Math.sqrt(R * R - (w / 2) * (w / 2)) : 0;
+      const yArc = (x) => R ? R - Math.sqrt(R * R - (x - w / 2) * (x - w / 2)) : 0;
+      const f = (n) => +n.toFixed(2);
+      let d = `M0 ${f(sag + rt)} Q0 ${f(sag)} ${f(rt)} ${f(yArc(rt))} `;
+      d += R ? `A${f(R)} ${f(R)} 0 0 1 ${f(w - rt)} ${f(yArc(w - rt))} ` : `L${f(w - rt)} 0 `;
+      d += `Q${f(w)} ${f(sag)} ${f(w)} ${f(sag + rt)} L${f(w)} ${f(h - rb)} Q${f(w)} ${f(h)} ${f(w - rb)} ${f(h)} `;
+      d += `L${f(rb)} ${f(h)} Q0 ${f(h)} 0 ${f(h - rb)} Z`;
+      return d;
+    }
+    function labelShape(unit) {   // Pfad in Pixeln: unit = px pro mm
+      const { w, h } = currentSize();
+      const L = activeLabel;
+      const custom = L.id === 'custom';
+      const rt = (custom ? 1 : L.r) * unit, rb = (custom ? 1 : (L.rb || L.r)) * unit;
+      return shapePath(w * unit, h * unit, rt, rb, custom ? 0 : (L.arc || 0) * unit);
+    }
+
+    function roundRectPath(ctx, x, y, w, h, r) {
+      r = Math.min(r, w / 2, h / 2);
+      ctx.beginPath();
+      ctx.moveTo(x + r, y); ctx.lineTo(x + w - r, y); ctx.arcTo(x + w, y, x + w, y + r, r);
+      ctx.lineTo(x + w, y + h - r); ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
+      ctx.lineTo(x + r, y + h); ctx.arcTo(x, y + h, x, y + h - r, r);
+      ctx.lineTo(x, y + r); ctx.arcTo(x, y, x + r, y, r); ctx.closePath();
+    }
+
+    function preparePrint() {
+      if (!state.label.loaded) { alert(T('alert_img')); return; }
+      const { w, h } = currentSize();
+      const pxmm = 300 / 25.4;
+      const W = Math.round(w * pxmm), H = Math.round(h * pxmm);
+      const canvas = document.getElementById('canvas-label');
+      const ctx = canvas.getContext('2d');
+      canvas.width = W; canvas.height = H;
+      ctx.clearRect(0, 0, W, H);
+      const img = document.getElementById('img-label');
+      const frame = document.getElementById('frame-label');
+      const f = W / frame.clientWidth;
+      const s = state.label;
+      ctx.save();
+      if (document.getElementById('clipShape').checked) ctx.clip(new Path2D(labelShape(pxmm)));
+      ctx.translate(W / 2 + s.x * f, H / 2 + s.y * f);
+      ctx.rotate((s.rotation * Math.PI) / 180);
+      ctx.scale(s.scale * s.flipX * f, s.scale * f);
+      ctx.drawImage(img, -img.naturalWidth / 2, -img.naturalHeight / 2);
+      ctx.restore();
+
+      if (document.getElementById('showGuidelines').checked) {
+        ctx.save();
+        ctx.strokeStyle = '#64748b'; ctx.lineWidth = 3;
+        ctx.stroke(new Path2D(labelShape(pxmm)));
+        if (activeLabel.id !== 'custom' && activeLabel.fold > 0) {
+          ctx.setLineDash([14, 10]);
+          ctx.beginPath(); ctx.moveTo(0, activeLabel.fold * pxmm); ctx.lineTo(W, activeLabel.fold * pxmm); ctx.stroke();
+        }
+        ctx.restore();
+      }
+      const data = canvas.toDataURL('image/png');
+
+      const mx = maxFit(w, h);
+      let n = Math.min(Math.max(parseInt(document.getElementById('copies').value) || 1, 1), mx.n);
+      const cols = Math.min(mx.cols, n);
+      const sheet = document.getElementById('printSheet');
+      sheet.innerHTML = '';
+      sheet.style.gridTemplateColumns = `repeat(${cols}, ${w}mm)`;
+      sheet.style.gap = '4mm';
+      for (let i = 0; i < n; i++) {
+        const im = document.createElement('img');
+        im.src = data;
+        im.style.width = w + 'mm'; im.style.height = h + 'mm';
+        sheet.appendChild(im);
+      }
+      document.getElementById('printScreen').style.display = 'block';
+    }
+
+    function closePrint() { document.getElementById('printScreen').style.display = 'none'; }
+
+    window.addEventListener('DOMContentLoaded', () => { setLanguage(currentLang); });
+  </script>
+  <script src="../../assets/legal-note.js" defer></script>
+</body>
+</html>

@@ -169,6 +169,29 @@
     ::-webkit-scrollbar-track { background: #090d16; }
     ::-webkit-scrollbar-thumb { background: #1f293d; border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: #3b82f6; }
+  
+    /* Materials carousel */
+    .mat-carousel{position:relative;display:flex;align-items:center;gap:10px;min-width:0;max-width:100%}
+    #materials,main{min-width:0;max-width:100%}
+    .mat-track{flex:1 1 0;width:0;display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;padding:4px 2px;min-width:0}
+    .mat-track::-webkit-scrollbar{display:none}
+    .mat-track:focus-visible{outline:2px solid #3b82f6;outline-offset:2px;border-radius:12px}
+    .mat-slide{flex:0 0 100%;scroll-snap-align:center;background:#111827;border:1px solid #1f2937;border-radius:14px;padding:18px 18px 14px;box-sizing:border-box}
+    @media(min-width:900px){.mat-slide{flex-basis:calc(50% - 8px)}}
+    .mat-slide-head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+    .mat-count{margin-left:auto;font:600 11px/1 'JetBrains Mono',monospace;color:#94a3b8;border:1px solid #1f2937;border-radius:999px;padding:4px 8px}
+    .mat-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+    .mat-list a{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:9px;background:rgba(15,23,42,.7);border:1px solid #1f2937;color:#cbd5e1;font-size:13px;text-decoration:none;transition:border-color .15s,color .15s}
+    .mat-list a:hover{border-color:rgba(16,185,129,.5);color:#6ee7b7}
+    .mat-list a i{font-size:11px;color:#10b981;flex:none}
+    .mat-arrow{flex:none;width:42px;height:42px;border-radius:50%;border:1px solid #1f2937;background:#111827;color:#e2e8f0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s,border-color .15s}
+    .mat-arrow:hover{background:#1d4ed8;border-color:#3b82f6}
+    .mat-arrow:disabled{opacity:.3;cursor:default;background:#111827;border-color:#1f2937}
+    .mat-dots{display:flex;justify-content:center;gap:8px}
+    .mat-dots button{width:9px;height:9px;border-radius:50%;border:0;padding:0;background:#334155;cursor:pointer}
+    .mat-dots button.on{background:#10b981;width:24px;border-radius:6px}
+    @media(max-width:640px){.mat-arrow{width:34px;height:34px}.mat-carousel{gap:6px}}
+    @media(prefers-reduced-motion:reduce){.mat-track{scroll-behavior:auto}}
   </style>
 
 </head>
@@ -207,9 +230,9 @@
                 <div class="w-8 h-8 rounded-md bg-amber-500/10 text-amber-400 flex items-center justify-center"><i class="fa-solid fa-book-open"></i></div>
                 <div><div class="text-sm font-semibold text-white">Booklet Studio</div><div class="text-[11px] text-slate-400">Manuals & Guide Makers</div></div>
               </a>
-              <a href="#sticker-studio" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-dark-hover transition-colors">
+              <a href="#label-studio" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-dark-hover transition-colors">
                 <div class="w-8 h-8 rounded-md bg-emerald-500/10 text-emerald-400 flex items-center justify-center"><i class="fa-solid fa-tags"></i></div>
-                <div><div class="text-sm font-semibold text-white">Sticker Studio</div><div class="text-[11px] text-slate-400">Memory Cards & Cartridges</div></div>
+                <div><div class="text-sm font-semibold text-white">Label Studio</div><div class="text-[11px] text-slate-400">Cartridge Labels</div></div>
               </a>
               <a href="#craft-studio" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-dark-hover transition-colors">
                 <div class="w-8 h-8 rounded-md bg-purple-500/10 text-purple-400 flex items-center justify-center"><i class="fa-solid fa-box-open"></i></div>
@@ -280,7 +303,7 @@
       <div class="font-bold text-xs text-slate-500 uppercase px-2 mb-1" data-i18n="nav_studios">Studios</div>
       <a href="#cover-studio" class="block px-3 py-2 rounded-lg hover:bg-dark-hover text-sm">Cover Studio</a>
       <a href="#booklet-studio" class="block px-3 py-2 rounded-lg hover:bg-dark-hover text-sm">Booklet Studio</a>
-      <a href="#sticker-studio" class="block px-3 py-2 rounded-lg hover:bg-dark-hover text-sm">Sticker Studio</a>
+      <a href="#label-studio" class="block px-3 py-2 rounded-lg hover:bg-dark-hover text-sm">Label Studio</a>
       <a href="#craft-studio" class="block px-3 py-2 rounded-lg hover:bg-dark-hover text-sm">Craft Studio</a>
       <a href="#gog-disc-creator" class="block px-3 py-2 rounded-lg hover:bg-dark-hover text-sm">GOG Disc Creator</a>
       <a href="#steam-disc-creator" class="block px-3 py-2 rounded-lg hover:bg-dark-hover text-sm">Steam Disc Creator</a>
@@ -353,7 +376,7 @@
    <div class="hero-duo">
     <div id="gog-disc-creator" class="gog-hero">
       <div>
-        <span class="gh-pill st-beta"><i class="fa-solid fa-star"></i> <span data-i18n="gog_pill">Flagship tool</span> · BETA v7</span>
+        <span class="gh-pill st-beta"><i class="fa-solid fa-star"></i> <span data-i18n="gog_pill">Flagship tool</span> · v7 BETA</span>
         <h2>GOG Disc Creator</h2>
         <p data-i18n="gog_feat_desc">Turn your GOG offline installers into real, auto-starting backup discs: the tool builds the launcher, autorun files and cover banner for you – ready to burn.</p>
         <ul>
@@ -634,35 +657,39 @@
           </a>
         </div>
 
-        <!-- 2. Sticker Studio -->
-        <div id="sticker-studio" class="bg-dark-card border border-dark-border rounded-2xl p-6 transition-all duration-300 hover:border-brand-accent/50 flex flex-col justify-between">
+        <!-- 2. Label Studio -->
+        <div id="label-studio" class="bg-dark-card border border-dark-border rounded-2xl p-6 transition-all duration-300 hover:border-brand-accent/50 flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between mb-4">
               <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center">
                 <i class="fa-solid fa-tags text-xl"></i>
               </div>
-              <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 badge-planned-text">In Development</span>
+              <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 st-beta">BETA</span>
             </div>
-            <h3 class="text-lg font-bold text-white">Sticker Studio</h3>
-            <p class="text-slate-400 text-sm mt-2 leading-relaxed mb-3" data-i18n="card_sticker_desc">
-              Precision labels for memory cards and cartridge sticker replacements:
+            <h3 class="text-lg font-bold text-white">Label Studio</h3>
+            <p class="text-slate-400 text-sm mt-2 leading-relaxed mb-3" data-i18n="card_label_desc">
+              Print-ready cartridge labels in original size for retro consoles (red = planned):
             </p>
             <ul class="text-[11px] text-slate-400 space-y-1 font-mono list-disc list-inside bg-dark-bg p-2 rounded-lg border border-dark-border">
-              <li>Playstation 1 Memory Card</li>
-              <li>Playstation 2 Memory Card</li>
-              <li>GameCube Memory Card</li>
-              <li>N64 Cartridge</li>
-              <li>SNES PAL Cartridge</li>
-              <li>NES Cartridge</li>
-              <li>MegaDrive Cartridge</li>
-              <li>Gameboy Cartridge</li>
-              <li>GameBoy Advance Cartridge</li>
-              <li>Famicom Cartridge</li>
+			  <li class="text-emerald-400">Game Boy / Color</li>
+              <li class="text-emerald-400">Game Boy Advance</li>
+              <li class="text-emerald-400">NES</li>
+              <li class="text-emerald-400">SNES / Super Famicom</li>
+              <li class="text-emerald-400">Nintendo 64</li>
+              <li class="text-emerald-400">Sega Genesis / Mega Drive</li>
+              <li class="text-emerald-400">Sega 32X / Genesis Mini</li>
+              <li class="text-emerald-400">Retroflag GPi / NESPi 4</li>
+              <li class="text-emerald-400">Custom size</li>
+              <li style="color:#f87171">Neo Geo Pocket (Color) <span class="opacity-80" data-i18n="lbl_planned">(planned)</span></li>
+              <li style="color:#f87171">PlayStation 1 Memory Card <span class="opacity-80" data-i18n="lbl_planned">(planned)</span></li>
+              <li style="color:#f87171">PlayStation 2 Memory Card <span class="opacity-80" data-i18n="lbl_planned">(planned)</span></li>
+              <li style="color:#f87171">GameCube Memory Card <span class="opacity-80" data-i18n="lbl_planned">(planned)</span></li>
+              <li style="color:#f87171"><span data-i18n="card_label_floppy">3.5" floppy disk</span> <span class="opacity-80" data-i18n="lbl_planned">(planned)</span></li>
             </ul>
           </div>
-          <div class="mt-6 py-2.5 rounded-xl bg-dark-hover border border-dark-border text-slate-400 text-xs font-medium text-center cursor-not-allowed" data-i18n="btn_coming_soon">
-            Coming Soon
-          </div>
+          <a href="studios/craft/label-studio.html" class="mt-6 block text-center py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold transition-colors shadow-lg shadow-brand-600/20">
+            <span data-i18n="open_studio">Open Studio</span>
+          </a>
         </div>
 
         <!-- 3. Craft Studio -->
@@ -681,9 +708,9 @@
             <ul class="text-[11px] text-slate-400 space-y-1 font-mono list-disc list-inside bg-dark-bg p-2 rounded-lg border border-dark-border">
               <li class="text-emerald-400">PC Big Boxes + CD-Inlay</li>
               <li class="text-emerald-400">Nintendo Game Boy / Color / Advance</li>
-              <li>SNES Pappschachteln</li>
-              <li>N64 Pappschachteln</li>
-              <li>NES Pappschachteln</li>
+              <li style="color:#f87171">SNES Box <span class="opacity-80" data-i18n="lbl_planned">(planned)</span></li>
+			  <li style="color:#f87171">N64 Box <span class="opacity-80" data-i18n="lbl_planned">(planned)</span></li>
+			  <li style="color:#f87171">NES Box <span class="opacity-80" data-i18n="lbl_planned">(planned)</span></li>
             </ul>
           </div>
           <div class="mt-6 space-y-2">
@@ -720,32 +747,66 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="bg-dark-card border border-dark-border rounded-xl p-5 space-y-3 hover:border-emerald-500/40 transition-colors">
-          <div class="text-emerald-400 text-2xl"><i class="fa-solid fa-file-lines"></i></div>
-          <h4 class="font-bold text-white text-sm" data-i18n="mat_paper_title">Photo Paper (200g)</h4>
-          <p class="text-xs text-slate-400 leading-relaxed" data-i18n="mat_paper_desc">Ideal paper weight for Dreamcast, PS1, and DVD case cover inserts.</p>
-          <a href="https://link.amazon/B0dOb1Il2" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-xs font-semibold text-emerald-400 hover:text-emerald-300 pt-2"><span data-i18n="view_amazon">Auf Amazon ansehen (Werbung)*</span> <i class="fa-solid fa-external-link text-[10px]"></i></a>
+      <div class="mat-carousel" id="matCarousel" role="region" aria-roledescription="carousel" aria-label="Materials">
+        <button type="button" class="mat-arrow prev" id="matPrev" aria-label="Previous"><i class="fa-solid fa-chevron-left"></i></button>
+        <div class="mat-track" id="matTrack" tabindex="0">
+        <article class="mat-slide" aria-roledescription="slide">
+          <div class="mat-slide-head"><span class="text-purple-400 text-2xl"><i class="fa-solid fa-compact-disc"></i></span><h4 class="font-bold text-white text-base" data-i18n="mat_c1">Cases & Trays</h4><span class="mat-count">8</span></div>
+          <ul class="mat-list">
+            <li><a href="https://link.amazon/B0j4Rxyod" target="_blank" rel="sponsored noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i><span data-i18n="p1">Jewel Case Standard (1 CD)</span></a></li>
+            <li><a href="https://link.amazon/B051Ei81p" target="_blank" rel="sponsored noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i><span data-i18n="p2">Jewel Case mit schwarzem Tray</span></a></li>
+            <li><a href="https://link.amazon/B0chFgMTH" target="_blank" rel="sponsored noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i><span data-i18n="p3">Jewel Case extra dick (für 3 CDs)</span></a></li>
+            <li><a href="https://link.amazon/B0cTzsGwP" target="_blank" rel="sponsored noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i><span data-i18n="p4">Blu-ray Ersatzhüllen</span></a></li>
+            <li><a href="https://link.amazon/B0cgTX2Ro" target="_blank" rel="sponsored noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i><span data-i18n="p5">Blu-ray Ersatzhülle (für 2 Discs)</span></a></li>
+            <li><a href="https://link.amazon/B0dv48gnq" target="_blank" rel="sponsored noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i><span data-i18n="p6">Protected CD Tray, weiß</span></a></li>
+            <li><a href="https://link.amazon/B0864Bd90" target="_blank" rel="sponsored noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i><span data-i18n="p7">Protected CD Tray, schwarz</span></a></li>
+            <li><a href="https://link.amazon/B06QWlPd7" target="_blank" rel="sponsored noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i><span data-i18n="p8">PlayStation 1 Ersatzhüllen</span></a></li>
+          </ul>
+        </article>
+        <article class="mat-slide" aria-roledescription="slide">
+          <div class="mat-slide-head"><span class="text-sky-400 text-2xl"><i class="fa-solid fa-scissors"></i></span><h4 class="font-bold text-white text-base" data-i18n="mat_c2">Cutting tools</h4><span class="mat-count">4</span></div>
+          <ul class="mat-list">
+            <li><a href="https://link.amazon/B06QMSRvm" target="_blank" rel="sponsored noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i><span data-i18n="p9">Papierschneider A4</span></a></li>
+            <li><a href="https://link.amazon/B08DGqM1Q" target="_blank" rel="sponsored noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i><span data-i18n="p10">Ersatzklingen für Papierschneider</span></a></li>
+            <li><a href="https://link.amazon/B06TqtzMZ" target="_blank" rel="sponsored noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i><span data-i18n="p11">Hebelschneider A4</span></a></li>
+            <li><a href="https://link.amazon/B0iRa04rR" target="_blank" rel="sponsored noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i><span data-i18n="p12">Rundschneider für runde Ausschnitte</span></a></li>
+          </ul>
+        </article>
+        <article class="mat-slide" aria-roledescription="slide">
+          <div class="mat-slide-head"><span class="text-amber-400 text-2xl"><i class="fa-solid fa-record-vinyl"></i></span><h4 class="font-bold text-white text-base" data-i18n="mat_c3">Blank discs & media</h4><span class="mat-count">7</span></div>
+          <ul class="mat-list">
+            <li><a href="https://link.amazon/B0f92dFyn" target="_blank" rel="sponsored noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i><span data-i18n="p13">CD-R 700 MB, schwarze Unterseite (PS1-Look)</span></a></li>
+            <li><a href="https://link.amazon/B0agsYhWc" target="_blank" rel="sponsored noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i><span data-i18n="p14">CD-R High Capacity 800 MB</span></a></li>
+            <li><a href="https://link.amazon/B05mzpgdZ" target="_blank" rel="sponsored noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i><span data-i18n="p15">Verbatim DVD-R 4,7 GB</span></a></li>
+            <li><a href="https://link.amazon/B0hp20fDL" target="_blank" rel="sponsored noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i><span data-i18n="p16">Verbatim DVD+R 4,7 GB</span></a></li>
+            <li><a href="https://link.amazon/B0fxArgpi" target="_blank" rel="sponsored noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i><span data-i18n="p17">Verbatim DVD+R DL 8,5 GB (Double Layer)</span></a></li>
+            <li><a href="https://link.amazon/B07RjH812" target="_blank" rel="sponsored noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i><span data-i18n="p18">Verbatim BD-R SL 25 GB (Blu-ray)</span></a></li>
+            <li><a href="https://link.amazon/B0bFtGHDP" target="_blank" rel="sponsored noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i><span data-i18n="p19">Verbatim BD-R DL 50 GB (Blu-ray)</span></a></li>
+          </ul>
+        </article>
+        <article class="mat-slide" aria-roledescription="slide">
+          <div class="mat-slide-head"><span class="text-emerald-400 text-2xl"><i class="fa-solid fa-print"></i></span><h4 class="font-bold text-white text-base" data-i18n="mat_c4">Drives & printers</h4><span class="mat-count">2</span></div>
+          <ul class="mat-list">
+            <li><a href="https://link.amazon/B0fAqdX12" target="_blank" rel="sponsored noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i><span data-i18n="p20">Intenso externer Blu-ray-Brenner (EOD 500BD)</span></a></li>
+            <li><a href="https://link.amazon/B08DHDhpM" target="_blank" rel="sponsored noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i><span data-i18n="p21">Epson Expression Photo HD XP-15000 (A3-Drucker)</span></a></li>
+          </ul>
+        </article>
+        <article class="mat-slide" aria-roledescription="slide">
+          <div class="mat-slide-head"><span class="text-rose-400 text-2xl"><i class="fa-solid fa-file-lines"></i></span><h4 class="font-bold text-white text-base" data-i18n="mat_c5">Paper & stickers</h4><span class="mat-count">6</span></div>
+          <ul class="mat-list">
+            <li><a href="https://link.amazon/B0bLvkMW8" target="_blank" rel="sponsored noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i><span data-i18n="p22">Fotopapier glänzend 180 g (50 Blatt)</span></a></li>
+            <li><a href="https://link.amazon/B0g67rhOn" target="_blank" rel="sponsored noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i><span data-i18n="p23">Fotopapier glänzend 280 g (50 Blatt)</span></a></li>
+            <li><a href="https://link.amazon/B0aYHbDSQ" target="_blank" rel="sponsored noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i><span data-i18n="p24">Stickerpapier A4, glänzend weiß (20 Blatt)</span></a></li>
+            <li><a href="https://link.amazon/B0eb3pRIy" target="_blank" rel="sponsored noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i><span data-i18n="p25">Bastelkarton 300 g/m², weiß (50 Blatt)</span></a></li>
+            <li><a href="https://link.amazon/B0azqlqb1" target="_blank" rel="sponsored noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i><span data-i18n="p26">Fotopapier doppelseitig matt 230 g (100 Blatt)</span></a></li>
+            <li><a href="https://link.amazon/B0hUMYsHg" target="_blank" rel="sponsored noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i><span data-i18n="p27">Hologramm-Folie</span></a></li>
+          </ul>
+        </article>
         </div>
-        <div class="bg-dark-card border border-dark-border rounded-xl p-5 space-y-3 hover:border-emerald-500/40 transition-colors">
-          <div class="text-amber-400 text-2xl"><i class="fa-solid fa-box"></i></div>
-          <h4 class="font-bold text-white text-sm" data-i18n="mat_board_title">Duplex Board (300-350g)</h4>
-          <p class="text-xs text-slate-400 leading-relaxed" data-i18n="mat_board_desc">Heavyweight cardboard stock perfect for crafting Nintendo box sleeves and PC Big Boxes.</p>
-          <a href="https://link.amazon/B00m0gELJ" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-xs font-semibold text-emerald-400 hover:text-emerald-300 pt-2"><span data-i18n="view_amazon">Auf Amazon ansehen (Werbung)*</span> <i class="fa-solid fa-external-link text-[10px]"></i></a>
-        </div>
-        <div class="bg-dark-card border border-dark-border rounded-xl p-5 space-y-3 hover:border-emerald-500/40 transition-colors">
-          <div class="text-sky-400 text-2xl"><i class="fa-solid fa-scissors"></i></div>
-          <h4 class="font-bold text-white text-sm" data-i18n="mat_cutter_title">Precision Paper Trimmer</h4>
-          <p class="text-xs text-slate-400 leading-relaxed" data-i18n="mat_cutter_desc">Guillotine & rotary trimmers for clean, razor-sharp edges.</p>
-          <a href="https://link.amazon/B0iHiipAG" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-xs font-semibold text-emerald-400 hover:text-emerald-300 pt-2"><span data-i18n="view_amazon">Auf Amazon ansehen (Werbung)*</span> <i class="fa-solid fa-external-link text-[10px]"></i></a>
-        </div>
-        <div class="bg-dark-card border border-dark-border rounded-xl p-5 space-y-3 hover:border-emerald-500/40 transition-colors">
-          <div class="text-purple-400 text-2xl"><i class="fa-solid fa-compact-disc"></i></div>
-          <h4 class="font-bold text-white text-sm" data-i18n="mat_cases_title">Replacement Jewel Cases</h4>
-          <p class="text-xs text-slate-400 leading-relaxed" data-i18n="mat_cases_desc">High quality replacement cases for PS1 PAL, Sega Dreamcast, and standard CD jewel cases.</p>
-          <a href="https://link.amazon/B09ZtUtHD" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-xs font-semibold text-emerald-400 hover:text-emerald-300 pt-2"><span data-i18n="view_amazon">Auf Amazon ansehen (Werbung)*</span> <i class="fa-solid fa-external-link text-[10px]"></i></a>
-        </div>
+        <button type="button" class="mat-arrow next" id="matNext" aria-label="Next"><i class="fa-solid fa-chevron-right"></i></button>
       </div>
+      <div class="mat-dots" id="matDots"></div>
+      <p class="text-[11px] text-slate-500 text-center" data-i18n="affiliate_note">Affiliate links – thank you for your support!</p>
     </section>
 
   </main>
@@ -810,7 +871,7 @@
         section_modules_title: "Craft Modules & Studios",
         section_modules_desc: "Separate standalone modules for manuals, stickers and packaging.",
         card_booklet_desc: "Create printable multi-page game manuals and booklets with automatic page imposition.",
-        card_sticker_desc: "Precision labels for memory cards and cartridge sticker replacements:",
+        card_label_desc: "Print-ready cartridge labels in original size for retro consoles (red = planned):", card_label_custom: "Custom size", lbl_planned: "(planned)", card_label_floppy: "3.5\" floppy disk",
         card_craft_desc: "Foldable dielines for cardboard packaging and boxes:",
         card_gog_desc: "Generate autostart launchers for your burned backup discs to automatically trigger GOG offline installers upon disc insertion.",
         btn_launch_gog: "Open GOG Disc Creator (v7 Beta)",
@@ -832,6 +893,17 @@
         mat_cutter_desc: "Guillotine & rotary trimmers for clean, razor-sharp edges.",
         mat_cases_title: "Replacement Jewel Cases",
         mat_cases_desc: "High quality replacement cases for PS1 PAL, Sega Dreamcast, and standard CD jewel cases.",
+        mat_c1: "Cases & Trays", mat_c2: "Cutting tools", mat_c3: "Blank discs & media", mat_c4: "Drives & printers", mat_c5: "Paper & stickers",
+        affiliate_note: "Affiliate links – thank you for your support!",
+        p1: "Jewel Case Standard (1 disc)", p2: "Jewel Case with black tray", p3: "Thick Jewel Case (for 3 discs)",
+        p4: "Blu-ray replacement cases", p5: "Blu-ray replacement case (for 2 discs)", p6: "Protected CD tray, white",
+        p7: "Protected CD tray, black", p8: "PlayStation 1 replacement cases", p9: "A4 paper trimmer",
+        p10: "Replacement blades for paper trimmer", p11: "A4 lever cutter", p12: "Circle cutter for round cut-outs",
+        p13: "CD-R 700 MB, black underside (PS1 look)", p14: "CD-R high capacity 800 MB", p15: "Verbatim DVD-R 4.7 GB",
+        p16: "Verbatim DVD+R 4.7 GB", p17: "Verbatim DVD+R DL 8.5 GB (dual layer)", p18: "Verbatim BD-R SL 25 GB (Blu-ray)",
+        p19: "Verbatim BD-R DL 50 GB (Blu-ray)", p20: "Intenso external Blu-ray burner (EOD 500BD)", p21: "Epson Expression Photo HD XP-15000 (A3 printer)",
+        p22: "Glossy photo paper 180 g (50 sheets)", p23: "Glossy photo paper 280 g (50 sheets)", p24: "A4 sticker paper, glossy white (20 sheets)",
+        p25: "Craft cardboard 300 g/m², white (50 sheets)", p26: "Double-sided matte photo paper 230 g (100 sheets)", p27: "Hologram foil",
         view_amazon: "View on Amazon (Ad)*",
         ready_badge: "Ready",
         planned_badge: "In Development",
@@ -868,7 +940,7 @@ With this studio, you can convert DRM-free games, indie titles, and your own bac
         section_modules_title: "Craft Module & Studios",
         section_modules_desc: "Eigenständige Bereiche für Anleitungen, Sticker und Verpackungen.",
         card_booklet_desc: "Erstelle druckfertige mehrseitige Handbücher & Anleitungen mit automatischer Seitensortierung.",
-        card_sticker_desc: "Präzise Aufkleber für Memory Cards und Cartridge-Ersatzsticker:",
+        card_label_desc: "Druckfertige Modul-Labels in Originalgröße für Retro-Konsolen (rot = geplant):", card_label_custom: "Eigene Größe", lbl_planned: "(geplant)", card_label_floppy: "3,5-Zoll-Diskette",
         card_craft_desc: "Faltvorlagen & 3D-Dielines für Pappschachteln und Boxen:",
         card_gog_desc: "Erstelle Autostart-Skripte für gebrannte Backup-Discs, um deine offline GOG-Installationsdateien direkt bei Disc-Einwurf zu starten.",
         btn_launch_gog: "GOG Disc Creator öffnen (v7 Beta)",
@@ -890,6 +962,17 @@ With this studio, you can convert DRM-free games, indie titles, and your own bac
         mat_cutter_desc: "Rollenschneider & Hebelschneider für millimetergenaue Kanten.",
         mat_cases_title: "Ersatz-Jewel-Cases",
         mat_cases_desc: "Hochwertige Ersatz-Hüllen für PS1, Dreamcast und Standard CD-Doppel-Hüllen.",
+        mat_c1: "Hüllen & Trays", mat_c2: "Schneidewerkzeuge", mat_c3: "Rohlinge & Medien", mat_c4: "Laufwerke & Drucker", mat_c5: "Papier & Sticker",
+        affiliate_note: "Affiliate-Links – Danke für den Support!",
+        p1: "Jewel Case Standard (1 CD)", p2: "Jewel Case mit schwarzem Tray", p3: "Jewel Case extra dick (für 3 CDs)",
+        p4: "Blu-ray Ersatzhüllen", p5: "Blu-ray Ersatzhülle (für 2 Discs)", p6: "Protected CD Tray, weiß",
+        p7: "Protected CD Tray, schwarz", p8: "PlayStation 1 Ersatzhüllen", p9: "Papierschneider A4",
+        p10: "Ersatzklingen für Papierschneider", p11: "Hebelschneider A4", p12: "Rundschneider für runde Ausschnitte",
+        p13: "CD-R 700 MB, schwarze Unterseite (PS1-Look)", p14: "CD-R High Capacity 800 MB", p15: "Verbatim DVD-R 4,7 GB",
+        p16: "Verbatim DVD+R 4,7 GB", p17: "Verbatim DVD+R DL 8,5 GB (Double Layer)", p18: "Verbatim BD-R SL 25 GB (Blu-ray)",
+        p19: "Verbatim BD-R DL 50 GB (Blu-ray)", p20: "Intenso externer Blu-ray-Brenner (EOD 500BD)", p21: "Epson Expression Photo HD XP-15000 (A3-Drucker)",
+        p22: "Fotopapier glänzend 180 g (50 Blatt)", p23: "Fotopapier glänzend 280 g (50 Blatt)", p24: "Stickerpapier A4, glänzend weiß (20 Blatt)",
+        p25: "Bastelkarton 300 g/m², weiß (50 Blatt)", p26: "Fotopapier doppelseitig matt 230 g (100 Blatt)", p27: "Hologramm-Folie",
         view_amazon: "Auf Amazon ansehen (Werbung)*",
         ready_badge: "Bereit",
         planned_badge: "In Entwicklung",
@@ -1039,6 +1122,32 @@ Mit diesem Studio kannst du DRM-freie Spiele, Indie-Titel und eigene Backups in 
       animateCanvas();
       setLanguage(currentLang);
     });
+
+    // Materials carousel
+    (function(){
+      const track=document.getElementById('matTrack'); if(!track) return;
+      const slides=[...track.children], dots=document.getElementById('matDots');
+      const prev=document.getElementById('matPrev'), next=document.getElementById('matNext');
+      let nDots=0;
+      function buildDots(){
+        const per=Math.max(1,Math.round(track.clientWidth/slides[0].offsetWidth));
+        const n=Math.max(1,slides.length-per+1);
+        if(n===nDots) return; nDots=n; dots.innerHTML='';
+        for(let i=0;i<n;i++){const b=document.createElement('button');b.type='button';b.setAttribute('aria-label',(i+1)+'/'+n);b.onclick=()=>go(i);dots.appendChild(b);}
+      }
+      const step=()=>slides.length>1?slides[1].offsetLeft-slides[0].offsetLeft:track.clientWidth;
+      const idx=()=>Math.round(track.scrollLeft/step());
+      function go(i){track.scrollTo({left:Math.max(0,Math.min(i,slides.length-1))*step()});}
+      function upd(){
+        buildDots(); const i=idx(); const maxLeft=track.scrollWidth-track.clientWidth-2;
+        [...dots.children].forEach((d,k)=>d.classList.toggle('on',k===i));
+        prev.disabled=track.scrollLeft<=2; next.disabled=track.scrollLeft>=maxLeft;
+      }
+      prev.onclick=()=>go(idx()-1); next.onclick=()=>go(idx()+1);
+      track.addEventListener('scroll',()=>requestAnimationFrame(upd),{passive:true});
+      track.addEventListener('keydown',e=>{if(e.key==='ArrowRight'){e.preventDefault();go(idx()+1);}if(e.key==='ArrowLeft'){e.preventDefault();go(idx()-1);}});
+      window.addEventListener('resize',upd); upd();
+    })();
   </script>
   <script src="./assets/legal-note.js" defer></script>
 </body>

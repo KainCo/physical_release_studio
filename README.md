@@ -25,7 +25,6 @@
   </a>
 </p>
 
-
 ---
 
 ## 💡 Intention & Vision
@@ -114,7 +113,7 @@ Contributions are very welcome!
 
 Distributed under the **GNU General Public License v3.0** (GPLv3).
 
-Copyright (c) 2026 KainCo
+Copyright (c) 2026 &#83;&#97;&#108;&#118;&#97;&#116;&#111;&#114;&#101;&#32;&#67;&#111;&#99;&#111;&#122;&#122;&#97;&#32;(KainCo)
 
 This guarantees that Physical Release Studio remains free and open-source software forever. Anyone modifying or redistributing this software must retain original copyright notices and release their modifications under the GPLv3 license with full source code access.
 
@@ -134,7 +133,6 @@ Physical Release Studio is an open-source layout utility designed for game prese
 ### Disc tools (GOG & Steam Disc Creator)
 
 - **EN:** The tools do not modify game files; they only package them for discs or USB sticks. They contain no games. **They do not circumvent any copy protection and are not intended to circumvent or remove any copy protection.** They are intended for private use and for backup copies of games you own legally. The author is not responsible for packages or content that third parties create or distribute with them.
-
 - **DE:** Die Tools verändern keine Spieldateien, sondern verpacken sie nur für Discs oder USB-Sticks. Sie enthalten keine Spiele. **Sie umgehen keinen Kopierschutz und sind nicht dafür gedacht, einen Kopierschutz zu umgehen oder zu entfernen.** Gedacht sind sie für den privaten Gebrauch und für Sicherungskopien rechtmäßig erworbener Spiele. Für Pakete und Inhalte, die Dritte damit erstellen oder weitergeben, ist der Autor nicht verantwortlich.
 - Third-party licenses / Lizenzen Dritter: see [`THIRD-PARTY-LICENSES.md`](THIRD-PARTY-LICENSES.md).
 

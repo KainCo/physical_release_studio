@@ -426,10 +426,10 @@
 
       html, body {
         width: 210mm !important;
-        height: 297mm !important;
+        height: auto !important;
         margin: 0 !important;
         padding: 0 !important;
-        overflow: hidden !important;
+        overflow: visible !important;
         background: white !important;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
@@ -441,14 +441,14 @@
 
       #printScreen {
         display: block !important;
-        position: absolute !important;
+        position: static !important;
         left: 0 !important;
         top: 0 !important;
         width: 210mm !important;
-        height: 297mm !important;
+        height: auto !important;
         margin: 0 !important;
         padding: 0 !important;
-        overflow: hidden !important;
+        overflow: visible !important;
         background: white !important;
       }
 
@@ -459,9 +459,9 @@
         align-items: center !important;
         gap: 8mm !important;
         width: 210mm !important;
-        height: 297mm !important;
+        height: auto !important;
         margin: 0 auto !important;
-        padding: 0 !important;
+        padding: 8mm 0 0 0 !important;
         box-sizing: border-box !important;
         page-break-inside: avoid !important;
         break-inside: avoid !important;
