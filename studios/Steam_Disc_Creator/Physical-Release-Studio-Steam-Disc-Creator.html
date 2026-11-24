@@ -166,6 +166,12 @@ footer a{margin:0 8px}
       <label class="check hidden" id="showTitleL" style="margin-top:8px"><input type="checkbox" id="showTitle" checked><span data-i="showTitle">Titel unter dem Banner anzeigen</span></label>
     </div>
 
+    <div style="margin-top:16px"><label class="f" for="iconIn" data-i="fIcon">Disc-Icon (.ico / .png, optional)</label>
+      <input type="file" id="iconIn" accept=".ico,image/x-icon,image/vnd.microsoft.icon,.png,image/png">
+      <p class="muted small" id="iconSt" style="margin:6px 0 0"></p>
+      <p class="muted small" data-i="iconH" style="margin:6px 0 0">Das Icon wird im Explorer für die Disc bzw. das Laufwerk angezeigt (autorun.ico). Ohne eigene Datei wird ein neutrales Disc-Symbol verwendet. Das Launcher-Programm selbst behält immer das neutrale Symbol.</p>
+    </div>
+
     <div style="margin-top:16px"><label class="f" data-i="fExtras">Extras (optional)</label>
       <p class="muted small" data-i="extrasH" style="margin:0 0 8px">Handbücher, Soundtrack, Artwork usw.</p>
       <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sec" type="button" id="exFiles" data-i="addFiles">Dateien hinzufügen</button><button class="btn sec" type="button" id="exFolder" data-i="addFolder">Ordner hinzufügen</button></div>
@@ -184,7 +190,7 @@ footer a{margin:0 8px}
     <div class="kv" id="calc"></div>
     <div id="calcWarn" style="margin-top:12px"></div>
     <div style="margin-top:12px;overflow-x:auto"><table id="discTable" aria-live="polite"></table></div>
-    <p class="muted small" data-i="calcH">Berechnet mit 2-KiB-Sektoren, Verzeichnis-Overhead pro Datei und 1 % Reserve. Brenne mit dem Dateisystem UDF (bei CDs ist ISO 9660/Joliet auf 64 Zeichen pro Name begrenzt).</p>
+    <div class="box warn" id="burnBox" style="margin-top:14px"></div>
   </section>
 
   <!-- 5 -->
@@ -752,6 +758,8 @@ de: {
   fApp:'Steam-AppID (im Ordner-Modus optional)', fAcf:'appmanifest_….acf (optional)', acfH:'Optional. Die Manifest-Datei liegt in <code>steamapps</code> neben dem Ordner <code>common</code>. Ohne Datei erzeugt der Installer ein einfaches Manifest, damit Steam das Spiel als vorhanden erkennt. Ungetestet: Steam kann trotzdem eine Überprüfung der Dateien verlangen.',
   fRedist:'Zusatzkomponenten (optional im Installer)', redistNone:'Keine bekannten Installationsprogramme (Visual C++, DirectX, .NET …) gefunden.', redistH:'Der Installer fragt am Ende, ob diese Komponenten mitinstalliert werden sollen (Administratorabfrage). Später gibt es im Launcher außerdem den Button „Zusatzkomponenten installieren“. Parameter bei Bedarf anpassen.',
   fExtras:'Extras (optional)', extrasH:'Handbücher, Soundtrack, Artwork usw. Sie werden auf Disc 1 in den Ordner Extras kopiert und nicht installiert. Für Einträge mit Namen zeigt der Launcher bis zu 5 Schaltflächen (Namen leeren = keine Schaltfläche).', extraBtn:'Name der Schaltfläche (leer = keine)', addFiles:'Dateien hinzufügen', addFolder:'Ordner hinzufügen', extraRm:'Entfernen', extraDup:'Übersprungen (schon vorhanden): {0}', 
+  burnT:'⚠ So brennst du die Discs (wichtig)', burn1:'Wähle im Brennprogramm das Dateisystem <b>UDF</b> (Blu-ray: UDF 2.50 oder 2.60, DVD: UDF 2.01), <b>nicht „ISO 9660“ oder „Joliet“</b>. Diese alten Formate erlauben nur kurze Namen und kleine Dateien; das Brennen bricht ab oder die Disc funktioniert nicht.', burnZip:'Entpacke zuerst die ZIP-Datei jeder Disc in einen eigenen Ordner.', burn2:'Brenne den <b>Inhalt</b> des Ordners Disc1, Disc2 … (nicht den Ordner selbst) als Daten-Disc. Beginne mit Disc 1; sie enthält das Installationsprogramm.', burn3:'Beschrifte die Discs in der richtigen Reihenfolge. Der Installer fragt später nach Disc 2 usw.', burnUsb:'USB-Stick oder Festplatte: Inhalt einfach kopieren (Dateisystem exFAT oder NTFS; bei FAT32 sind Dateien bis 4 GiB möglich).',
+  fIcon:'Disc-Icon (.ico / .png, optional)', iconH:'Das Icon wird im Explorer für die Disc bzw. das Laufwerk angezeigt (autorun.ico). Ohne eigene Datei wird ein neutrales Disc-Symbol verwendet. Das Launcher-Programm selbst behält immer das neutrale Symbol.', iconDef:'Standard: neutrales Disc-Symbol', iconBad:'Keine gültige .ico-Datei.', iconType:'Bitte eine .ico- oder .png-Datei wählen.', iconErr:'Icon konnte nicht verwendet werden: {0}',
   fBanner:'Banner / Cover (eigenes Bild, optional)', bannerH:'Verwende dein eigenes Bild (JPG oder PNG). Empfohlen sind mindestens 920 × 430 Pixel; der Installer skaliert auf 640 Pixel Breite.', bannerInfo:'Bild: {0} × {1} Pixel', bannerSmall:' – etwas klein, wirkt evtl. unscharf', showTitle:'Titel unter dem Banner anzeigen',
   s4:'Medium und Berechnung', fMedia:'Medium', fCustom:'Eigene Größe (GB)',
   m_cd650:'CD-R 650 MB (74 min)', m_cd700:'CD-R 700 MB (80 min)', m_cd800:'CD-R 800 MB (90 min)', m_dvd5:'DVD (4,7 GB)', m_dvd9:'DVD DL (8,5 GB)', m_bd25:'Blu-ray (25 GB)', m_bd50:'Blu-ray DL (50 GB)', m_bd100:'Blu-ray XL (100 GB)', m_usb:'USB / Ordner (keine Teilung)', m_usb32:'USB mit FAT32 (Dateien max. 4 GB)', m_custom:'Eigene Größe …',
@@ -800,6 +808,8 @@ en: {
   fApp:'Steam AppID (optional in folder mode)', fAcf:'appmanifest_….acf (optional)', acfH:'Optional. The manifest file is in <code>steamapps</code> next to the <code>common</code> folder. Without a file the installer creates a simple manifest so Steam sees the game as installed. Untested: Steam may still ask to verify the files.',
   fRedist:'Extra components (optional in the installer)', redistNone:'No known installers (Visual C++, DirectX, .NET …) found.', redistH:'At the end the installer asks whether to install these components as well (administrator prompt). The launcher also has an "Install required components" button later. Adjust the parameters if needed.',
   fExtras:'Extras (optional)', extrasH:'Manuals, soundtrack, artwork etc. They are copied to disc 1 into the folder Extras and are not installed. For entries with a name the launcher shows up to 5 buttons (clear the name = no button).', extraBtn:'Button name (empty = none)', addFiles:'Add files', addFolder:'Add folder', extraRm:'Remove', extraDup:'Skipped (already added): {0}', 
+  burnT:'⚠ How to burn the discs (important)', burn1:'In your burning software choose the <b>UDF</b> file system (Blu-ray: UDF 2.50 or 2.60, DVD: UDF 2.01), <b>not “ISO 9660” or “Joliet”</b>. Those old formats only allow short names and small files; burning fails or the disc will not work.', burnZip:'First extract the ZIP file of each disc into its own folder.', burn2:'Burn the <b>contents</b> of the folder Disc1, Disc2 … (not the folder itself) as a data disc. Start with disc 1; it contains the installer.', burn3:'Label the discs in the right order. The installer will ask for disc 2 etc. later.', burnUsb:'USB stick or hard disk: simply copy the contents (file system exFAT or NTFS; FAT32 allows files up to 4 GiB).',
+  fIcon:'Disc icon (.ico / .png, optional)', iconH:'The icon is shown for the disc / drive in Explorer (autorun.ico). Without your own file a neutral disc symbol is used. The launcher program itself always keeps the neutral symbol.', iconDef:'Default: neutral disc symbol', iconBad:'Not a valid .ico file.', iconType:'Please choose an .ico or .png file.', iconErr:'Could not use the icon: {0}',
   fBanner:'Banner / cover (your own image, optional)', bannerH:'Use your own image (JPG or PNG). At least 920 × 430 pixels is recommended; the installer scales it to 640 pixels wide.', bannerInfo:'Image: {0} × {1} pixels', bannerSmall:' – a bit small, may look blurry', showTitle:'Show the title below the banner',
   s4:'Medium and calculation', fMedia:'Medium', fCustom:'Custom size (GB)',
   m_cd650:'CD-R 650 MB (74 min)', m_cd700:'CD-R 700 MB (80 min)', m_cd800:'CD-R 800 MB (90 min)', m_dvd5:'DVD (4.7 GB)', m_dvd9:'DVD DL (8.5 GB)', m_bd25:'Blu-ray (25 GB)', m_bd50:'Blu-ray DL (50 GB)', m_bd100:'Blu-ray XL (100 GB)', m_usb:'USB / folder (no splitting)', m_usb32:'USB with FAT32 (files max. 4 GB)', m_custom:'Custom size …',
@@ -838,7 +848,7 @@ function applyLang() {
   document.getElementById('l-de').setAttribute('aria-pressed', LANG === 'de');
   fillMedia(); renderAll();
 }
-function setLang(l) { LANG = l === 'en' ? 'en' : 'de'; try { localStorage.setItem('prs_lang', LANG); } catch (e) {} applyLang(); }
+function setLang(l) { LANG = l === 'en' ? 'en' : 'de'; try { localStorage.setItem('prs_lang', LANG); } catch (e) {} applyLang(); renderIconStatus(); renderBurn(); }
 (function initLang() {
   let l = null; try { l = localStorage.getItem('prs_lang'); } catch (e) {}
   if (l !== 'en' && l !== 'de') l = (navigator.language || 'de').toLowerCase().startsWith('de') ? 'de' : 'en';
@@ -852,10 +862,10 @@ function b64(s) { const b = atob(s), a = new Uint8Array(b.length); for (let i = 
 function el(tag, props, ...kids) { const e = document.createElement(tag); Object.assign(e, props || {}); kids.forEach((k) => e.append(k)); return e; }
 
 // ---------- Zustand ----------
-const S = { files: [], rootName: '', appId: '', names: null, peHits: [], redist: [], exeList: [], banner: null, acf: null, plan: null, abort: null, bannerBytes: null, srcEngine: false, runtime: [], extras: [] };
+const S = { iconBytes: null, iconName: '', iconConv: false, files: [], rootName: '', appId: '', names: null, peHits: [], redist: [], exeList: [], banner: null, acf: null, plan: null, abort: null, bannerBytes: null, srcEngine: false, runtime: [], extras: [] };
 let LAUNCHER = null, ICO = null;
 function launcherBytes() { return LAUNCHER || (LAUNCHER = b64(LAUNCHER_B64)); }
-function icoBytes() { return ICO || (ICO = b64(ICO_B64)); }
+function icoBytes() { return S.iconBytes || ICO || (ICO = b64(ICO_B64)); }
 let LIC; function licenseBytes() { return LIC || (LIC = b64(LICENSE_B64)); }
 
 // ---------- Schritt 1: Ordner lesen ----------
@@ -1035,6 +1045,59 @@ function addExtras(list) {
   if (dup.length) alert(t('extraDup', dup.slice(0, 5).join(', ') + (dup.length > 5 ? ' …' : '')));
 }
 
+// ---------- Brennanleitung ----------
+function burnHtml(zip) {
+  const li = (k) => '<li>' + t(k) + '</li>';
+  return '<b class="t">' + t('burnT') + '</b><ol style="margin:6px 0 0;padding-left:20px">' + li('burn1') + (zip ? li('burnZip') : '') + li('burn2') + li('burn3') + '</ol><p class="small muted" style="margin:8px 0 0">' + t('burnUsb') + '</p>';
+}
+function renderBurn() { const b = $('burnBox'); if (b) b.innerHTML = burnHtml(false); }
+
+// ---------- Eigenes Disc-Icon (autorun.ico) ----------
+function renderIconStatus() {
+  $('iconSt').textContent = S.iconBytes ? ('✓ ' + S.iconName + (S.iconConv ? ' → autorun.ico' : '')) : t('iconDef');
+}
+async function pngToIco(file) {
+  const bmp = await createImageBitmap(file);
+  const sizes = [16, 32, 48, 64, 128, 256];
+  const parts = [];
+  for (const sz of sizes) {
+    const c = document.createElement('canvas'); c.width = sz; c.height = sz;
+    const g = c.getContext('2d'); g.imageSmoothingQuality = 'high';
+    const sc = Math.max(sz / bmp.width, sz / bmp.height), w = bmp.width * sc, h = bmp.height * sc;
+    g.drawImage(bmp, (sz - w) / 2, (sz - h) / 2, w, h);
+    const blob = await new Promise((r) => c.toBlob(r, 'image/png'));
+    parts.push({ sz, data: new Uint8Array(await blob.arrayBuffer()) });
+  }
+  const total = 6 + 16 * parts.length + parts.reduce((a, p) => a + p.data.length, 0);
+  const out = new Uint8Array(total), dv = new DataView(out.buffer);
+  dv.setUint16(2, 1, true); dv.setUint16(4, parts.length, true);
+  let off = 6 + 16 * parts.length;
+  parts.forEach((p, i) => {
+    const e = 6 + 16 * i;
+    out[e] = p.sz >= 256 ? 0 : p.sz; out[e + 1] = p.sz >= 256 ? 0 : p.sz;
+    dv.setUint16(e + 4, 1, true); dv.setUint16(e + 6, 32, true);
+    dv.setUint32(e + 8, p.data.length, true); dv.setUint32(e + 12, off, true);
+    out.set(p.data, off); off += p.data.length;
+  });
+  return out;
+}
+async function onIcon() {
+  const f = $('iconIn').files[0]; S.iconBytes = null; S.iconName = ''; S.iconConv = false;
+  if (f) {
+    try {
+      if (/\.ico$/i.test(f.name)) {
+        const b = new Uint8Array(await f.arrayBuffer());
+        if (b.length < 22 || b[0] !== 0 || b[1] !== 0 || b[2] !== 1 || b[3] !== 0) throw new Error(t('iconBad'));
+        S.iconBytes = b;
+      } else if (/\.png$/i.test(f.name) || f.type === 'image/png') {
+        S.iconBytes = await pngToIco(f); S.iconConv = true;
+      } else throw new Error(t('iconType'));
+      S.iconName = f.name;
+    } catch (e) { S.iconBytes = null; $('iconIn').value = ''; alert(t('iconErr', String(e.message || e))); }
+  }
+  renderIconStatus();
+}
+
 // ---------- Banner und Manifest ----------
 async function onBanner() {
   const f = $('banner').files[0]; S.banner = null; S.bannerBytes = null;
@@ -1101,6 +1164,7 @@ async function build() {
       { const cache = new Map(); for (const x of S.extras) await PRS.writeBlobToDirectory(discDirs[0], x.path, x.blob, cache, signal); }
       setProgress(1, '');
       res.append(el('div', { className: 'box info', textContent: t('done', plan.discs.length) + ' ' + t('doneDir', root.name + '\\' + PRS.fsName(title)) }));
+      res.append(el('div', { className: 'box warn', innerHTML: burnHtml(false), style: 'margin-top:12px' }));
     } else {
       const sf = files.map((f) => ({ path: f.path, size: f.size, blob: f.blob }));
       await PRS.computeCrcs(sf, plan, (d, tot) => setProgress(d / Math.max(1, tot) * 0.5, t('crc', Math.floor(d / Math.max(1, tot) * 100))), signal);
@@ -1115,6 +1179,7 @@ async function build() {
         const b = el('button', { className: 'btn sec', type: 'button', textContent: t('dlDisc', i + 1, fmt(zip.size)) }); b.onclick = () => download(zip, nm); list.append(el('li', {}, b));
       }
       setProgress(1, '');
+      res.append(el('div', { className: 'box warn', innerHTML: burnHtml(true), style: 'margin-top:12px' }));
     }
   } catch (e) {
     const msg = e && e.message === 'abort' ? t('abort') : (e && (e.name === 'SecurityError' || /system|not allowed/i.test(e.message || '')) ? t('blocked') : t('fail', e && e.message || e));
@@ -1133,10 +1198,10 @@ document.querySelectorAll('input[name=mode]').forEach((r) => { r.onchange = upda
 $('media').onchange = updatePlan; $('customGB').oninput = updatePlan;
 $('exFiles').onclick = () => $('exFilesIn').click(); $('exFolder').onclick = () => $('exFolderIn').click();
 $('exFilesIn').onchange = (e) => { addExtras([...e.target.files]); e.target.value = ''; }; $('exFolderIn').onchange = (e) => { addExtras([...e.target.files]); e.target.value = ''; };
-$('banner').onchange = onBanner; $('acf').onchange = onAcf;
+$('iconIn').onchange = onIcon; $('banner').onchange = onBanner; $('acf').onchange = onAcf;
 $('build').onclick = build; $('cancel').onclick = () => { if (S.abort) S.abort.abort(); };
 if (/\/studios\//i.test(location.pathname)) $('hubLink').classList.remove('hidden');
-fillMedia(); applyLang();
+fillMedia(); applyLang(); renderIconStatus(); renderBurn();
 </script>
 </body>
 </html>
