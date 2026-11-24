@@ -34,3 +34,9 @@ Wichtig
 Extras
 - Zusatzdateien (Handbuch, Soundtrack ...) kommen auf Disc 1 in den Ordner Extras. Für Dateien mit einem Namen zeigt der Launcher bis zu 5 Schaltflächen auf der Startseite (nur wenn die Disc eingelegt ist).
 - Beim Warten auf Komponenten (Visual C++, DirectX ...) zeigt der Installer "Komponente X von Y" und bietet "Überspringen" an.
+
+SYSTEMANFORDERUNGEN
+- Tool (Browser): aktuelles Chrome oder Edge empfohlen (kann Ordner direkt schreiben). Firefox/Safari: ZIP-Dateien pro Disc.
+- Der Browser sperrt Systemordner (Desktop, Dokumente, Downloads, Laufwerks-Hauptordner); Sicherheits- oder Firmenrichtlinien koennen das Schreiben ausserdem verbieten. Dann einen neuen Unterordner waehlen oder "Als ZIP-Dateien speichern" ankreuzen.
+- Installer (Launcher.exe): Windows 10 oder 11, 64 Bit.
+- Brennen mit dem Dateisystem UDF (nicht ISO 9660 / Joliet); bei Blu-ray UDF 2.50/2.60.

@@ -31,3 +31,9 @@ Build
 Wichtig
 - Das neue Launcher-Layout (dynamische Bannerhöhe, Icon, Sprachen) wurde unter Linux kompiliert und die Core-Logik getestet, aber NICHT auf echtem Windows ausprobiert. Bitte einmal mit einer gebrannten/gemounteten Disc testen.
 - Unsignierte EXE: SmartScreen/Virenscanner-Hinweise möglich. USB-AutoRun nicht zuverlässig.
+
+SYSTEMANFORDERUNGEN
+- Tool (Browser): aktuelles Chrome oder Edge empfohlen (kann Ordner direkt schreiben). Firefox/Safari: ZIP-Ausgabe waehlen.
+- Der Browser sperrt Systemordner (Desktop, Dokumente, Downloads, Laufwerks-Hauptordner); Sicherheits- oder Firmenrichtlinien koennen das Schreiben ausserdem verbieten. Dann einen neuen Unterordner waehlen oder die ZIP-Ausgabe nutzen.
+- Installer (Launcher.exe): Windows 10 oder 11, 64 Bit.
+- Brennen mit dem Dateisystem UDF (nicht ISO 9660 / Joliet).
