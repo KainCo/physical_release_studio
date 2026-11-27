@@ -95,6 +95,11 @@ footer a{margin:0 8px}
 <main id="top"><div class="wrap">
   <h1 data-i="h1">Steam Disc Creator</h1>
   <p class="lead" data-i="lead">Macht aus einem Spielordner ein Paket für CD, DVD, Blu-ray oder USB: Das Tool teilt die Dateien bei Bedarf auf mehrere Discs auf, und ein kleiner Installer fügt sie später wieder zusammen. Er kann das Spiel installieren, erkennt eine vorhandene Installation („Spiel starten“) und bringt einen Uninstaller mit.</p>
+  <details class="box info" style="margin:0 0 16px" id="sysReq">
+    <summary style="cursor:pointer;font-weight:700" data-i="reqT">Systemanforderungen</summary>
+    <div class="small" style="margin-top:8px" data-i="reqBody"></div>
+  </details>
+
 
   <div class="box info" style="margin:0 0 16px">
     <b class="t" data-i="privT">Alles bleibt auf deinem Rechner</b>
@@ -164,6 +169,12 @@ footer a{margin:0 8px}
       <label class="check hidden" id="showTitleL" style="margin-top:8px"><input type="checkbox" id="showTitle" checked><span data-i="showTitle">Titel unter dem Banner anzeigen</span></label>
     </div>
 
+    <div style="margin-top:16px"><label class="f" for="iconIn" data-i="fIcon">Disc-Icon (.ico / .png, optional)</label>
+      <input type="file" id="iconIn" accept=".ico,image/x-icon,image/vnd.microsoft.icon,.png,image/png">
+      <p class="muted small" id="iconSt" style="margin:6px 0 0"></p>
+      <p class="muted small" data-i="iconH" style="margin:6px 0 0">Das Icon wird im Explorer für die Disc bzw. das Laufwerk angezeigt (autorun.ico). Ohne eigene Datei wird ein neutrales Disc-Symbol verwendet. Das Launcher-Programm selbst behält immer das neutrale Symbol.</p>
+    </div>
+
     <div style="margin-top:16px"><label class="f" data-i="fExtras">Extras (optional)</label>
       <p class="muted small" data-i="extrasH" style="margin:0 0 8px">Handbücher, Soundtrack, Artwork usw.</p>
       <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sec" type="button" id="exFiles" data-i="addFiles">Dateien hinzufügen</button><button class="btn sec" type="button" id="exFolder" data-i="addFolder">Ordner hinzufügen</button></div>
@@ -182,13 +193,14 @@ footer a{margin:0 8px}
     <div class="kv" id="calc"></div>
     <div id="calcWarn" style="margin-top:12px"></div>
     <div style="margin-top:12px;overflow-x:auto"><table id="discTable" aria-live="polite"></table></div>
-    <p class="muted small" data-i="calcH">Berechnet mit 2-KiB-Sektoren, Verzeichnis-Overhead pro Datei und 1 % Reserve. Brenne mit dem Dateisystem UDF (bei CDs ist ISO 9660/Joliet auf 64 Zeichen pro Name begrenzt).</p>
+    <div class="box warn" id="burnBox" style="margin-top:14px"></div>
   </section>
 
   <!-- 5 -->
   <section class="card hidden" id="s5">
     <h2><span class="n">5</span><span data-i="s5">Paket erstellen</span></h2>
     <p class="muted small" id="outHint"></p>
+    <label class="check hidden" id="zipL" style="margin:8px 0"><input type="checkbox" id="forceZip"><span data-i="forceZip">Als ZIP-Dateien speichern statt direkt in einen Ordner (hilft, wenn der Browser den Ordner sperrt)</span></label>
     <div class="row"><button class="btn" id="build" type="button" disabled data-i="build">Erstellen</button><button class="btn sec hidden" id="cancel" type="button" data-i="cancel">Abbrechen</button></div>
     <div id="prog" class="hidden" style="margin-top:14px"><progress id="bar" max="1000" value="0"></progress><p class="small muted" id="progTxt" aria-live="polite"></p></div>
     <div id="result" style="margin-top:12px"></div>
@@ -240,6 +252,9 @@ de: {
   fApp:'Steam-AppID (im Ordner-Modus optional)', fAcf:'appmanifest_….acf (optional)', acfH:'Optional. Die Manifest-Datei liegt in <code>steamapps</code> neben dem Ordner <code>common</code>. Ohne Datei erzeugt der Installer ein einfaches Manifest, damit Steam das Spiel als vorhanden erkennt. Ungetestet: Steam kann trotzdem eine Überprüfung der Dateien verlangen.',
   fRedist:'Zusatzkomponenten (optional im Installer)', redistNone:'Keine bekannten Installationsprogramme (Visual C++, DirectX, .NET …) gefunden.', redistH:'Der Installer fragt am Ende, ob diese Komponenten mitinstalliert werden sollen (Administratorabfrage). Später gibt es im Launcher außerdem den Button „Zusatzkomponenten installieren“. Parameter bei Bedarf anpassen.',
   fExtras:'Extras (optional)', extrasH:'Handbücher, Soundtrack, Artwork usw. Sie werden auf Disc 1 in den Ordner Extras kopiert und nicht installiert. Für Einträge mit Namen zeigt der Launcher bis zu 5 Schaltflächen (Namen leeren = keine Schaltfläche).', extraBtn:'Name der Schaltfläche (leer = keine)', addFiles:'Dateien hinzufügen', addFolder:'Ordner hinzufügen', extraRm:'Entfernen', extraDup:'Übersprungen (schon vorhanden): {0}', 
+  burnT:'⚠ So brennst du die Discs (wichtig)', burn1:'Wähle im Brennprogramm das Dateisystem <b>UDF</b> (Blu-ray: UDF 2.50 oder 2.60, DVD: UDF 2.01), <b>nicht „ISO 9660“ oder „Joliet“</b>. Diese alten Formate erlauben nur kurze Namen und kleine Dateien; das Brennen bricht ab oder die Disc funktioniert nicht.', burnZip:'Entpacke zuerst die ZIP-Datei jeder Disc in einen eigenen Ordner.', burn2:'Brenne den <b>Inhalt</b> des Ordners Disc1, Disc2 … (nicht den Ordner selbst) als Daten-Disc. Beginne mit Disc 1; sie enthält das Installationsprogramm.', burn3:'Beschrifte die Discs in der richtigen Reihenfolge. Der Installer fragt später nach Disc 2 usw.', burnUsb:'USB-Stick oder Festplatte: Inhalt einfach kopieren (Dateisystem exFAT oder NTFS; bei FAT32 sind Dateien bis 4 GiB möglich).',
+  reqT:'Systemanforderungen', reqBody:'<b>Dieses Tool (Browser):</b><ul style="margin:4px 0 8px;padding-left:20px"><li>Empfohlen: aktuelles <b>Chrome oder Edge</b>. Sie können den Spielordner lesen und die fertigen Disc-Ordner direkt schreiben.</li><li>Firefox und Safari können keine Ordner schreiben; dort erhältst du pro Disc eine ZIP-Datei.</li><li>Der Browser sperrt Systemordner (Desktop, Dokumente, Downloads, Laufwerks-Hauptordner). Sicherheits- oder Firmenrichtlinien können das Schreiben zusätzlich verbieten. Wähle dann einen neuen Unterordner oder „Als ZIP-Dateien speichern“.</li><li>Freier Speicher: mindestens so viel wie das Spiel groß ist.</li></ul><b>Installer (auf der Disc):</b><ul style="margin:4px 0 0;padding-left:20px"><li>Windows 10 oder 11, 64 Bit.</li><li>Disc-Laufwerk (oder eingebundenes Abbild bzw. USB-Stick) und genug freier Platz für das Spiel.</li><li>Brennen mit Dateisystem UDF (siehe Anleitung in Schritt 4).</li><li>Je nach Spiel und Begleitprogrammen kann Windows nach Administratorrechten fragen.</li></ul>', forceZip:'Als ZIP-Dateien speichern statt direkt in einen Ordner (hilft, wenn der Browser den Ordner sperrt)',
+  fIcon:'Disc-Icon (.ico / .png, optional)', iconH:'Das Icon wird im Explorer für die Disc bzw. das Laufwerk angezeigt (autorun.ico). Ohne eigene Datei wird ein neutrales Disc-Symbol verwendet. Das Launcher-Programm selbst behält immer das neutrale Symbol.', iconDef:'Standard: neutrales Disc-Symbol', iconBad:'Keine gültige .ico-Datei.', iconType:'Bitte eine .ico- oder .png-Datei wählen.', iconErr:'Icon konnte nicht verwendet werden: {0}',
   fBanner:'Banner / Cover (eigenes Bild, optional)', bannerH:'Verwende dein eigenes Bild (JPG oder PNG). Empfohlen sind mindestens 920 × 430 Pixel; der Installer skaliert auf 640 Pixel Breite.', bannerInfo:'Bild: {0} × {1} Pixel', bannerSmall:' – etwas klein, wirkt evtl. unscharf', showTitle:'Titel unter dem Banner anzeigen',
   s4:'Medium und Berechnung', fMedia:'Medium', fCustom:'Eigene Größe (GB)',
   m_cd650:'CD-R 650 MB (74 min)', m_cd700:'CD-R 700 MB (80 min)', m_cd800:'CD-R 800 MB (90 min)', m_dvd5:'DVD (4,7 GB)', m_dvd9:'DVD DL (8,5 GB)', m_bd25:'Blu-ray (25 GB)', m_bd50:'Blu-ray DL (50 GB)', m_bd100:'Blu-ray XL (100 GB)', m_usb:'USB / Ordner (keine Teilung)', m_usb32:'USB mit FAT32 (Dateien max. 4 GB)', m_custom:'Eigene Größe …',
@@ -252,7 +267,7 @@ de: {
   needAck:'Bitte bestätige zuerst unter „DRM-Hinweise“ (rechtmäßiger Besitz, nur private Nutzung).', needExe:'Bitte wähle die Programmdatei.', needApp:'Für den Steam-Modus wird die AppID (nur Ziffern) benötigt.', needTitle:'Bitte gib einen Titel an.',
   working:'Schreibe {0} … {1} %', crc:'Berechne Prüfsummen … {0} %', zipping:'Erstelle ZIP für Disc {0} …', finishing:'Schreibe Installer-Dateien …',
   done:'Fertig! {0} Disc(s) erstellt.', doneDir:'Gespeichert in: {0}. Brenne den Inhalt jedes Ordners DiscN (nicht den Ordner selbst) auf eine eigene Disc, Dateisystem UDF. Legt man später Disc 1 ein, startet der Installer.',
-  dlDisc:'Disc {0} herunterladen ({1})', abort:'Abgebrochen.', fail:'Fehler: {0}', blocked:'Dieser Ordner ist vom Browser gesperrt (z. B. Desktop, Dokumente, Downloads). Lege dort einen Unterordner an und wähle ihn.',
+  dlDisc:'Disc {0} herunterladen ({1})', abort:'Abgebrochen.', fail:'Fehler: {0}', blocked:'Dieser Ordner ist vom Browser gesperrt (z. B. Desktop, Dokumente, Downloads). Lege dort einen Unterordner an und wähle ihn. Wenn es trotzdem gesperrt ist (z. B. durch Sicherheits- oder Firmenrichtlinien), setze das Häkchen „Als ZIP-Dateien speichern“ und starte erneut.',
   fImp:'Impressum', fPriv:'Datenschutz', fNote:'Dieses Tool verändert keine Spieldateien, umgeht keinen Kopierschutz und ist nicht dafür gedacht.',
   pg:'Seite „{0}“', files:'{0} Dateien',
   appH:'Die AppID braucht der Installer im Steam-Modus, damit Steam das Spiel als installiert erkennt. Du findest sie in der Steam-Adresse des Spiels (store.steampowered.com/app/<b>…</b>).',
@@ -288,6 +303,9 @@ en: {
   fApp:'Steam AppID (optional in folder mode)', fAcf:'appmanifest_….acf (optional)', acfH:'Optional. The manifest file is in <code>steamapps</code> next to the <code>common</code> folder. Without a file the installer creates a simple manifest so Steam sees the game as installed. Untested: Steam may still ask to verify the files.',
   fRedist:'Extra components (optional in the installer)', redistNone:'No known installers (Visual C++, DirectX, .NET …) found.', redistH:'At the end the installer asks whether to install these components as well (administrator prompt). The launcher also has an "Install required components" button later. Adjust the parameters if needed.',
   fExtras:'Extras (optional)', extrasH:'Manuals, soundtrack, artwork etc. They are copied to disc 1 into the folder Extras and are not installed. For entries with a name the launcher shows up to 5 buttons (clear the name = no button).', extraBtn:'Button name (empty = none)', addFiles:'Add files', addFolder:'Add folder', extraRm:'Remove', extraDup:'Skipped (already added): {0}', 
+  burnT:'⚠ How to burn the discs (important)', burn1:'In your burning software choose the <b>UDF</b> file system (Blu-ray: UDF 2.50 or 2.60, DVD: UDF 2.01), <b>not “ISO 9660” or “Joliet”</b>. Those old formats only allow short names and small files; burning fails or the disc will not work.', burnZip:'First extract the ZIP file of each disc into its own folder.', burn2:'Burn the <b>contents</b> of the folder Disc1, Disc2 … (not the folder itself) as a data disc. Start with disc 1; it contains the installer.', burn3:'Label the discs in the right order. The installer will ask for disc 2 etc. later.', burnUsb:'USB stick or hard disk: simply copy the contents (file system exFAT or NTFS; FAT32 allows files up to 4 GiB).',
+  reqT:'System requirements', reqBody:'<b>This tool (browser):</b><ul style="margin:4px 0 8px;padding-left:20px"><li>Recommended: current <b>Chrome or Edge</b>. They can read the game folder and write the finished disc folders directly.</li><li>Firefox and Safari cannot write folders; there you get one ZIP file per disc.</li><li>The browser blocks system folders (Desktop, Documents, Downloads, drive roots). Security or company policies may block writing as well. Then choose a new subfolder or “Save as ZIP files”.</li><li>Free space: at least as much as the size of the game.</li></ul><b>Installer (on the disc):</b><ul style="margin:4px 0 0;padding-left:20px"><li>Windows 10 or 11, 64-bit.</li><li>Disc drive (or mounted image / USB stick) and enough free space for the game.</li><li>Burn with the UDF file system (see the guide in step 4).</li><li>Depending on the game and its helper programs, Windows may ask for administrator rights.</li></ul>', forceZip:'Save as ZIP files instead of writing directly to a folder (helps if the browser blocks the folder)',
+  fIcon:'Disc icon (.ico / .png, optional)', iconH:'The icon is shown for the disc / drive in Explorer (autorun.ico). Without your own file a neutral disc symbol is used. The launcher program itself always keeps the neutral symbol.', iconDef:'Default: neutral disc symbol', iconBad:'Not a valid .ico file.', iconType:'Please choose an .ico or .png file.', iconErr:'Could not use the icon: {0}',
   fBanner:'Banner / cover (your own image, optional)', bannerH:'Use your own image (JPG or PNG). At least 920 × 430 pixels is recommended; the installer scales it to 640 pixels wide.', bannerInfo:'Image: {0} × {1} pixels', bannerSmall:' – a bit small, may look blurry', showTitle:'Show the title below the banner',
   s4:'Medium and calculation', fMedia:'Medium', fCustom:'Custom size (GB)',
   m_cd650:'CD-R 650 MB (74 min)', m_cd700:'CD-R 700 MB (80 min)', m_cd800:'CD-R 800 MB (90 min)', m_dvd5:'DVD (4.7 GB)', m_dvd9:'DVD DL (8.5 GB)', m_bd25:'Blu-ray (25 GB)', m_bd50:'Blu-ray DL (50 GB)', m_bd100:'Blu-ray XL (100 GB)', m_usb:'USB / folder (no splitting)', m_usb32:'USB with FAT32 (files max. 4 GB)', m_custom:'Custom size …',
@@ -300,7 +318,7 @@ en: {
   needAck:'Please confirm under "DRM hints" first (legal ownership, private use only).', needExe:'Please choose the program file.', needApp:'Steam mode needs the AppID (digits only).', needTitle:'Please enter a title.',
   working:'Writing {0} … {1} %', crc:'Calculating checksums … {0} %', zipping:'Creating ZIP for disc {0} …', finishing:'Writing installer files …',
   done:'Done! {0} disc(s) created.', doneDir:'Saved in: {0}. Burn the contents of each DiscN folder (not the folder itself) to its own disc, UDF file system. Inserting disc 1 later starts the installer.',
-  dlDisc:'Download disc {0} ({1})', abort:'Cancelled.', fail:'Error: {0}', blocked:'The browser blocks this folder (e.g. Desktop, Documents, Downloads). Create a subfolder there and choose it.',
+  dlDisc:'Download disc {0} ({1})', abort:'Cancelled.', fail:'Error: {0}', blocked:'The browser blocks this folder (e.g. Desktop, Documents, Downloads). Create a subfolder there and choose it. If it is still blocked (e.g. by security or company policies), tick “Save as ZIP files” and start again.',
   fImp:'Legal notice', fPriv:'Privacy', fNote:'This tool does not modify game files, does not circumvent any copy protection and is not intended to.',
   pg:'Page "{0}"', files:'{0} files',
   appH:'In Steam mode the installer needs the AppID so that Steam recognises the game as installed. You find it in the game\'s Steam address (store.steampowered.com/app/<b>…</b>).',
@@ -326,7 +344,7 @@ function applyLang() {
   document.getElementById('l-de').setAttribute('aria-pressed', LANG === 'de');
   fillMedia(); renderAll();
 }
-function setLang(l) { LANG = l === 'en' ? 'en' : 'de'; try { localStorage.setItem('prs_lang', LANG); } catch (e) {} applyLang(); }
+function setLang(l) { LANG = l === 'en' ? 'en' : 'de'; try { localStorage.setItem('prs_lang', LANG); } catch (e) {} applyLang(); renderIconStatus(); renderBurn(); }
 (function initLang() {
   let l = null; try { l = localStorage.getItem('prs_lang'); } catch (e) {}
   if (l !== 'en' && l !== 'de') l = (navigator.language || 'de').toLowerCase().startsWith('de') ? 'de' : 'en';
@@ -340,10 +358,10 @@ function b64(s) { const b = atob(s), a = new Uint8Array(b.length); for (let i = 
 function el(tag, props, ...kids) { const e = document.createElement(tag); Object.assign(e, props || {}); kids.forEach((k) => e.append(k)); return e; }
 
 // ---------- Zustand ----------
-const S = { files: [], rootName: '', appId: '', names: null, peHits: [], redist: [], exeList: [], banner: null, acf: null, plan: null, abort: null, bannerBytes: null, srcEngine: false, runtime: [], extras: [] };
+const S = { iconBytes: null, iconName: '', iconConv: false, files: [], rootName: '', appId: '', names: null, peHits: [], redist: [], exeList: [], banner: null, acf: null, plan: null, abort: null, bannerBytes: null, srcEngine: false, runtime: [], extras: [] };
 let LAUNCHER = null, ICO = null;
 function launcherBytes() { return LAUNCHER || (LAUNCHER = b64(LAUNCHER_B64)); }
-function icoBytes() { return ICO || (ICO = b64(ICO_B64)); }
+function icoBytes() { return S.iconBytes || ICO || (ICO = b64(ICO_B64)); }
 let LIC; function licenseBytes() { return LIC || (LIC = b64(LICENSE_B64)); }
 
 // ---------- Schritt 1: Ordner lesen ----------
@@ -495,7 +513,8 @@ function doPlan() {
     const bar = el('div', { className: 'bar' + (pct > 97 ? ' full' : '') }, el('i', { style: 'width:' + pct.toFixed(1) + '%' }));
     tb.append(el('tr', {}, el('td', { textContent: String(i + 1) }), el('td', { textContent: fmt(d.used) }), el('td', { textContent: String(d.segs.length) }), el('td', {}, bar)));
   });
-  $('outHint').textContent = window.showDirectoryPicker ? t('outDir', PRS.fsName($('title').value || S.rootName)) : t('outZip');
+  const dirOk = window.showDirectoryPicker && !$('forceZip').checked;
+  $('outHint').textContent = dirOk ? t('outDir', PRS.fsName($('title').value || S.rootName)) : t('outZip');
 }
 
 // ---------- Extras ----------
@@ -521,6 +540,59 @@ function addExtras(list) {
   S.extras.sort((a, b) => (a.path < b.path ? -1 : 1));
   renderExtras(); updatePlan();
   if (dup.length) alert(t('extraDup', dup.slice(0, 5).join(', ') + (dup.length > 5 ? ' …' : '')));
+}
+
+// ---------- Brennanleitung ----------
+function burnHtml(zip) {
+  const li = (k) => '<li>' + t(k) + '</li>';
+  return '<b class="t">' + t('burnT') + '</b><ol style="margin:6px 0 0;padding-left:20px">' + li('burn1') + (zip ? li('burnZip') : '') + li('burn2') + li('burn3') + '</ol><p class="small muted" style="margin:8px 0 0">' + t('burnUsb') + '</p>';
+}
+function renderBurn() { const b = $('burnBox'); if (b) b.innerHTML = burnHtml(false); }
+
+// ---------- Eigenes Disc-Icon (autorun.ico) ----------
+function renderIconStatus() {
+  $('iconSt').textContent = S.iconBytes ? ('✓ ' + S.iconName + (S.iconConv ? ' → autorun.ico' : '')) : t('iconDef');
+}
+async function pngToIco(file) {
+  const bmp = await createImageBitmap(file);
+  const sizes = [16, 32, 48, 64, 128, 256];
+  const parts = [];
+  for (const sz of sizes) {
+    const c = document.createElement('canvas'); c.width = sz; c.height = sz;
+    const g = c.getContext('2d'); g.imageSmoothingQuality = 'high';
+    const sc = Math.max(sz / bmp.width, sz / bmp.height), w = bmp.width * sc, h = bmp.height * sc;
+    g.drawImage(bmp, (sz - w) / 2, (sz - h) / 2, w, h);
+    const blob = await new Promise((r) => c.toBlob(r, 'image/png'));
+    parts.push({ sz, data: new Uint8Array(await blob.arrayBuffer()) });
+  }
+  const total = 6 + 16 * parts.length + parts.reduce((a, p) => a + p.data.length, 0);
+  const out = new Uint8Array(total), dv = new DataView(out.buffer);
+  dv.setUint16(2, 1, true); dv.setUint16(4, parts.length, true);
+  let off = 6 + 16 * parts.length;
+  parts.forEach((p, i) => {
+    const e = 6 + 16 * i;
+    out[e] = p.sz >= 256 ? 0 : p.sz; out[e + 1] = p.sz >= 256 ? 0 : p.sz;
+    dv.setUint16(e + 4, 1, true); dv.setUint16(e + 6, 32, true);
+    dv.setUint32(e + 8, p.data.length, true); dv.setUint32(e + 12, off, true);
+    out.set(p.data, off); off += p.data.length;
+  });
+  return out;
+}
+async function onIcon() {
+  const f = $('iconIn').files[0]; S.iconBytes = null; S.iconName = ''; S.iconConv = false;
+  if (f) {
+    try {
+      if (/\.ico$/i.test(f.name)) {
+        const b = new Uint8Array(await f.arrayBuffer());
+        if (b.length < 22 || b[0] !== 0 || b[1] !== 0 || b[2] !== 1 || b[3] !== 0) throw new Error(t('iconBad'));
+        S.iconBytes = b;
+      } else if (/\.png$/i.test(f.name) || f.type === 'image/png') {
+        S.iconBytes = await pngToIco(f); S.iconConv = true;
+      } else throw new Error(t('iconType'));
+      S.iconName = f.name;
+    } catch (e) { S.iconBytes = null; $('iconIn').value = ''; alert(t('iconErr', String(e.message || e))); }
+  }
+  renderIconStatus();
 }
 
 // ---------- Banner und Manifest ----------
@@ -577,7 +649,7 @@ async function build() {
   $('build').disabled = true; $('cancel').classList.remove('hidden'); $('prog').classList.remove('hidden'); setProgress(0, '');
   try {
     const extra = (ini, i) => PRS.extraFiles({ ini, pkgId, discCount: plan.discs.length, title, exeName: EXE_NAME, icoBytes: icoBytes(), launcherBytes: launcherBytes(), licenseBytes: licenseBytes(), readmeName: 'README.txt', readme: PRS.readmeText(title, plan.discs.length), bannerName: S.banner ? S.banner.name : '', bannerBytes: S.bannerBytes, acfBytes: steam && S.acf ? S.acf.bytes : null }, i + 1);
-    if (window.showDirectoryPicker) {
+    if (window.showDirectoryPicker && !$('forceZip').checked) {
       let root;
       try { root = await window.showDirectoryPicker({ mode: 'readwrite' }); } catch (e) { if (e.name === 'AbortError') throw new Error('abort'); throw e; }
       const pkgDir = await root.getDirectoryHandle(PRS.fsName(title), { create: true });
@@ -589,6 +661,7 @@ async function build() {
       { const cache = new Map(); for (const x of S.extras) await PRS.writeBlobToDirectory(discDirs[0], x.path, x.blob, cache, signal); }
       setProgress(1, '');
       res.append(el('div', { className: 'box info', textContent: t('done', plan.discs.length) + ' ' + t('doneDir', root.name + '\\' + PRS.fsName(title)) }));
+      res.append(el('div', { className: 'box warn', innerHTML: burnHtml(false), style: 'margin-top:12px' }));
     } else {
       const sf = files.map((f) => ({ path: f.path, size: f.size, blob: f.blob }));
       await PRS.computeCrcs(sf, plan, (d, tot) => setProgress(d / Math.max(1, tot) * 0.5, t('crc', Math.floor(d / Math.max(1, tot) * 100))), signal);
@@ -603,6 +676,7 @@ async function build() {
         const b = el('button', { className: 'btn sec', type: 'button', textContent: t('dlDisc', i + 1, fmt(zip.size)) }); b.onclick = () => download(zip, nm); list.append(el('li', {}, b));
       }
       setProgress(1, '');
+      res.append(el('div', { className: 'box warn', innerHTML: burnHtml(true), style: 'margin-top:12px' }));
     }
   } catch (e) {
     const msg = e && e.message === 'abort' ? t('abort') : (e && (e.name === 'SecurityError' || /system|not allowed/i.test(e.message || '')) ? t('blocked') : t('fail', e && e.message || e));
@@ -612,7 +686,7 @@ async function build() {
 
 // ---------- Ereignisse ----------
 $('l-de').onclick = () => setLang('de'); $('l-en').onclick = () => setLang('en');
-if (window.showDirectoryPicker) { $('pick').onclick = pickFolder; }
+if (window.showDirectoryPicker) { $('pick').onclick = pickFolder; $('zipL').classList.remove('hidden'); $('forceZip').onchange = () => { if (S.files.length) doPlan(); else $('outHint').textContent = t('outZip'); }; }
 else { $('pick').classList.add('hidden'); $('pickFallbackL').classList.remove('hidden'); $('pickFallback').onchange = pickFallback; }
 $('exe').onchange = () => { scanRuntime(); };
 $('title').oninput = (e) => { e.target.dataset.touched = '1'; updateLinks(); $('dirName').value = PRS.fsName(e.target.value); };
@@ -621,10 +695,10 @@ document.querySelectorAll('input[name=mode]').forEach((r) => { r.onchange = upda
 $('media').onchange = updatePlan; $('customGB').oninput = updatePlan;
 $('exFiles').onclick = () => $('exFilesIn').click(); $('exFolder').onclick = () => $('exFolderIn').click();
 $('exFilesIn').onchange = (e) => { addExtras([...e.target.files]); e.target.value = ''; }; $('exFolderIn').onchange = (e) => { addExtras([...e.target.files]); e.target.value = ''; };
-$('banner').onchange = onBanner; $('acf').onchange = onAcf;
+$('iconIn').onchange = onIcon; $('banner').onchange = onBanner; $('acf').onchange = onAcf;
 $('build').onclick = build; $('cancel').onclick = () => { if (S.abort) S.abort.abort(); };
 if (/\/studios\//i.test(location.pathname)) $('hubLink').classList.remove('hidden');
-fillMedia(); applyLang();
+fillMedia(); applyLang(); renderIconStatus(); renderBurn();
 </script>
 </body>
 </html>

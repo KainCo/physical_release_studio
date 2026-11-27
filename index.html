@@ -89,16 +89,16 @@
       box-shadow: 0 0 25px -5px rgba(59, 130, 246, 0.25), 0 0 10px -5px rgba(168, 85, 247, 0.2);
     }
     .btn-craft {
-      background: linear-gradient(90deg, rgba(234, 88, 12, 0.30) 0%, rgba(217, 119, 6, 0.30) 100%);
-      border: 1px solid rgba(251, 146, 60, 0.35);
+      background: linear-gradient(90deg, rgba(168, 162, 158, 0.20) 0%, rgba(120, 113, 108, 0.24) 100%);
+      border: 1px solid rgba(168, 162, 158, 0.38);
       -webkit-backdrop-filter: blur(8px);
       backdrop-filter: blur(8px);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.10), 0 4px 14px -6px rgba(234, 88, 12, 0.35);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.10), 0 4px 14px -6px rgba(0, 0, 0, 0.45);
       transition: background 0.2s, border-color 0.2s;
     }
     .btn-craft:hover {
-      background: linear-gradient(90deg, rgba(234, 88, 12, 0.45) 0%, rgba(217, 119, 6, 0.45) 100%);
-      border-color: rgba(251, 146, 60, 0.6);
+      background: linear-gradient(90deg, rgba(168, 162, 158, 0.32) 0%, rgba(120, 113, 108, 0.38) 100%);
+      border-color: rgba(190, 184, 178, 0.6);
     }
     /* GOG Disc Creator – featured flagship block */
     .gog-hero {
@@ -137,6 +137,42 @@
     .hero-duo .gog-hero ul { margin-bottom: 22px; }
     .hero-duo .gog-hero .gh-cta { margin-top: auto; }
     .hero-duo .gog-hero h2 { font-size: 1.6rem; }
+    /* Aufklappbare Karten-Raster: ab mehr als data-collapse Karten wird der Rest eingeklappt */
+    .grid-collapsed > *:not(.planned-box):nth-child(n+7) { display: none; }
+    .collapse-toggle { display: block; margin: 16px auto 0; padding: 9px 22px; border-radius: 999px; font-size: 13px; font-weight: 700; color: #cbd5e1;
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); cursor: pointer; transition: background .2s; }
+    .collapse-toggle:hover { background: rgba(255,255,255,0.10); }
+    /* Geplante Formate – kompakt */
+    .planned-box { grid-column: 1 / -1; border: 1px dashed rgba(148, 163, 184, 0.35); border-radius: 16px; padding: 14px 18px; background: rgba(15, 21, 35, 0.6); }
+    .planned-head { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; color: #94a3b8; font-size: 12px; margin-bottom: 10px; }
+    .planned-head i { color: #f59e0b; }
+    .planned-title { font-weight: 700; color: #fbbf24; text-transform: uppercase; letter-spacing: .05em; font-size: 11px; background: none !important; border: 0 !important; padding: 0 !important; }
+    .planned-list { display: flex; flex-wrap: wrap; gap: 8px; }
+    .planned-chip { font-size: 12px; color: #94a3b8; padding: 5px 12px; border-radius: 999px; border: 1px solid rgba(148, 163, 184, 0.25); background: rgba(255,255,255,0.03); }
+    /* Kategorie-Kopfzeilen mit Akzentfarbe */
+    .cat-head { --c: 59,130,246; display: flex; align-items: center; gap: 16px; padding: 16px 20px; border-radius: 16px;
+      border: 1px solid rgba(var(--c), 0.28); border-left: 4px solid rgb(var(--c));
+      background: linear-gradient(90deg, rgba(var(--c), 0.16) 0%, rgba(var(--c), 0.04) 55%, transparent 100%), #0f1523; }
+    .cat-head .ch-ico { flex: none; width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;
+      color: rgb(var(--c)); background: rgba(var(--c), 0.14); border: 1px solid rgba(var(--c), 0.35); box-shadow: 0 0 22px -6px rgba(var(--c), 0.6); }
+    .cat-head h2 { margin: 0; }
+    .cat-head > .ch-ico + div { min-width: 0; flex: 1 1 0; }
+    .cat-head h2, .cat-head p { overflow-wrap: anywhere; }
+    @media (max-width: 640px) { .cat-head .ch-tag { flex: 1 1 100%; text-align: center; } }
+    /* Design Studio – breites Verbindungs-Banner unter GOG + Steam */
+    .hero-duo .gog-hero.design { grid-column: 1 / -1; padding: 24px 26px; border-color: rgba(192, 132, 252, 0.5);
+      background: linear-gradient(90deg, rgba(168, 85, 247, 0.20) 0%, rgba(99, 102, 241, 0.14) 50%, rgba(26, 159, 255, 0.20) 100%), #111726;
+      box-shadow: 0 20px 50px -22px rgba(139, 92, 246, 0.5); }
+    .hero-duo .gog-hero.design > div:first-child { height: auto; }
+    .gog-hero.design .gh-link { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 11px; font-weight: 700; color: #cbd5e1; margin-bottom: 4px; }
+    .gog-hero.design .gh-chip { padding: 3px 10px; border-radius: 999px; border: 1px solid; }
+    .gog-hero.design .gh-chip.g { color: #d8b4fe; border-color: rgba(168, 85, 247, 0.5); background: rgba(168, 85, 247, 0.16); }
+    .gog-hero.design .gh-chip.s { color: #9fd8f7; border-color: rgba(102, 192, 244, 0.5); background: rgba(102, 192, 244, 0.14); }
+    .gog-hero.design .gh-cta { background: linear-gradient(90deg, #a855f7 0%, #6366f1 50%, #1a9fff 100%); box-shadow: 0 10px 25px -8px rgba(139, 92, 246, 0.6); }
+    .gog-hero.design .gh-cta, .hero-duo .gog-hero.design .gh-cta { margin-top: 0; white-space: nowrap; }
+    .gog-hero.design .gh-side { display: flex; align-items: center; justify-content: flex-start; }
+    .gog-hero.design li i { color: #c084fc; }
+    @media (min-width: 900px) { .hero-duo .gog-hero.design { grid-template-columns: 1fr auto; gap: 32px; align-items: center; } .gog-hero.design .gh-side { justify-content: flex-end; } }
 
 
     /* Kopfbereich: Menü klappt schon unter 1120 px ein, damit nichts seitlich überläuft (Tablet/Handy).
@@ -222,33 +258,29 @@
           </button>
           <div class="absolute left-0 top-full pt-2 w-64 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform group-hover:translate-y-0 translate-y-2">
             <div class="bg-dark-card border border-dark-border rounded-xl p-2 shadow-2xl space-y-1">
+              <a href="#design-studio" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-dark-hover transition-colors">
+                <div class="w-8 h-8 rounded-md flex items-center justify-center" style="background:rgba(217,70,239,.12);color:#e879f9"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                <div><div class="text-sm font-semibold text-white">Design Studio</div><div class="text-[11px] text-slate-400" data-i18n="nav_design_sub">Cases for GOG &amp; Steam discs</div></div>
+              </a>
               <a href="#cover-studio" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-dark-hover transition-colors">
                 <div class="w-8 h-8 rounded-md bg-blue-500/10 text-blue-400 flex items-center justify-center"><i class="fa-solid fa-compact-disc"></i></div>
                 <div><div class="text-sm font-semibold text-white">Cover Studio</div><div class="text-[11px] text-slate-400">PS1, Dreamcast, GameCube</div></div>
               </a>
-              <a href="#booklet-studio" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-dark-hover transition-colors">
-                <div class="w-8 h-8 rounded-md bg-amber-500/10 text-amber-400 flex items-center justify-center"><i class="fa-solid fa-book-open"></i></div>
-                <div><div class="text-sm font-semibold text-white">Booklet Studio</div><div class="text-[11px] text-slate-400">Manuals & Guide Makers</div></div>
-              </a>
-              <a href="#label-studio" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-dark-hover transition-colors">
-                <div class="w-8 h-8 rounded-md bg-emerald-500/10 text-emerald-400 flex items-center justify-center"><i class="fa-solid fa-tags"></i></div>
-                <div><div class="text-sm font-semibold text-white">Label Studio</div><div class="text-[11px] text-slate-400">Cartridge Labels</div></div>
-              </a>
               <a href="#craft-studio" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-dark-hover transition-colors">
-                <div class="w-8 h-8 rounded-md bg-purple-500/10 text-purple-400 flex items-center justify-center"><i class="fa-solid fa-box-open"></i></div>
-                <div><div class="text-sm font-semibold text-white">Craft Studio</div><div class="text-[11px] text-slate-400">Big Boxes & Cartridge Boxes</div></div>
+                <div class="w-8 h-8 rounded-md flex items-center justify-center" style="background:rgba(201,162,39,.14);color:#d4aa2c"><i class="fa-solid fa-scissors"></i></div>
+                <div><div class="text-sm font-semibold text-white">Craft Studio</div><div class="text-[11px] text-slate-400" data-i18n="nav_craft_sub">Booklets, Labels &amp; Boxes</div></div>
               </a>
             </div>
           </div>
         </div>
 
-        <a href="#gog-disc-creator" class="px-3 py-2 rounded-lg hover:text-white hover:bg-dark-hover flex items-center gap-2 transition-colors">
+        <a href="studios/GOG_Disc_Creator/Physical-Release-Studio-GOG-Disc-Creator.html" class="px-3 py-2 rounded-lg hover:text-white hover:bg-dark-hover flex items-center gap-2 transition-colors">
           <i class="fa-solid fa-rocket text-brand-accent"></i>
           <span>GOG Disc Creator</span>
         </a>
 
-        <a href="#steam-disc-creator" class="px-3 py-2 rounded-lg hover:text-white hover:bg-dark-hover flex items-center gap-2 transition-colors">
-          <i class="fa-solid fa-compact-disc text-brand-accent"></i>
+        <a href="studios/Steam_Disc_Creator/Physical-Release-Studio-Steam-Disc-Creator.html" class="px-3 py-2 rounded-lg hover:text-white hover:bg-dark-hover flex items-center gap-2 transition-colors">
+          <i class="fa-solid fa-compact-disc" style="color:#66c0f4"></i>
           <span>Steam Disc Creator</span>
         </a>
 
@@ -301,12 +333,11 @@
 
     <div id="mobile-menu" class="hidden md:hidden bg-dark-card border-b border-dark-border px-4 py-3 space-y-2">
       <div class="font-bold text-xs text-slate-500 uppercase px-2 mb-1" data-i18n="nav_studios">Studios</div>
+      <a href="#design-studio" class="block px-3 py-2 rounded-lg hover:bg-dark-hover text-sm">Design Studio</a>
       <a href="#cover-studio" class="block px-3 py-2 rounded-lg hover:bg-dark-hover text-sm">Cover Studio</a>
-      <a href="#booklet-studio" class="block px-3 py-2 rounded-lg hover:bg-dark-hover text-sm">Booklet Studio</a>
-      <a href="#label-studio" class="block px-3 py-2 rounded-lg hover:bg-dark-hover text-sm">Label Studio</a>
       <a href="#craft-studio" class="block px-3 py-2 rounded-lg hover:bg-dark-hover text-sm">Craft Studio</a>
-      <a href="#gog-disc-creator" class="block px-3 py-2 rounded-lg hover:bg-dark-hover text-sm">GOG Disc Creator</a>
-      <a href="#steam-disc-creator" class="block px-3 py-2 rounded-lg hover:bg-dark-hover text-sm">Steam Disc Creator</a>
+      <a href="studios/GOG_Disc_Creator/Physical-Release-Studio-GOG-Disc-Creator.html" class="block px-3 py-2 rounded-lg hover:bg-dark-hover text-sm">GOG Disc Creator</a>
+      <a href="studios/Steam_Disc_Creator/Physical-Release-Studio-Steam-Disc-Creator.html" class="block px-3 py-2 rounded-lg hover:bg-dark-hover text-sm">Steam Disc Creator</a>
       <div class="border-t border-dark-border my-2"></div>
       <a href="https://paypal.me/kainco" target="_blank" rel="noopener noreferrer" class="block px-3 py-2 rounded-lg hover:bg-dark-hover text-sm text-blue-400">PayPal Spende</a>
       <a href="#materials" class="block px-3 py-2 rounded-lg hover:bg-dark-hover text-sm" data-i18n="nav_materials">Materials</a>
@@ -408,6 +439,26 @@
       </div>
       <div class="gh-art" aria-hidden="true"><i class="fa-solid fa-compact-disc"></i></div>
     </div>
+
+    <!-- ==================== CASE DESIGN STUDIO (Verbindung zu GOG + Steam) ==================== -->
+    <div id="design-studio" class="gog-hero design">
+      <div>
+        <div class="gh-link"><span class="gh-chip g">GOG</span><i class="fa-solid fa-plus" style="color:#94a3b8"></i><span class="gh-chip s">Steam</span><i class="fa-solid fa-arrow-right" style="color:#94a3b8"></i><span data-i18n="design_link">the matching case for your discs</span></div>
+        <span class="gh-pill st-beta" style="margin-top:8px"><i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="design_pill">New tool</span> · BETA</span>
+        <h2>Design Studio</h2>
+        <p data-i18n="design_desc">Design front, spine and back of the case for your finished discs: DVD, Blu-ray and CD jewel case, with GOG or Steam colours, your own artwork and logos, system requirements and rating fields.</p>
+        <ul>
+          <li><i class="fa-solid fa-box"></i><span data-i18n="design_f1">DVD, Blu-ray &amp; jewel case</span></li>
+          <li><i class="fa-solid fa-file-export"></i><span data-i18n="design_f2">PNG, SVG &amp; PDF in true size</span></li>
+          <li><i class="fa-solid fa-lock"></i><span data-i18n="design_f3">Runs locally in your browser, no uploads</span></li>
+        </ul>
+      </div>
+      <div class="gh-side">
+        <a href="studios/design/design-studio.html" class="gh-cta">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="btn_launch_design">Open Design Studio (Beta)</span>
+        </a>
+      </div>
+    </div>
    </div>
   </section>
 
@@ -416,17 +467,17 @@
     
     <!-- SECTION 1: COVER STUDIOS -->
     <section id="cover-studio" class="space-y-6">
-      <div class="flex items-center justify-between border-b border-dark-border pb-4">
+      <div class="cat-head" style="--c:59,130,246">
+        <div class="ch-ico"><i class="fa-solid fa-compact-disc"></i></div>
         <div>
-          <h2 class="text-2xl font-bold text-white flex items-center gap-3">
-            <i class="fa-solid fa-compact-disc text-brand-500"></i>
+          <h2 class="text-2xl font-bold text-white">
             <span data-i18n="section_covers_title">Cover Studio</span>
           </h2>
-          <p class="text-slate-400 text-sm mt-1" data-i18n="section_covers_desc">Print-ready cover art inserts for classic console cases and future planned formats.</p>
+          <p class="text-slate-400 text-sm mt-1" data-i18n="section_covers_desc">Print-ready front and back inlays for retro console and PC game cases – Dreamcast, PS1, CD jewel case, DVD and more.</p>
         </div>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div id="cover-grid" data-collapse="6" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         
         <!-- Dreamcast Covers (Ready) -->
         <a href="studios/covers/dreamcast.html" class="group bg-dark-card border border-dark-border rounded-2xl p-6 transition-all duration-300 card-glow hover:-translate-y-1 flex flex-col justify-between">
@@ -528,111 +579,24 @@
           </div>
         </a>
 		
-        <!-- Geplante Cover Studios -->
-        
-        <!-- Master System -->
-        <div class="bg-dark-card border border-dark-border rounded-2xl p-6 opacity-75 flex flex-col justify-between">
-          <div>
-            <div class="flex items-center justify-between mb-4">
-              <div class="w-12 h-12 rounded-xl bg-slate-500/10 border border-slate-500/20 text-slate-400 flex items-center justify-center"><i class="fa-solid fa-gamepad text-xl"></i></div>
-              <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 badge-planned-text">In Development</span>
-            </div>
-            <h3 class="text-lg font-bold text-white">Master System</h3>
-            <p class="text-slate-400 text-sm mt-2 leading-relaxed" data-i18n="planned_cover_desc">Sega Master System Hüllen (Noch in Entwicklung).</p>
-          </div>
-          <div class="mt-6 pt-4 border-t border-dark-border/60 text-xs text-slate-500 font-mono" data-i18n="btn_coming_soon">Coming Soon</div>
-        </div>
-
-        <!-- Mega Drive -->
-        <div class="bg-dark-card border border-dark-border rounded-2xl p-6 opacity-75 flex flex-col justify-between">
-          <div>
-            <div class="flex items-center justify-between mb-4">
-              <div class="w-12 h-12 rounded-xl bg-slate-500/10 border border-slate-500/20 text-slate-400 flex items-center justify-center"><i class="fa-solid fa-gamepad text-xl"></i></div>
-              <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 badge-planned-text">In Development</span>
-            </div>
-            <h3 class="text-lg font-bold text-white">Mega Drive</h3>
-            <p class="text-slate-400 text-sm mt-2 leading-relaxed" data-i18n="planned_cover_desc">Sega Mega Drive Hüllen (Noch in Entwicklung).</p>
-          </div>
-          <div class="mt-6 pt-4 border-t border-dark-border/60 text-xs text-slate-500 font-mono" data-i18n="btn_coming_soon">Coming Soon</div>
-        </div>
-
-        <!-- Nintendo DS -->
-        <div class="bg-dark-card border border-dark-border rounded-2xl p-6 opacity-75 flex flex-col justify-between">
-          <div>
-            <div class="flex items-center justify-between mb-4">
-              <div class="w-12 h-12 rounded-xl bg-slate-500/10 border border-slate-500/20 text-slate-400 flex items-center justify-center"><i class="fa-solid fa-layer-group text-xl"></i></div>
-              <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 badge-planned-text">In Development</span>
-            </div>
-            <h3 class="text-lg font-bold text-white">Nintendo DS</h3>
-            <p class="text-slate-400 text-sm mt-2 leading-relaxed" data-i18n="planned_cover_desc">Nintendo DS Hüllen Inlays (Noch in Entwicklung).</p>
-          </div>
-          <div class="mt-6 pt-4 border-t border-dark-border/60 text-xs text-slate-500 font-mono" data-i18n="btn_coming_soon">Coming Soon</div>
-        </div>
-
-        <!-- PSP -->
-        <div class="bg-dark-card border border-dark-border rounded-2xl p-6 opacity-75 flex flex-col justify-between">
-          <div>
-            <div class="flex items-center justify-between mb-4">
-              <div class="w-12 h-12 rounded-xl bg-slate-500/10 border border-slate-500/20 text-slate-400 flex items-center justify-center"><i class="fa-solid fa-gamepad text-xl"></i></div>
-              <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 badge-planned-text">In Development</span>
-            </div>
-            <h3 class="text-lg font-bold text-white">PSP</h3>
-            <p class="text-slate-400 text-sm mt-2 leading-relaxed" data-i18n="planned_cover_desc">PlayStation Portable Cover (Noch in Entwicklung).</p>
-          </div>
-          <div class="mt-6 pt-4 border-t border-dark-border/60 text-xs text-slate-500 font-mono" data-i18n="btn_coming_soon">Coming Soon</div>
-        </div>
-
-        <!-- PS Vita -->
-        <div class="bg-dark-card border border-dark-border rounded-2xl p-6 opacity-75 flex flex-col justify-between">
-          <div>
-            <div class="flex items-center justify-between mb-4">
-              <div class="w-12 h-12 rounded-xl bg-slate-500/10 border border-slate-500/20 text-slate-400 flex items-center justify-center"><i class="fa-solid fa-gamepad text-xl"></i></div>
-              <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 badge-planned-text">In Development</span>
-            </div>
-            <h3 class="text-lg font-bold text-white">PS Vita</h3>
-            <p class="text-slate-400 text-sm mt-2 leading-relaxed" data-i18n="planned_cover_desc">PS Vita Cover Inlays (Noch in Entwicklung).</p>
-          </div>
-          <div class="mt-6 pt-4 border-t border-dark-border/60 text-xs text-slate-500 font-mono" data-i18n="btn_coming_soon">Coming Soon</div>
-        </div>
-
-        <!-- Nintendo Switch -->
-        <div class="bg-dark-card border border-dark-border rounded-2xl p-6 opacity-75 flex flex-col justify-between">
-          <div>
-            <div class="flex items-center justify-between mb-4">
-              <div class="w-12 h-12 rounded-xl bg-slate-500/10 border border-slate-500/20 text-slate-400 flex items-center justify-center"><i class="fa-solid fa-gamepad text-xl"></i></div>
-              <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 badge-planned-text">In Development</span>
-            </div>
-            <h3 class="text-lg font-bold text-white">Nintendo Switch</h3>
-            <p class="text-slate-400 text-sm mt-2 leading-relaxed" data-i18n="planned_cover_desc">Nintendo Switch Hüllen (Noch in Entwicklung).</p>
-          </div>
-          <div class="mt-6 pt-4 border-t border-dark-border/60 text-xs text-slate-500 font-mono" data-i18n="btn_coming_soon">Coming Soon</div>
-        </div>
-
-        <!-- Universal Case -->
-        <div class="bg-dark-card border border-dark-border rounded-2xl p-6 opacity-75 flex flex-col justify-between">
-          <div>
-            <div class="flex items-center justify-between mb-4">
-              <div class="w-12 h-12 rounded-xl bg-slate-500/10 border border-slate-500/20 text-slate-400 flex items-center justify-center"><i class="fa-solid fa-cube text-xl"></i></div>
-              <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 badge-planned-text">In Development</span>
-            </div>
-            <h3 class="text-lg font-bold text-white">Universal Case</h3>
-            <p class="text-slate-400 text-sm mt-2 leading-relaxed" data-i18n="planned_cover_desc">Universelle Hüllenvorlagen (Noch in Entwicklung).</p>
-          </div>
-          <div class="mt-6 pt-4 border-t border-dark-border/60 text-xs text-slate-500 font-mono" data-i18n="btn_coming_soon">Coming Soon</div>
+        <!-- Geplante Cover Studios (kompakt) -->
+        <div class="planned-box md:col-span-2 lg:col-span-3">
+          <div class="planned-head"><i class="fa-solid fa-hourglass-half"></i> <span class="planned-title badge-planned-text">In Development</span><span class="planned-hint" data-i18n="planned_hint">Planned formats – not available yet.</span></div>
+          <div class="planned-list"><span class="planned-chip">Master System</span><span class="planned-chip">Mega Drive</span><span class="planned-chip">Nintendo DS</span><span class="planned-chip">PSP</span><span class="planned-chip">PS Vita</span><span class="planned-chip">Nintendo Switch</span><span class="planned-chip">Universal Case</span></div>
         </div>
 
       </div>
     </section>
 
     <!-- SECTION 2: CRAFT MODULES & STUDIOS -->
-    <section class="space-y-6">
-      <div class="flex items-center justify-between border-b border-dark-border pb-4">
+    <section id="craft-studio" class="space-y-6">
+      <div class="cat-head" style="--c:201,162,39">
+        <div class="ch-ico"><i class="fa-solid fa-scissors"></i></div>
         <div>
-          <h2 class="text-2xl font-bold text-white flex items-center gap-3">
-            <i class="fa-solid fa-cubes text-brand-accent"></i>
-            <span data-i18n="section_modules_title">Craft Modules & Studios</span>
+          <h2 class="text-2xl font-bold text-white">
+            <span data-i18n="section_modules_title">Craft Studio</span>
           </h2>
-          <p class="text-slate-400 text-sm mt-1" data-i18n="section_modules_desc">Separate standalone modules for manuals, stickers and packaging.</p>
+          <p class="text-slate-400 text-sm mt-1" data-i18n="section_modules_desc">Booklets, cartridge labels, Big Boxes and cartridge boxes – print, cut and fold.</p>
         </div>
       </div>
 
@@ -642,7 +606,7 @@
         <div id="booklet-studio" class="bg-dark-card border border-dark-border rounded-2xl p-6 transition-all duration-300 hover:border-brand-accent/50 flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between mb-4">
-              <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center">
+              <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background:rgba(251,113,133,.10);border:1px solid rgba(251,113,133,.28);color:#fb7185">
                 <i class="fa-solid fa-book-open text-xl"></i>
               </div>
               <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 st-beta">BETA</span>
@@ -693,15 +657,15 @@
         </div>
 
         <!-- 3. Craft Studio -->
-        <div id="craft-studio" class="bg-dark-card border border-dark-border rounded-2xl p-6 transition-all duration-300 hover:border-brand-accent/50 flex flex-col justify-between">
+        <div id="box-studio" class="bg-dark-card border border-dark-border rounded-2xl p-6 transition-all duration-300 hover:border-brand-accent/50 flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between mb-4">
-              <div class="w-12 h-12 rounded-xl bg-orange-500/10 border border-orange-500/20 text-orange-400 flex items-center justify-center">
+              <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background:rgba(168,162,158,.12);border:1px solid rgba(168,162,158,.3);color:#b8b2ab">
                 <i class="fa-solid fa-box text-xl"></i>
               </div>
               <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 st-beta">BETA</span>
             </div>
-            <h3 class="text-lg font-bold text-white">Craft Studio</h3>
+            <h3 class="text-lg font-bold text-white">Box Studio</h3>
             <p class="text-slate-400 text-sm mt-2 leading-relaxed mb-3" data-i18n="card_craft_desc">
               Foldable dielines for cardboard packaging and boxes:
             </p>
@@ -714,17 +678,17 @@
             </ul>
           </div>
           <div class="mt-6 space-y-2">
-            <a href="studios/craft/bigbox-studio.html" class="block text-center py-2.5 rounded-xl btn-craft text-white text-xs font-bold">
-              PC Big Box Craft Studio
+            <a href="studios/craft/bigbox-studio.html" class="block text-center py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold transition-colors shadow-lg shadow-brand-600/20">
+              PC Big Box Studio
             </a>
-            <a href="studios/craft/bigbox-inlay.html" class="block text-center py-2.5 rounded-xl btn-craft text-white text-xs font-bold">
-              Inlay Craft Studio
+            <a href="studios/craft/bigbox-inlay.html" class="block text-center py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold transition-colors shadow-lg shadow-brand-600/20">
+              Inlay Studio
             </a>
-            <a href="studios/craft/gameboy-box-studio.html" class="block text-center py-2.5 rounded-xl btn-craft text-white text-xs font-bold">
-              Game Boy Box Craft Studio
+            <a href="studios/craft/gameboy-box-studio.html" class="block text-center py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold transition-colors shadow-lg shadow-brand-600/20">
+              Game Boy Box Studio
             </a>
-            <a href="studios/craft/gameboy-inlay-studio.html" class="block text-center py-2.5 rounded-xl btn-craft text-white text-xs font-bold">
-              Game Boy Inlay Craft Studio
+            <a href="studios/craft/gameboy-inlay-studio.html" class="block text-center py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold transition-colors shadow-lg shadow-brand-600/20">
+              Game Boy Inlay Studio
             </a>
           </div>
         </div>
@@ -734,15 +698,15 @@
 
     <!-- SECTION 3: MATERIALS & AFFILIATE HUB -->
     <section id="materials" class="space-y-6 pt-8 border-t border-dark-border">
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h2 class="text-2xl font-bold text-white flex items-center gap-3">
-            <i class="fa-solid fa-cart-shopping text-emerald-400"></i>
+      <div class="cat-head" style="flex-wrap:wrap;justify-content:space-between;--c:16,185,129">
+        <div class="ch-ico"><i class="fa-solid fa-cart-shopping"></i></div>
+        <div style="flex:1 1 220px;min-width:0">
+          <h2 class="text-2xl font-bold text-white">
             <span data-i18n="section_materials_title">Materials & Supplies</span>
           </h2>
           <p class="text-slate-400 text-sm mt-1" data-i18n="section_materials_desc">Tested papers, cardboards, and craft tools for optimal physical DIY results.</p>
         </div>
-        <div class="text-xs text-slate-500 font-mono bg-dark-card px-3 py-1.5 rounded-lg border border-dark-border">
+        <div style="max-width:100%" class="ch-tag text-xs text-slate-500 font-mono bg-dark-card px-3 py-1.5 rounded-lg border border-dark-border">
           <i class="fa-solid fa-info-circle mr-1 text-brand-500"></i> <span data-i18n="affiliate_tag">Affiliate Link Collection</span>
         </div>
       </div>
@@ -861,15 +825,15 @@
         hero_subtitle: "Create high-precision, print-ready cover inserts, booklet manuals, stickers, and box sleeves for your physical game collection.",
         hero_by_gamers: "By Gamers for Gamers",
         section_covers_title: "Cover Studio",
-        section_covers_desc: "Print-ready cover art inserts for classic console cases and future planned formats.",
+        section_covers_desc: "Print-ready front and back inlays for retro console and PC game cases – Dreamcast, PS1, CD jewel case, DVD and more.",
         card_dc_desc: "Design custom cover inserts for blue Sega Dreamcast PAL double jewel cases.",
         card_ps1_desc: "Create PAL regional covers and back spine inserts for thick PlayStation 1 cases.",
 		card_cd_desc: "Design custom cover inserts for CD jewel case games like NTSC PS1, Dreamcast, or PC – also for multi-disc cases.",
 		card_dvd_desc: "Design custom cover inserts for DVD game cases like GameCube, PS2, or Xbox 360.",
 		card_ps3_desc: "Design custom cover inserts for PS3, PS4 and Playstation 5.",
         open_studio: "Open Studio",
-        section_modules_title: "Craft Modules & Studios",
-        section_modules_desc: "Separate standalone modules for manuals, stickers and packaging.",
+        section_modules_title: "Craft Studio",
+        section_modules_desc: "Booklets, cartridge labels, Big Boxes and cartridge boxes – print, cut and fold.",
         card_booklet_desc: "Create printable multi-page game manuals and booklets with automatic page imposition.",
         card_label_desc: "Print-ready cartridge labels in original size for retro consoles (red = planned):", card_label_custom: "Custom size", lbl_planned: "(planned)", card_label_floppy: "3.5\" floppy disk",
         card_craft_desc: "Foldable dielines for cardboard packaging and boxes:",
@@ -882,6 +846,13 @@
         steam_feat_desc: "Split a game folder across CDs, DVDs, Blu-rays or USB sticks. A small Windows installer puts it back together, adds an uninstaller and can also install the required runtimes. Copy-protection hints are created locally from the file names – without any database.",
         steam_f1: "Splits across several discs", steam_f2: "Runs locally in your browser, no uploads", steam_f3: "6 installer languages",
         btn_launch_steam: "Open Steam Disc Creator (Beta v2)",
+        nav_design_sub: "Cases for GOG & Steam discs",
+        nav_craft_sub: "Booklets, Labels & Boxes",
+        design_link: "the matching case for your discs",
+        design_pill: "New tool",
+        design_desc: "Design front, spine and back of the case for your finished discs: DVD, Blu-ray and CD jewel case, with GOG or Steam colours, your own artwork and logos, system requirements and rating fields.",
+        design_f1: "DVD, Blu-ray & jewel case", design_f2: "PNG, SVG & PDF in true size", design_f3: "Runs locally in your browser, no uploads",
+        btn_launch_design: "Open Design Studio (Beta)",
         section_materials_title: "Materials & Supplies",
         section_materials_desc: "Tested papers, cardboards, and craft tools for optimal physical DIY results.",
         affiliate_tag: "Affiliate Link Collection",
@@ -909,6 +880,8 @@
         planned_badge: "In Development",
         btn_coming_soon: "In Development",
         planned_cover_desc: "Planned cover format (In Development).",
+        planned_hint: "Planned formats – not available yet.",
+        show_all: "Show all {n} studios", show_less: "Show fewer",
         typewriter: `Why Physical Release Studio?
 In an era of digital-only licenses and closing online storefronts, we want to give our favorite games the tangible appreciation they deserve.
 
@@ -930,15 +903,15 @@ With this studio, you can convert DRM-free games, indie titles, and your own bac
         hero_subtitle: "Erstelle hochpräzise, druckfertige Inlays, Booklets, Sticker und Verpackungsschachteln für deine Spielesammlung.",
         hero_by_gamers: "Von Gamern für Gamer",
         section_covers_title: "Cover Studio",
-        section_covers_desc: "Druckfertige Cover-Art-Einleger für Hüllen klassischer Konsolen und geplante Formate.",
+        section_covers_desc: "Druckfertige Front- und Rückseiten-Inlays für Retro-Konsolen- und PC-Spielehüllen – Dreamcast, PS1, CD-Jewelcase, DVD und mehr.",
         card_dc_desc: "Design und Drucklayout für blaue Sega Dreamcast PAL Doppel-Hüllen mit Rücken-Markierungen.",
 		card_ps1_desc: "Passgenaue Front- und Rückseiteninlays für dicke europäische PlayStation 1 Hüllen.",
 		card_cd_desc: "Gestalte individuelle Cover-Inlays für CD-Jewel-Case-Spiele wie NTSC PS1, Dreamcast oder PC – auch für Multi-Disc-Hüllen.",
 		card_dvd_desc: "Gestalte individuelle Cover-Inlays für DVD-Spielehüllen wie GameCube, PS2 oder Xbox 360.",
 		card_ps3_desc: "Gestalte individuelle Cover-Inlays für PS3, PS4 oder Playstation 5.",
         open_studio: "Studio öffnen",
-        section_modules_title: "Craft Module & Studios",
-        section_modules_desc: "Eigenständige Bereiche für Anleitungen, Sticker und Verpackungen.",
+        section_modules_title: "Craft Studio",
+        section_modules_desc: "Booklets, Modul-Label, Big Boxen und Modulboxen – drucken, schneiden, falten.",
         card_booklet_desc: "Erstelle druckfertige mehrseitige Handbücher & Anleitungen mit automatischer Seitensortierung.",
         card_label_desc: "Druckfertige Modul-Labels in Originalgröße für Retro-Konsolen (rot = geplant):", card_label_custom: "Eigene Größe", lbl_planned: "(geplant)", card_label_floppy: "3,5-Zoll-Diskette",
         card_craft_desc: "Faltvorlagen & 3D-Dielines für Pappschachteln und Boxen:",
@@ -951,6 +924,13 @@ With this studio, you can convert DRM-free games, indie titles, and your own bac
         steam_feat_desc: "Teile einen Spieleordner auf CDs, DVDs, Blu-rays oder USB-Sticks auf. Ein kleiner Windows-Installer fügt ihn wieder zusammen, bringt einen Deinstaller mit und installiert auf Wunsch die nötigen Laufzeiten. Hinweise zum Kopierschutz entstehen lokal aus den Dateinamen – ganz ohne Datenbank.",
         steam_f1: "Teilt auf mehrere Discs auf", steam_f2: "Läuft lokal im Browser, keine Uploads", steam_f3: "6 Installer-Sprachen",
         btn_launch_steam: "Steam Disc Creator öffnen (Beta v2)",
+        nav_design_sub: "Hüllen für GOG- & Steam-Discs",
+        nav_craft_sub: "Booklets, Labels & Boxen",
+        design_link: "die passende Hülle zu deinen Discs",
+        design_pill: "Neues Tool",
+        design_desc: "Gestalte Front, Spine und Rückseite der Hülle für deine fertigen Discs: DVD, Blu-ray und CD-Jewelcase, mit GOG- oder Steam-Farben, eigenem Artwork und eigenen Logos, Systemanforderungen und Einstufungsfeldern.",
+        design_f1: "DVD, Blu-ray & Jewelcase", design_f2: "PNG, SVG & PDF in Originalgröße", design_f3: "Läuft lokal im Browser, keine Uploads",
+        btn_launch_design: "Design Studio öffnen (Beta)",
         section_materials_title: "Materialien & Empfehlungen",
         section_materials_desc: "Getestete Materialien, Papiere und Werkzeuge für beste DIY-Ergebnisse.",
         affiliate_tag: "Affiliate Link Sammlung",
@@ -978,6 +958,8 @@ With this studio, you can convert DRM-free games, indie titles, and your own bac
         planned_badge: "In Entwicklung",
         btn_coming_soon: "In Entwicklung",
         planned_cover_desc: "Geplantes Cover-Format (In Entwicklung).",
+        planned_hint: "Geplante Formate – noch nicht verfügbar.",
+        show_all: "Alle {n} Studios anzeigen", show_less: "Weniger anzeigen",
         typewriter: `Warum Physical Release Studio?
 In Zeiten von rein digitalen Lizenzen und sich schließenden Online-Stores wollen wir Lieblingsspielen die physische Wertschätzung zurückgeben, die sie verdienen. 
 
@@ -1001,7 +983,25 @@ Mit diesem Studio kannst du DRM-freie Spiele, Indie-Titel und eigene Backups in 
       const set = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = String(v); };
       set('statReady', n('.badge-ready-text'));
       set('statBeta', n('.st-beta'));
-      set('statDev', n('.badge-planned-text'));
+      set('statDev', n('.planned-chip'));
+    }
+
+    // Karten-Raster einklappen, wenn sehr viele Studios vorhanden sind (greift erst ab data-collapse + 1 Karten)
+    function initCollapsibles() {
+      document.querySelectorAll('[data-collapse]').forEach(grid => {
+        const limit = parseInt(grid.dataset.collapse, 10) || 6;
+        const total = [...grid.children].filter(c => !c.classList.contains('planned-box')).length;
+        let btn = grid.nextElementSibling && grid.nextElementSibling.classList.contains('collapse-toggle') ? grid.nextElementSibling : null;
+        if (total <= limit) { if (btn) btn.remove(); grid.classList.remove('grid-collapsed'); return; }
+        if (!btn) {
+          btn = document.createElement('button'); btn.type = 'button'; btn.className = 'collapse-toggle';
+          btn.addEventListener('click', () => { grid.classList.toggle('grid-collapsed'); initCollapsibles(); });
+          grid.after(btn);
+          grid.classList.add('grid-collapsed');
+        }
+        const collapsed = grid.classList.contains('grid-collapsed');
+        btn.textContent = (collapsed ? i18n[currentLang].show_all : i18n[currentLang].show_less).replace('{n}', total);
+      });
     }
     function setLanguage(lang) {
       currentLang = lang;
@@ -1035,6 +1035,7 @@ Mit diesem Studio kannst du DRM-freie Spiele, Indie-Titel und eigene Backups in 
       });
 
       countStatus();
+      initCollapsibles();
       startTypewriter();
     }
 

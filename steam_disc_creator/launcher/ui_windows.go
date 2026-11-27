@@ -124,6 +124,12 @@ func main() {
 		return
 	}
 
+	if od := origDirArg(); od != "" {
+		dir = od
+	} else if relaunchFromTemp(dir, self) {
+		return
+	}
+
 	cfg, err := loadConfig(dir)
 	if err != nil {
 		messageBox(0, T("cfgErr", err.Error()), "Launcher", mbOK|mbIconError)

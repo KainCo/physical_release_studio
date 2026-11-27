@@ -15,7 +15,7 @@ mehrere Discs auf, und ein kleiner Windows-Installer (`Launcher.exe`, Win98-Opti
 - Im Steam-Modus erzeugt der Installer bei Bedarf ein einfaches `appmanifest`, damit Steam das Spiel als installiert erkennt. Es wird **keine** `steam_appid.txt` angelegt.
 - Der Installer und die Dateien auf der Disc tragen keine Namen oder Herausgeber-Angaben; auf jeder Disc liegt eine `LICENSE.txt` (GPL-3.0 und Go-Lizenz).
 - Zwei Arten: **Normaler Ordner** (DRM-freie Spiele) oder **Steam-Bibliothek** (Spiel braucht Steam; Installation nach `steamapps\common`).
-- Eigenes Banner-Bild einfügen, Medien- und Kapazitätsberechnung (CD 650/700, DVD, DVD DL, BD, BD DL/XL, USB, FAT32, eigene Größe).
+- Eigenes Banner-Bild und eigenes Disc-Icon (.ico oder .png, wird als autorun.ico geschrieben) einfügen, Medien- und Kapazitätsberechnung (CD 650/700, DVD, DVD DL, BD, BD DL/XL, USB, FAT32, eigene Größe).
 - **DRM-Hinweise nur lokal** (Dateinamen, SteamStub-/SecuROM-Abschnitte). Ein Hinweis ist kein Beweis, ein fehlender Hinweis auch nicht;
   `steam_api.dll` zählt bewusst nicht. Dazu ein Link zu PCGamingWiki, der erst nach Klick geöffnet wird. Das Tool verändert keine Spieldateien
   und entfernt keinen Kopierschutz.
@@ -57,7 +57,9 @@ dist/       Build-Ausgabe (index.html, Launcher.exe, SHA256SUMS.txt)
 - Die Windows-Oberfläche des Launchers wurde unter Linux kompiliert und ihre Logik getestet, aber **nicht auf echtem Windows**. Bitte vor dem Verteilen einmal mit echten Discs oder USB prüfen.
 - Steam-Modus: dass Steam das kopierte Spiel samt Manifest ohne erneute Prüfung akzeptiert, ist ungetestet.
 - Übersetzungen PL/FR/ES/IT sind maschinell erstellt, nicht muttersprachlich geprüft.
-- Nur Windows 10/11 (64 Bit) für den Installer.
+- Installer: nur Windows 10/11 (64 Bit).
+- Tool: Chrome oder Edge empfohlen (Ordner direkt schreiben). Systemordner (Desktop, Dokumente, Downloads) sperrt der Browser, ebenso können Sicherheits-/Firmenrichtlinien das Schreiben verbieten; dafür gibt es „Als ZIP-Dateien speichern“. Firefox/Safari nutzen immer ZIP.
+- Brennen mit UDF, nicht mit ISO 9660/Joliet.
 - Nutze das Tool nur für Spiele, die du rechtmäßig besitzt, und gib Medien nur mit Erlaubnis der Rechteinhaber weiter.
 
 Lizenz: GPL-3.0-or-later (siehe `LICENSE`).

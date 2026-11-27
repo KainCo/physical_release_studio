@@ -305,3 +305,38 @@ func deleteSelfLater(pending []string, dir string, removeDir bool) {
 	}
 	cmd.Start()
 }
+
+// relaunchFromTemp: Läuft die Programmdatei direkt von einem optischen Laufwerk, wird sie beim
+// Disc-Wechsel ungültig (Windows lädt Programmseiten bei Bedarf vom Datenträger nach) und das
+// Fenster schließt sich ohne Meldung. Darum kopieren wir uns in %TEMP% und starten dort neu.
+func relaunchFromTemp(dir, self string) bool {
+	if self == "" || len(self) < 3 {
+		return false
+	}
+	t, _, _ := pGetDriveType.Call(uintptr(unsafe.Pointer(u16(self[:3]))))
+	if t != 5 {
+		return false
+	}
+	tmp, err := os.MkdirTemp("", "prs_launcher_")
+	if err != nil {
+		return false
+	}
+	dst := filepath.Join(tmp, filepath.Base(self))
+	data, err := os.ReadFile(self)
+	if err != nil || os.WriteFile(dst, data, 0o755) != nil {
+		return false
+	}
+	cmd := exec.Command(dst, "/origdir="+dir)
+	cmd.Dir = tmp
+	return cmd.Start() == nil
+}
+
+// origDirArg liefert den Ordner der Original-Disc, falls wir aus %TEMP% neu gestartet wurden.
+func origDirArg() string {
+	for _, a := range os.Args[1:] {
+		if len(a) > 9 && strings.EqualFold(a[:9], "/origdir=") {
+			return a[9:]
+		}
+	}
+	return ""
+}

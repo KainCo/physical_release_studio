@@ -11,6 +11,7 @@ und einen Teil der Spieldateien unter `Game\`.
 | `autorun.inf`, `autorun.ico` | AutoPlay |
 | `README.txt` | Hinweise für Endnutzer (DE/EN) |
 | `banner.jpg` / `banner.png` | optionales Bild (vom Nutzer gewählt) |
+| `autorun.ico` | Disc-Icon im Explorer: neutrales Standard-Symbol oder vom Nutzer gewählte .ico/.png |
 | `extras\appmanifest.acf` | optional, nur im Steam-Modus, nur auf Disc 1 |
 | `Game\…` | Spieldateien; geteilte Dateien als `Name.ext.part1`, `.part2`, … |
 
